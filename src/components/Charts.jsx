@@ -37,7 +37,9 @@ export function SleepChart({ data }) {
     }
   })
 
-  if (chartData.length === 0) {
+  // Check if we have any actual data (not just empty dates)
+  const hasData = chartData.some(d => d.sleep !== null)
+  if (!hasData) {
     return <div className="text-center text-muted-foreground py-8">No sleep data available</div>
   }
 
@@ -50,11 +52,18 @@ export function SleepChart({ data }) {
     <ResponsiveContainer width="100%" height={300}>
       <LineChart data={chartData}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" />
+        <XAxis 
+          dataKey="date" 
+          type="category"
+          interval={0}
+          angle={-45}
+          textAnchor="end"
+          height={60}
+        />
         <YAxis domain={[minSleep, maxSleep]} />
         <Tooltip />
         <Legend />
-        <Line type="monotone" dataKey="sleep" stroke="#8884d8" strokeWidth={2} name="Sleep (hours)" />
+        <Line type="monotone" dataKey="sleep" stroke="#8884d8" strokeWidth={2} name="Sleep (hours)" connectNulls={false} />
       </LineChart>
     </ResponsiveContainer>
   )
@@ -80,7 +89,9 @@ export function EnergyChart({ data }) {
     }
   })
 
-  if (chartData.length === 0) {
+  // Check if we have any actual data (not just empty dates)
+  const hasData = chartData.some(d => d.energy !== null)
+  if (!hasData) {
     return <div className="text-center text-muted-foreground py-8">No energy data available</div>
   }
 
@@ -93,11 +104,18 @@ export function EnergyChart({ data }) {
     <ResponsiveContainer width="100%" height={300}>
       <LineChart data={chartData}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" />
+        <XAxis 
+          dataKey="date" 
+          type="category"
+          interval={0}
+          angle={-45}
+          textAnchor="end"
+          height={60}
+        />
         <YAxis domain={[minEnergy, maxEnergy]} />
         <Tooltip />
         <Legend />
-        <Line type="monotone" dataKey="energy" stroke="#82ca9d" strokeWidth={2} name="Energy (1-10)" />
+        <Line type="monotone" dataKey="energy" stroke="#82ca9d" strokeWidth={2} name="Energy (1-10)" connectNulls={false} />
       </LineChart>
     </ResponsiveContainer>
   )
@@ -123,12 +141,10 @@ export function WeightChart({ data }) {
     }
   })
 
-  if (chartData.length === 0) {
-    return <div className="text-center text-muted-foreground py-8">No weight data available</div>
-  }
-
   // Calculate min/max for Y-axis (with some padding)
   const weightValues = chartData.map(d => d.weight).filter(v => v !== null)
+  
+  // Check if we have any actual data (not just empty dates)
   if (weightValues.length === 0) {
     return <div className="text-center text-muted-foreground py-8">No weight data available</div>
   }
@@ -140,11 +156,18 @@ export function WeightChart({ data }) {
     <ResponsiveContainer width="100%" height={300}>
       <LineChart data={chartData}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" />
+        <XAxis 
+          dataKey="date" 
+          type="category"
+          interval={0}
+          angle={-45}
+          textAnchor="end"
+          height={60}
+        />
         <YAxis domain={[minWeight, maxWeight]} />
         <Tooltip />
         <Legend />
-        <Line type="monotone" dataKey="weight" stroke="#ffc658" strokeWidth={2} name="Weight (lbs)" />
+        <Line type="monotone" dataKey="weight" stroke="#ffc658" strokeWidth={2} name="Weight (lbs)" connectNulls={false} />
       </LineChart>
     </ResponsiveContainer>
   )
@@ -168,7 +191,14 @@ export function CompletionChart({ data }) {
     <ResponsiveContainer width="100%" height={300}>
       <BarChart data={chartData}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" />
+        <XAxis 
+          dataKey="date" 
+          type="category"
+          interval={0}
+          angle={-45}
+          textAnchor="end"
+          height={60}
+        />
         <YAxis domain={[0, 100]} />
         <Tooltip />
         <Legend />
