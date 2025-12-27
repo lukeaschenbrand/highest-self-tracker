@@ -23,6 +23,7 @@ import {
   getYearEnd,
 } from '@/lib/scoring'
 import { exportCurrentWeek, exportCurrentMonth, exportAll } from '@/lib/export'
+import { getProjectStartDate } from '@/lib/backfill'
 
 export function Dashboard({ selectedDate, onDateChange }) {
   const [tasks, setTasks] = useState([])
@@ -130,12 +131,16 @@ export function Dashboard({ selectedDate, onDateChange }) {
 
   // Get completion data for chart
   const getCompletionData = () => {
-    const dates = []
+    // Get date range from project start to today
+    const projectStart = getProjectStartDate()
     const today = new Date()
-    for (let i = 29; i >= 0; i--) {
-      const date = new Date(today)
-      date.setDate(date.getDate() - i)
-      dates.push(date)
+    
+    const dates = []
+    const current = new Date(projectStart)
+    
+    while (current <= today) {
+      dates.push(new Date(current))
+      current.setDate(current.getDate() + 1)
     }
 
     return dates.map(date => {

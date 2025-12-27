@@ -123,7 +123,7 @@ export function getDefaultTasks() {
       label: 'All follow-ups sent before logging off',
       frequency: FREQUENCIES.DAILY,
       active_days: [1, 2, 3, 4, 5, 6], // Mon-Sat
-      allow_pass: false,
+      allow_pass: true,
       weight: 1,
     },
     {
@@ -133,7 +133,7 @@ export function getDefaultTasks() {
       label: 'Tomorrow planned before logging off',
       frequency: FREQUENCIES.DAILY,
       active_days: [1, 2, 3, 4, 5, 6], // Mon-Sat
-      allow_pass: false,
+      allow_pass: true,
       weight: 1,
     },
     {
@@ -174,7 +174,7 @@ export function getDefaultTasks() {
       label: 'Finance',
       frequency: FREQUENCIES.DAILY,
       active_days: [1, 2, 3, 4, 5, 6], // Mon-Sat
-      allow_pass: false,
+      allow_pass: true,
       weight: 1,
     },
     {
@@ -184,7 +184,7 @@ export function getDefaultTasks() {
       label: 'Legal',
       frequency: FREQUENCIES.DAILY,
       active_days: [1, 2, 3, 4, 5, 6], // Mon-Sat
-      allow_pass: false,
+      allow_pass: true,
       weight: 1,
     },
     {
@@ -194,7 +194,7 @@ export function getDefaultTasks() {
       label: 'Product',
       frequency: FREQUENCIES.DAILY,
       active_days: [1, 2, 3, 4, 5, 6], // Mon-Sat
-      allow_pass: false,
+      allow_pass: true,
       weight: 1,
     },
     
