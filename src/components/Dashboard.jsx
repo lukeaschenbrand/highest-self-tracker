@@ -35,6 +35,9 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
   const [metricEntries, setMetricEntries] = useState([])
   const [period, setPeriod] = useState('day')
   const [showImport, setShowImport] = useState(false)
+  const [projectStart, setProjectStart] = useState(null)
+  const [migrating, setMigrating] = useState(false)
+  const [migrationStatus, setMigrationStatus] = useState('')
 
   useEffect(() => {
     const loadData = async () => {
@@ -140,8 +143,6 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
 
   const overallScore = getOverallScore()
   const fitnessProgress = getWeeklyFitnessProgress()
-
-  const [projectStart, setProjectStart] = useState(null)
 
   useEffect(() => {
     const loadProjectStart = async () => {
