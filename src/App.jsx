@@ -2,36 +2,54 @@ import { useState, useEffect } from 'react'
 import { DailyLog } from './components/DailyLog'
 import { Dashboard } from './components/Dashboard'
 import { BackfillDialog } from './components/BackfillDialog'
+import { ViewerSelector } from './components/ViewerSelector'
+import { PasswordEntry } from './components/PasswordEntry'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs'
 import { Button } from './components/ui/button'
 import { formatDate } from './lib/scoring'
 import { loadTasks, saveTasks } from './lib/storage'
 import { getDefaultTasks } from './lib/tasks'
 import { getProjectStartDate, initializeProject } from './lib/backfill'
+import { getAuth, isEditor, USER_TYPES, clearAuth } from './lib/auth'
 
 function App() {
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [activeTab, setActiveTab] = useState('log')
   const [refreshKey, setRefreshKey] = useState(0)
   const [showBackfill, setShowBackfill] = useState(false)
+  const [authState, setAuthState] = useState(null) // null = checking, 'selecting' = show selector, 'password' = show password, 'authenticated' = show app
+  const [userType, setUserType] = useState(null)
 
-  // Initialize tasks on first load
+  // Check authentication on load
   useEffect(() => {
-    const tasks = loadTasks()
-    if (tasks.length === 0) {
-      const defaultTasks = getDefaultTasks()
-      saveTasks(defaultTasks)
-    }
-    
-    // Check if project has been initialized
-    const projectStart = localStorage.getItem('hst_project_start_date')
-    if (!projectStart) {
-      // Auto-initialize with 12/22/2024 (or current year)
-      const currentYear = new Date().getFullYear()
-      const initDate = `${currentYear}-12-22`
-      initializeProject(initDate)
+    const auth = getAuth()
+    if (auth) {
+      setUserType(auth.userType)
+      setAuthState('authenticated')
+    } else {
+      setAuthState('selecting')
     }
   }, [])
+
+  // Initialize tasks on first load (only when authenticated)
+  useEffect(() => {
+    if (authState === 'authenticated') {
+      const tasks = loadTasks()
+      if (tasks.length === 0) {
+        const defaultTasks = getDefaultTasks()
+        saveTasks(defaultTasks)
+      }
+      
+      // Check if project has been initialized
+      const projectStart = localStorage.getItem('hst_project_start_date')
+      if (!projectStart) {
+        // Auto-initialize with 12/22/2024 (or current year)
+        const currentYear = new Date().getFullYear()
+        const initDate = `${currentYear}-12-22`
+        initializeProject(initDate)
+      }
+    }
+  }, [authState])
 
   const handleDateChange = (days) => {
     const newDate = new Date(selectedDate)
@@ -46,24 +64,100 @@ function App() {
     setActiveTab('dashboard')
   }
 
+  const handleViewerSelect = (selectedType) => {
+    if (selectedType === USER_TYPES.JOKER) {
+      // Joker is already authenticated
+      setUserType(USER_TYPES.JOKER)
+      setAuthState('authenticated')
+    } else {
+      // Batman needs password
+      setAuthState('password')
+    }
+  }
+
+  const handlePasswordSuccess = () => {
+    setUserType(USER_TYPES.BATMAN)
+    setAuthState('authenticated')
+  }
+
+  const handlePasswordCancel = () => {
+    setAuthState('selecting')
+  }
+
+  const handleLogout = () => {
+    clearAuth()
+    setAuthState('selecting')
+    setUserType(null)
+  }
+
+  // Show loading state while checking auth
+  if (authState === null) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-lg">Loading...</div>
+        </div>
+      </div>
+    )
+  }
+
+  // Show viewer selector
+  if (authState === 'selecting') {
+    return <ViewerSelector onSelect={handleViewerSelect} />
+  }
+
+  // Show password entry
+  if (authState === 'password') {
+    return (
+      <PasswordEntry 
+        onSuccess={handlePasswordSuccess}
+        onCancel={handlePasswordCancel}
+      />
+    )
+  }
+
+  // Show main app (authenticated)
+  const isBatman = userType === USER_TYPES.BATMAN
+  const canEdit = isEditor()
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className={`min-h-screen ${isBatman ? 'bg-gray-900' : 'bg-background'}`}>
       {/* Sticky Header */}
-      <div className="sticky top-0 z-50 border-b bg-card shadow-sm">
+      <div className={`sticky top-0 z-50 border-b shadow-sm ${
+        isBatman ? 'bg-gray-800 border-gray-700' : 'bg-card'
+      }`}>
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold">Highest Self Tracker</h1>
+            <div>
+              {isBatman ? (
+                <h1 className="text-2xl font-bold text-yellow-400">Welcome Back, Batman</h1>
+              ) : (
+                <h1 className="text-2xl font-bold">Highest Self Tracker</h1>
+              )}
+            </div>
             <div className="flex items-center gap-4">
+              {canEdit && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowBackfill(true)}
+                  className={isBatman ? 'border-gray-600 text-yellow-400 hover:bg-gray-700' : ''}
+                >
+                  Initialize/Backfill
+                </Button>
+              )}
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setShowBackfill(true)}
+                onClick={handleLogout}
+                className={isBatman ? 'border-gray-600 text-yellow-400 hover:bg-gray-700' : ''}
               >
-                Initialize/Backfill
+                Logout
               </Button>
               <Button
                 variant="outline"
                 onClick={() => handleDateChange(-1)}
+                className={isBatman ? 'border-gray-600 text-yellow-400 hover:bg-gray-700' : ''}
               >
                 ←
               </Button>
@@ -74,17 +168,23 @@ function App() {
                   const newDate = new Date(e.target.value)
                   setSelectedDate(newDate)
                 }}
-                className="px-3 py-2 border rounded-md"
+                className={`px-3 py-2 border rounded-md ${
+                  isBatman 
+                    ? 'bg-gray-800 border-gray-600 text-yellow-400' 
+                    : ''
+                }`}
               />
               <Button
                 variant="outline"
                 onClick={() => handleDateChange(1)}
+                className={isBatman ? 'border-gray-600 text-yellow-400 hover:bg-gray-700' : ''}
               >
                 →
               </Button>
               <Button
                 variant="outline"
                 onClick={() => setSelectedDate(new Date())}
+                className={isBatman ? 'border-gray-600 text-yellow-400 hover:bg-gray-700' : ''}
               >
                 Today
               </Button>
@@ -93,12 +193,24 @@ function App() {
         </div>
         
         {/* Sticky Tabs */}
-        <div className="border-t bg-background">
+        <div className={`border-t ${
+          isBatman ? 'bg-gray-800 border-gray-700' : 'bg-background'
+        }`}>
           <div className="max-w-7xl mx-auto px-4 py-2">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList>
-                <TabsTrigger value="log">Daily Log</TabsTrigger>
-                <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+              <TabsList className={isBatman ? 'bg-gray-700' : ''}>
+                <TabsTrigger 
+                  value="log"
+                  className={isBatman ? 'data-[state=active]:bg-gray-600 data-[state=active]:text-yellow-400 text-gray-300' : ''}
+                >
+                  Daily Log
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="dashboard"
+                  className={isBatman ? 'data-[state=active]:bg-gray-600 data-[state=active]:text-yellow-400 text-gray-300' : ''}
+                >
+                  Dashboard
+                </TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
@@ -110,6 +222,8 @@ function App() {
           <DailyLog 
             selectedDate={selectedDate} 
             onSave={handleSave}
+            canEdit={canEdit}
+            isBatman={isBatman}
             key={`log-${formatDate(selectedDate)}`}
           />
         </TabsContent>
@@ -118,6 +232,8 @@ function App() {
           <Dashboard 
             selectedDate={selectedDate}
             onDateChange={handleDateChange}
+            canEdit={canEdit}
+            isBatman={isBatman}
             key={`dashboard-${refreshKey}`}
           />
         </TabsContent>

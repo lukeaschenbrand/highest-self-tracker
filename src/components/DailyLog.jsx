@@ -16,7 +16,7 @@ import {
 import { getDefaultTasks, PILLARS, FREQUENCIES } from '@/lib/tasks'
 import { cn } from '@/lib/utils'
 
-export function DailyLog({ selectedDate, onSave }) {
+export function DailyLog({ selectedDate, onSave, canEdit = true, isBatman = false }) {
   const [tasks, setTasks] = useState([])
   const [logEntries, setLogEntries] = useState({})
   const [metrics, setMetrics] = useState({
@@ -279,7 +279,7 @@ export function DailyLog({ selectedDate, onSave }) {
     return status
   }
 
-  const TaskButton = ({ task, status }) => {
+  const TaskButton = ({ task, status, canEdit = true, isBatman = false }) => {
     const hasPass = task.allow_pass
     const isTweets = task.label.includes('Tweets')
     const isTikTok = task.label === 'TikTok' && task.is_numeric
@@ -301,7 +301,7 @@ export function DailyLog({ selectedDate, onSave }) {
       
       return (
         <div className="flex items-center gap-2 py-2">
-          <span className="flex-1 text-sm">{task.label}</span>
+          <span className={`flex-1 text-sm ${isBatman ? 'text-yellow-400' : ''}`}>{task.label}</span>
           <div className="flex items-center gap-2">
             <Input
               type="number"
@@ -309,16 +309,20 @@ export function DailyLog({ selectedDate, onSave }) {
               max={maxValue}
               value={numericValue}
               onChange={(e) => {
-                const val = parseInt(e.target.value) || 0
-                let clampedVal = val
-                if (isTweets) {
-                  clampedVal = Math.max(0, Math.min(3, val))
-                } else {
-                  clampedVal = Math.max(0, val)
+                if (canEdit) {
+                  const val = parseInt(e.target.value) || 0
+                  let clampedVal = val
+                  if (isTweets) {
+                    clampedVal = Math.max(0, Math.min(3, val))
+                  } else {
+                    clampedVal = Math.max(0, val)
+                  }
+                  // Store as number string
+                  handleTaskStatus(task.id, clampedVal.toString())
                 }
-                // Store as number string
-                handleTaskStatus(task.id, clampedVal.toString())
               }}
+              disabled={!canEdit}
+              className={`w-20 h-8 ${isBatman ? 'bg-gray-700 border-gray-600 text-yellow-400' : ''}`}
               onKeyDown={(e) => {
                 // Enter key navigation
                 if (e.key === 'Enter') {
@@ -346,9 +350,8 @@ export function DailyLog({ selectedDate, onSave }) {
                 }
               }}
               ref={(el) => {
-                if (el) registerInput(task.id, el)
+                if (el && canEdit) registerInput(task.id, el)
               }}
-              className="w-20 h-8"
               placeholder={placeholder}
             />
             {hasPass && (
@@ -356,11 +359,13 @@ export function DailyLog({ selectedDate, onSave }) {
                 type="text"
                 value={status === 'P' ? 'pass' : ''}
                 onChange={(e) => {
-                  const parsed = parseStatusInput(e.target.value)
-                  if (parsed === 'P') {
-                    handleTaskStatus(task.id, 'P')
-                  } else if (!e.target.value) {
-                    handleTaskStatus(task.id, '')
+                  if (canEdit) {
+                    const parsed = parseStatusInput(e.target.value)
+                    if (parsed === 'P') {
+                      handleTaskStatus(task.id, 'P')
+                    } else if (!e.target.value) {
+                      handleTaskStatus(task.id, '')
+                    }
                   }
                 }}
                 onBlur={(e) => {
@@ -368,7 +373,8 @@ export function DailyLog({ selectedDate, onSave }) {
                     e.target.value = ''
                   }
                 }}
-                className="w-20 h-8"
+                disabled={!canEdit}
+                className={`w-20 h-8 ${isBatman ? 'bg-gray-700 border-gray-600 text-yellow-400' : ''}`}
                 placeholder="pass"
               />
             )}
@@ -379,26 +385,29 @@ export function DailyLog({ selectedDate, onSave }) {
     
     return (
       <div className="flex items-center gap-2 py-2">
-        <span className="flex-1 text-sm">{task.label}</span>
+        <span className={`flex-1 text-sm ${isBatman ? 'text-yellow-400' : ''}`}>{task.label}</span>
         <div className="flex items-center gap-2">
           <Input
             type="text"
             value={status ? formatStatusForDisplay(status) : ''}
             onChange={(e) => {
-              const value = e.target.value
-              if (!value) {
-                handleTaskStatus(task.id, '')
-                return
-              }
-              
-              const parsed = parseStatusInput(value)
-              if (parsed) {
-                handleTaskStatus(task.id, parsed)
-              } else {
-                // Allow typing partial input
-                handleTaskStatus(task.id, value)
+              if (canEdit) {
+                const value = e.target.value
+                if (!value) {
+                  handleTaskStatus(task.id, '')
+                  return
+                }
+                
+                const parsed = parseStatusInput(value)
+                if (parsed) {
+                  handleTaskStatus(task.id, parsed)
+                } else {
+                  // Allow typing partial input
+                  handleTaskStatus(task.id, value)
+                }
               }
             }}
+            disabled={!canEdit}
             onBlur={(e) => {
               // Only process blur if we're not navigating (check if next input is being focused)
               const relatedTarget = e.relatedTarget
@@ -416,6 +425,7 @@ export function DailyLog({ selectedDate, onSave }) {
               }
             }}
             onKeyDown={(e) => {
+              if (!canEdit) return
               // Enter key navigation
               if (e.key === 'Enter') {
                 e.preventDefault()
@@ -474,9 +484,9 @@ export function DailyLog({ selectedDate, onSave }) {
               }
             }}
             ref={(el) => {
-              if (el) registerInput(task.id, el)
+              if (el && canEdit) registerInput(task.id, el)
             }}
-            className="w-24 h-8 text-sm"
+            className={`w-24 h-8 text-sm ${isBatman ? 'bg-gray-700 border-gray-600 text-yellow-400' : ''}`}
             placeholder={hasPass ? "y/n/p" : "y/n"}
           />
         </div>
@@ -491,13 +501,13 @@ export function DailyLog({ selectedDate, onSave }) {
     const isExpanded = expandedPillars[pillar]
 
     return (
-      <Card className="mb-4">
+      <Card className={`mb-4 ${isBatman ? 'bg-gray-800 border-gray-700' : ''}`}>
         <CardHeader 
-          className="cursor-pointer"
-          onClick={() => togglePillar(pillar)}
+          className={canEdit ? "cursor-pointer" : ""}
+          onClick={() => canEdit && togglePillar(pillar)}
         >
           <div className="flex items-center justify-between">
-            <CardTitle className="text-lg">{label}</CardTitle>
+            <CardTitle className={`text-lg ${isBatman ? 'text-yellow-400' : ''}`}>{label}</CardTitle>
             <Badge variant="secondary">{pillarTasks.length}</Badge>
           </div>
         </CardHeader>
@@ -509,6 +519,8 @@ export function DailyLog({ selectedDate, onSave }) {
                   key={task.id}
                   task={task}
                   status={logEntries[task.id]}
+                  canEdit={canEdit}
+                  isBatman={isBatman}
                 />
               ))}
             </div>
@@ -518,10 +530,14 @@ export function DailyLog({ selectedDate, onSave }) {
     )
   }
 
+  const containerClass = isBatman 
+    ? "max-w-2xl mx-auto p-4 space-y-6 bg-gray-900 min-h-screen"
+    : "max-w-2xl mx-auto p-4 space-y-6"
+
   return (
-    <div className="max-w-2xl mx-auto p-4 space-y-6">
+    <div className={containerClass}>
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">
+        <h2 className={`text-2xl font-bold ${isBatman ? 'text-yellow-400' : ''}`}>
           Daily Log - {selectedDate.toLocaleDateString('en-US', { 
             weekday: 'long', 
             year: 'numeric', 
@@ -537,13 +553,13 @@ export function DailyLog({ selectedDate, onSave }) {
       </div>
 
       {/* Metrics Section */}
-      <Card>
+      <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
         <CardHeader>
-          <CardTitle>Body Metrics</CardTitle>
+          <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Body Metrics</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <label className="text-sm font-medium mb-2 block">
+            <label className={`text-sm font-medium mb-2 block ${isBatman ? 'text-yellow-400' : ''}`}>
               Sleep (hours)
             </label>
             <Input
@@ -553,15 +569,19 @@ export function DailyLog({ selectedDate, onSave }) {
               max="24"
               value={metrics.sleep_hours}
               onChange={(e) => {
-                setMetrics(prev => ({ ...prev, sleep_hours: e.target.value }))
-                setUnsavedChanges(true)
+                if (canEdit) {
+                  setMetrics(prev => ({ ...prev, sleep_hours: e.target.value }))
+                  setUnsavedChanges(true)
+                }
               }}
               placeholder="7.5"
+              disabled={!canEdit}
+              className={isBatman ? 'bg-gray-700 border-gray-600 text-yellow-400' : ''}
             />
           </div>
 
           <div>
-            <label className="text-sm font-medium mb-2 block">
+            <label className={`text-sm font-medium mb-2 block ${isBatman ? 'text-yellow-400' : ''}`}>
               Energy (1-10): {metrics.energy_1_10}
             </label>
             <input
@@ -570,10 +590,13 @@ export function DailyLog({ selectedDate, onSave }) {
               max="10"
               value={metrics.energy_1_10}
               onChange={(e) => {
-                setMetrics(prev => ({ ...prev, energy_1_10: parseInt(e.target.value) }))
-                setUnsavedChanges(true)
+                if (canEdit) {
+                  setMetrics(prev => ({ ...prev, energy_1_10: parseInt(e.target.value) }))
+                  setUnsavedChanges(true)
+                }
               }}
               className="w-full"
+              disabled={!canEdit}
             />
             <div className="flex justify-between text-xs text-muted-foreground mt-1">
               <span>1</span>
@@ -582,7 +605,7 @@ export function DailyLog({ selectedDate, onSave }) {
           </div>
 
           <div>
-            <label className="text-sm font-medium mb-2 block">
+            <label className={`text-sm font-medium mb-2 block ${isBatman ? 'text-yellow-400' : ''}`}>
               Weight (lbs)
             </label>
             <div className="flex gap-2">
@@ -592,23 +615,29 @@ export function DailyLog({ selectedDate, onSave }) {
                 min="0"
                 value={metrics.weight_lbs}
                 onChange={(e) => {
-                  setMetrics(prev => ({ ...prev, weight_lbs: e.target.value }))
-                  setUnsavedChanges(true)
+                  if (canEdit) {
+                    setMetrics(prev => ({ ...prev, weight_lbs: e.target.value }))
+                    setUnsavedChanges(true)
+                  }
                 }}
                 placeholder="180"
-                disabled={metrics.weight_pass}
-                className="flex-1"
+                disabled={!canEdit || metrics.weight_pass}
+                className={`flex-1 ${isBatman ? 'bg-gray-700 border-gray-600 text-yellow-400' : ''}`}
               />
               <Button
                 variant={metrics.weight_pass ? 'default' : 'outline'}
                 onClick={() => {
-                  setMetrics(prev => ({ 
-                    ...prev, 
-                    weight_pass: !prev.weight_pass,
-                    weight_lbs: prev.weight_pass ? prev.weight_lbs : ''
-                  }))
-                  setUnsavedChanges(true)
+                  if (canEdit) {
+                    setMetrics(prev => ({ 
+                      ...prev, 
+                      weight_pass: !prev.weight_pass,
+                      weight_lbs: prev.weight_pass ? prev.weight_lbs : ''
+                    }))
+                    setUnsavedChanges(true)
+                  }
                 }}
+                disabled={!canEdit}
+                className={isBatman ? 'border-gray-600 text-yellow-400 hover:bg-gray-700' : ''}
               >
                 P
               </Button>
@@ -624,15 +653,20 @@ export function DailyLog({ selectedDate, onSave }) {
       <PillarSection pillar={PILLARS.WEEKLY} label="Weekly" />
 
       {/* Save Button */}
-      <div className="sticky bottom-4 bg-background p-4 rounded-lg border shadow-lg">
-        <Button
-          onClick={handleSave}
-          className="w-full"
-          size="lg"
-        >
-          Save Log
-        </Button>
-      </div>
+      {canEdit && (
+        <div className={`sticky bottom-4 p-4 rounded-lg border shadow-lg ${
+          isBatman ? 'bg-gray-800 border-gray-700' : 'bg-background'
+        }`}>
+          <Button
+            onClick={handleSave}
+            className={`w-full ${isBatman ? 'bg-yellow-600 hover:bg-yellow-700 text-black' : ''}`}
+            size="lg"
+            disabled={!unsavedChanges}
+          >
+            Save Log
+          </Button>
+        </div>
+      )}
     </div>
   )
 }

@@ -26,7 +26,7 @@ import { exportCurrentWeek, exportCurrentMonth, exportAll } from '@/lib/export'
 import { getProjectStartDate } from '@/lib/backfill'
 import { ImportDialog } from '@/components/ImportDialog'
 
-export function Dashboard({ selectedDate, onDateChange }) {
+export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman = false }) {
   const [tasks, setTasks] = useState([])
   const [logEntries, setLogEntries] = useState([])
   const [metricEntries, setMetricEntries] = useState([])
@@ -155,38 +155,39 @@ export function Dashboard({ selectedDate, onDateChange }) {
   }
 
   const ScoreCard = ({ title, score, pillar }) => {
-    if (score === null) {
-      return (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">{title}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-muted-foreground">—</div>
-            <p className="text-xs text-muted-foreground mt-1">No data</p>
-          </CardContent>
-        </Card>
-      )
-    }
-
     const getColor = (score) => {
+      if (isBatman) return 'text-yellow-400'
       if (score >= 80) return 'text-green-600'
       if (score >= 60) return 'text-yellow-600'
       return 'text-red-600'
     }
 
+    if (score === null) {
+      return (
+        <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
+          <CardHeader>
+            <CardTitle className={`text-base ${isBatman ? 'text-yellow-400' : ''}`}>{title}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className={`text-2xl font-bold ${isBatman ? 'text-yellow-400' : 'text-muted-foreground'}`}>—</div>
+            <p className={`text-xs mt-1 ${isBatman ? 'text-yellow-400' : 'text-muted-foreground'}`}>No data</p>
+          </CardContent>
+        </Card>
+      )
+    }
+
     return (
-      <Card>
+      <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
         <CardHeader>
-          <CardTitle className="text-base">{title}</CardTitle>
+          <CardTitle className={`text-base ${isBatman ? 'text-yellow-400' : ''}`}>{title}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className={`text-4xl font-bold ${getColor(score)}`}>
             {score}%
           </div>
-          <div className="mt-2 h-2 bg-muted rounded-full overflow-hidden">
+          <div className={`mt-2 h-2 rounded-full overflow-hidden ${isBatman ? 'bg-gray-700' : 'bg-muted'}`}>
             <div
-              className={`h-full ${score >= 80 ? 'bg-green-600' : score >= 60 ? 'bg-yellow-600' : 'bg-red-600'}`}
+              className={`h-full ${isBatman ? 'bg-yellow-400' : (score >= 80 ? 'bg-green-600' : score >= 60 ? 'bg-yellow-600' : 'bg-red-600')}`}
               style={{ width: `${score}%` }}
             />
           </div>
@@ -195,32 +196,74 @@ export function Dashboard({ selectedDate, onDateChange }) {
     )
   }
 
+  const containerClass = isBatman 
+    ? "max-w-6xl mx-auto p-4 space-y-6 bg-gray-900 min-h-screen"
+    : "max-w-6xl mx-auto p-4 space-y-6"
+
   return (
-    <div className="max-w-6xl mx-auto p-4 space-y-6">
+    <div className={containerClass}>
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Highest Self Dashboard</h1>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setShowImport(true)}>
-            Import Data
-          </Button>
-          <Button variant="outline" onClick={exportCurrentWeek}>
-            Export Week
-          </Button>
-          <Button variant="outline" onClick={exportCurrentMonth}>
-            Export Month
-          </Button>
-          <Button variant="outline" onClick={exportAll}>
-            Export All
-          </Button>
-        </div>
+        <h1 className={`text-3xl font-bold ${isBatman ? 'text-yellow-400' : ''}`}>Highest Self Dashboard</h1>
+        {canEdit && (
+          <div className="flex gap-2">
+            <Button 
+              variant="outline" 
+              onClick={() => setShowImport(true)}
+              className={isBatman ? 'border-gray-600 text-yellow-400 hover:bg-gray-700' : ''}
+            >
+              Import Data
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={exportCurrentWeek}
+              className={isBatman ? 'border-gray-600 text-yellow-400 hover:bg-gray-700' : ''}
+            >
+              Export Week
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={exportCurrentMonth}
+              className={isBatman ? 'border-gray-600 text-yellow-400 hover:bg-gray-700' : ''}
+            >
+              Export Month
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={exportAll}
+              className={isBatman ? 'border-gray-600 text-yellow-400 hover:bg-gray-700' : ''}
+            >
+              Export All
+            </Button>
+          </div>
+        )}
       </div>
 
       <Tabs value={period} onValueChange={setPeriod}>
-        <TabsList>
-          <TabsTrigger value="day">Day</TabsTrigger>
-          <TabsTrigger value="week">Week</TabsTrigger>
-          <TabsTrigger value="month">Month</TabsTrigger>
-          <TabsTrigger value="year">Year</TabsTrigger>
+        <TabsList className={isBatman ? 'bg-gray-700' : ''}>
+          <TabsTrigger 
+            value="day"
+            className={isBatman ? 'data-[state=active]:bg-gray-600 data-[state=active]:text-yellow-400 text-gray-300' : ''}
+          >
+            Day
+          </TabsTrigger>
+          <TabsTrigger 
+            value="week"
+            className={isBatman ? 'data-[state=active]:bg-gray-600 data-[state=active]:text-yellow-400 text-gray-300' : ''}
+          >
+            Week
+          </TabsTrigger>
+          <TabsTrigger 
+            value="month"
+            className={isBatman ? 'data-[state=active]:bg-gray-600 data-[state=active]:text-yellow-400 text-gray-300' : ''}
+          >
+            Month
+          </TabsTrigger>
+          <TabsTrigger 
+            value="year"
+            className={isBatman ? 'data-[state=active]:bg-gray-600 data-[state=active]:text-yellow-400 text-gray-300' : ''}
+          >
+            Year
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value={period} className="mt-4">
@@ -237,17 +280,17 @@ export function Dashboard({ selectedDate, onDateChange }) {
           {/* Weekly Fitness Progress */}
           {period === 'week' && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-              <Card>
+              <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
                 <CardHeader>
-                  <CardTitle>Lifting Progress</CardTitle>
+                  <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Lifting Progress</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">
+                  <div className={`text-2xl font-bold ${isBatman ? 'text-yellow-400' : ''}`}>
                     {fitnessProgress.lifting.completed} / {fitnessProgress.lifting.target}
                   </div>
-                  <div className="mt-2 h-2 bg-muted rounded-full overflow-hidden">
+                  <div className={`mt-2 h-2 rounded-full overflow-hidden ${isBatman ? 'bg-gray-700' : 'bg-muted'}`}>
                     <div
-                      className="h-full bg-blue-600"
+                      className={`h-full ${isBatman ? 'bg-yellow-400' : 'bg-blue-600'}`}
                       style={{ 
                         width: `${Math.min(100, (fitnessProgress.lifting.completed / fitnessProgress.lifting.target) * 100)}%` 
                       }}
@@ -256,17 +299,17 @@ export function Dashboard({ selectedDate, onDateChange }) {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
                 <CardHeader>
-                  <CardTitle>Cardio Progress</CardTitle>
+                  <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Cardio Progress</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">
+                  <div className={`text-2xl font-bold ${isBatman ? 'text-yellow-400' : ''}`}>
                     {fitnessProgress.cardio.completed} / {fitnessProgress.cardio.min}-{fitnessProgress.cardio.max}
                   </div>
-                  <div className="mt-2 h-2 bg-muted rounded-full overflow-hidden">
+                  <div className={`mt-2 h-2 rounded-full overflow-hidden ${isBatman ? 'bg-gray-700' : 'bg-muted'}`}>
                     <div
-                      className={`h-full ${fitnessProgress.cardio.completed >= fitnessProgress.cardio.min ? 'bg-green-600' : 'bg-yellow-600'}`}
+                      className={`h-full ${isBatman ? 'bg-yellow-400' : (fitnessProgress.cardio.completed >= fitnessProgress.cardio.min ? 'bg-green-600' : 'bg-yellow-600')}`}
                       style={{ 
                         width: `${Math.min(100, (fitnessProgress.cardio.completed / fitnessProgress.cardio.max) * 100)}%` 
                       }}
@@ -274,7 +317,7 @@ export function Dashboard({ selectedDate, onDateChange }) {
                   </div>
                   <Badge 
                     variant={fitnessProgress.cardio.completed >= fitnessProgress.cardio.min ? 'default' : 'secondary'}
-                    className="mt-2"
+                    className={`mt-2 ${isBatman ? 'bg-yellow-400 text-black' : ''}`}
                   >
                     {fitnessProgress.cardio.completed >= fitnessProgress.cardio.min ? 'Minimum met' : 'Below minimum'}
                   </Badge>
@@ -285,54 +328,59 @@ export function Dashboard({ selectedDate, onDateChange }) {
 
           {/* Charts Section */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-            <Card>
+            <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
               <CardHeader>
-                <CardTitle>Sleep Trends</CardTitle>
+                <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Sleep Trends</CardTitle>
               </CardHeader>
               <CardContent>
-                <SleepChart data={metricEntries} />
+                <SleepChart data={metricEntries} isBatman={isBatman} />
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
               <CardHeader>
-                <CardTitle>Energy Levels</CardTitle>
+                <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Energy Levels</CardTitle>
               </CardHeader>
               <CardContent>
-                <EnergyChart data={metricEntries} />
+                <EnergyChart data={metricEntries} isBatman={isBatman} />
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
               <CardHeader>
-                <CardTitle>Weight Trends</CardTitle>
+                <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Weight Trends</CardTitle>
               </CardHeader>
               <CardContent>
-                <WeightChart data={metricEntries} />
+                <WeightChart data={metricEntries} isBatman={isBatman} />
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
               <CardHeader>
-                <CardTitle>Daily Completion Rate</CardTitle>
+                <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Daily Completion Rate</CardTitle>
               </CardHeader>
               <CardContent>
-                <CompletionChart data={getCompletionData()} />
+                <CompletionChart data={getCompletionData()} isBatman={isBatman} />
               </CardContent>
             </Card>
           </div>
 
           {/* Metrics Table */}
-          <Card>
+          <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
             <CardHeader>
-              <CardTitle>Recent Body Metrics</CardTitle>
+              <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Recent Body Metrics</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 {metricEntries.slice(-7).reverse().map(entry => (
-                  <div key={entry.date} className="flex items-center justify-between p-2 border rounded">
-                    <span className="text-sm font-medium">{entry.date}</span>
-                    <div className="flex gap-4 text-sm">
+                  <div 
+                    key={entry.date} 
+                    className={`flex items-center justify-between p-2 border rounded ${
+                      isBatman ? 'border-gray-700 bg-gray-700' : ''
+                    }`}
+                  >
+                    <span className={`text-sm font-medium ${isBatman ? 'text-yellow-400' : ''}`}>{entry.date}</span>
+                    <div className={`flex gap-4 text-sm ${isBatman ? 'text-yellow-400' : ''}`}>
                       <span>Sleep: {entry.sleep_hours || '—'}h</span>
                       <span>Energy: {entry.energy_1_10 || '—'}/10</span>
                       <span>Weight: {entry.weight_lbs === 'P' ? 'P' : (entry.weight_lbs || '—')}lbs</span>
