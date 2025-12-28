@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { importCSVFile, importJSONFile } from '@/lib/export'
-import { importData, saveLogEntry, saveMetricEntry } from '@/lib/storage'
+import { importData, saveLogEntry, saveMetricEntry, loadTasks } from '@/lib/storage'
 
 export function ImportDialog({ onClose, onImport }) {
   const [status, setStatus] = useState('')
@@ -45,7 +45,16 @@ export function ImportDialog({ onClose, onImport }) {
           saveMetricEntry(entry)
         })
         
-        setStatus(`Successfully imported ${data.logEntries.length} log entries and ${data.metricEntries.length} metric entries from CSV!`)
+        const bodyTasks = data.logEntries.filter(e => {
+          const task = loadTasks().find(t => t.id === e.task_id)
+          return task && task.pillar === 'Body'
+        }).length
+        const weeklyTasks = data.logEntries.filter(e => {
+          const task = loadTasks().find(t => t.id === e.task_id)
+          return task && task.pillar === 'Weekly'
+        }).length
+        
+        setStatus(`Successfully imported ${data.logEntries.length} log entries (${bodyTasks} Body, ${weeklyTasks} Weekly) and ${data.metricEntries.length} metric entries from CSV!`)
         
         if (onImport) {
           setTimeout(() => {

@@ -160,6 +160,9 @@ export function importFromCSV(csvContent) {
       taskLabelToId.set(task.label, task.id)
     })
     
+    console.log('Available tasks:', tasks.map(t => ({ id: t.id, label: t.label, pillar: t.pillar })))
+    console.log('CSV task labels:', taskLabels)
+    
     const logEntries = []
     const metricEntries = []
     
@@ -202,8 +205,28 @@ export function importFromCSV(csvContent) {
       taskLabels.forEach((label, idx) => {
         const taskId = taskLabelToId.get(label)
         if (!taskId) {
-          console.warn(`Task not found for label: ${label}`)
-          return // Skip if task doesn't exist
+          console.warn(`Task not found for label: "${label}"`)
+          // Try to find a close match (case-insensitive, trimmed)
+          const normalizedLabel = label.trim()
+          const matchingTask = tasks.find(t => 
+            t.label.trim().toLowerCase() === normalizedLabel.toLowerCase()
+          )
+          if (matchingTask) {
+            console.log(`Found case-insensitive match: "${label}" -> "${matchingTask.label}"`)
+            const colIndex = weightIndex + 1 + idx
+            if (colIndex < row.length) {
+              const status = row[colIndex]?.trim()
+              if (status && status !== '') {
+                logEntries.push({
+                  date: date,
+                  task_id: matchingTask.id,
+                  status: status,
+                  timestamp: new Date().toISOString(),
+                })
+              }
+            }
+          }
+          return
         }
         
         const colIndex = weightIndex + 1 + idx
