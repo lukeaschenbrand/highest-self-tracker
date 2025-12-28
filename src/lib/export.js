@@ -61,23 +61,22 @@ export function exportToCSV(startDate, endDate) {
   // Build header row
   const headers = ['Date', 'Sleep (hours)', 'Energy (1-10)', 'Weight (lbs)']
   
-  // Add task columns using default labels (always consistent)
-  tasks.forEach((task, index) => {
-    // Force use default label - never trust stored label
-    const defaultTask = defaultTasks[index]
-    const label = defaultTask ? defaultTask.label : task.label
+  // Add task columns using default labels DIRECTLY from defaultTasks array
+  // Never use task.label - always use defaultTasks[index].label
+  defaultTasks.forEach((defaultTask, index) => {
+    const label = defaultTask.label?.trim()
     
-    if (!label || label.trim() === '' || label === '0') {
-      console.error(`Task ${task.id} at index ${index} has invalid label: "${label}"`)
-      headers.push(`Task_${task.id}`)
+    if (!label || label === '' || label === '0') {
+      console.error(`Default task ${defaultTask.id} at index ${index} has invalid label: "${label}"`)
+      headers.push(`Task_${defaultTask.id}`)
     } else {
-      headers.push(label.trim())
+      headers.push(label)
       // Debug column N specifically
       if (index === 9) {
-        console.log(`Column N (index ${index + 4}): "${label}" from task ${task.id}`)
+        console.log(`Column N (index ${index + 4}): "${label}" from task ${defaultTask.id}`)
       }
-      if (task.id === 'weekly_7') {
-        console.log(`Laundry column (index ${index + 4}): "${label}" from task ${task.id}`)
+      if (defaultTask.id === 'weekly_7') {
+        console.log(`Laundry column (index ${index + 4}): "${label}" from task ${defaultTask.id}`)
       }
     }
   })
