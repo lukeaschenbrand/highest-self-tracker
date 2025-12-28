@@ -211,13 +211,21 @@ function App() {
               <TabsList className={isBatman ? 'bg-gray-800 border border-gray-700' : ''}>
                 <TabsTrigger 
                   value="log"
-                  className={isBatman ? `${activeTab === 'log' ? 'bg-yellow-600 text-black border-yellow-600' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-600 hover:text-black border` : ''}
+                  className={isBatman 
+                    ? `${activeTab === 'log' ? 'bg-yellow-600 text-black border-yellow-600' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-600 hover:text-black border`
+                    : isJoker
+                    ? `${activeTab === 'log' ? 'bg-purple-600 text-green-400 border-purple-600' : 'bg-gray-200 text-gray-700 border-gray-300'} hover:bg-green-500 hover:text-purple-600 border`
+                    : ''}
                 >
                   Daily Log
                 </TabsTrigger>
                 <TabsTrigger 
                   value="dashboard"
-                  className={isBatman ? `${activeTab === 'dashboard' ? 'bg-yellow-600 text-black border-yellow-600' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-600 hover:text-black border` : ''}
+                  className={isBatman 
+                    ? `${activeTab === 'dashboard' ? 'bg-yellow-600 text-black border-yellow-600' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-600 hover:text-black border`
+                    : isJoker
+                    ? `${activeTab === 'dashboard' ? 'bg-purple-600 text-green-400 border-purple-600' : 'bg-gray-200 text-gray-700 border-gray-300'} hover:bg-green-500 hover:text-purple-600 border`
+                    : ''}
                 >
                   Dashboard
                 </TabsTrigger>

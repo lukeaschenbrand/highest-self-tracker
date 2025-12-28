@@ -242,25 +242,41 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
         <TabsList className={isBatman ? 'bg-gray-800 border border-gray-700' : ''}>
           <TabsTrigger 
             value="day"
-            className={isBatman ? `${period === 'day' ? 'bg-yellow-600 text-black border-yellow-600' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-600 hover:text-black border` : ''}
+            className={isBatman 
+              ? `${period === 'day' ? 'bg-yellow-600 text-black border-yellow-600' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-600 hover:text-black border`
+              : isJoker
+              ? `${period === 'day' ? 'bg-purple-600 text-green-400 border-purple-600' : 'bg-gray-200 text-gray-700 border-gray-300'} hover:bg-green-500 hover:text-purple-600 border`
+              : ''}
           >
             Day
           </TabsTrigger>
           <TabsTrigger 
             value="week"
-            className={isBatman ? `${period === 'week' ? 'bg-yellow-600 text-black border-yellow-600' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-600 hover:text-black border` : ''}
+            className={isBatman 
+              ? `${period === 'week' ? 'bg-yellow-600 text-black border-yellow-600' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-600 hover:text-black border`
+              : isJoker
+              ? `${period === 'week' ? 'bg-purple-600 text-green-400 border-purple-600' : 'bg-gray-200 text-gray-700 border-gray-300'} hover:bg-green-500 hover:text-purple-600 border`
+              : ''}
           >
             Week
           </TabsTrigger>
           <TabsTrigger 
             value="month"
-            className={isBatman ? `${period === 'month' ? 'bg-yellow-600 text-black border-yellow-600' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-600 hover:text-black border` : ''}
+            className={isBatman 
+              ? `${period === 'month' ? 'bg-yellow-600 text-black border-yellow-600' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-600 hover:text-black border`
+              : isJoker
+              ? `${period === 'month' ? 'bg-purple-600 text-green-400 border-purple-600' : 'bg-gray-200 text-gray-700 border-gray-300'} hover:bg-green-500 hover:text-purple-600 border`
+              : ''}
           >
             Month
           </TabsTrigger>
           <TabsTrigger 
             value="year"
-            className={isBatman ? `${period === 'year' ? 'bg-yellow-600 text-black border-yellow-600' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-600 hover:text-black border` : ''}
+            className={isBatman 
+              ? `${period === 'year' ? 'bg-yellow-600 text-black border-yellow-600' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-600 hover:text-black border`
+              : isJoker
+              ? `${period === 'year' ? 'bg-purple-600 text-green-400 border-purple-600' : 'bg-gray-200 text-gray-700 border-gray-300'} hover:bg-green-500 hover:text-purple-600 border`
+              : ''}
           >
             Year
           </TabsTrigger>
