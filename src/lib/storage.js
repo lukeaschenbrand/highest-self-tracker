@@ -47,19 +47,39 @@ async function saveTasksToSupabase(tasks) {
         const sanitized = {}
         for (const col of validColumns) {
           if (task.hasOwnProperty(col)) {
-            sanitized[col] = task[col]
+            // Ensure active_days is a proper array
+            if (col === 'active_days') {
+              sanitized[col] = Array.isArray(task[col]) ? task[col] : [1, 2, 3, 4, 5, 6, 7]
+            } else {
+              sanitized[col] = task[col]
+            }
           }
+        }
+        // Ensure required fields have defaults
+        if (!sanitized.active_days || !Array.isArray(sanitized.active_days)) {
+          sanitized.active_days = [1, 2, 3, 4, 5, 6, 7]
+        }
+        if (sanitized.weight === undefined || sanitized.weight === null) {
+          sanitized.weight = 1
         }
         return sanitized
       })
       
-      const { error } = await supabase.from('tasks').insert(sanitizedTasks)
-      if (error) throw error
+      const { data, error } = await supabase.from('tasks').insert(sanitizedTasks).select()
+      if (error) {
+        console.error('Supabase insert error details:', error)
+        console.error('First task being inserted:', sanitizedTasks[0])
+        throw error
+      }
+      console.log(`Successfully saved ${sanitizedTasks.length} tasks to Supabase`)
     }
     
     return true
   } catch (error) {
     console.error('Failed to save tasks to Supabase:', error)
+    console.error('Error message:', error.message)
+    console.error('Error details:', error.details)
+    console.error('Error hint:', error.hint)
     return false
   }
 }

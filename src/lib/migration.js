@@ -43,15 +43,30 @@ export async function migrateLocalStorageToSupabase() {
         const sanitized = {}
         for (const col of validColumns) {
           if (task.hasOwnProperty(col)) {
-            sanitized[col] = task[col]
+            // Ensure active_days is a proper array
+            if (col === 'active_days') {
+              sanitized[col] = Array.isArray(task[col]) ? task[col] : [1, 2, 3, 4, 5, 6, 7]
+            } else {
+              sanitized[col] = task[col]
+            }
           }
+        }
+        // Ensure required fields have defaults
+        if (!sanitized.active_days || !Array.isArray(sanitized.active_days)) {
+          sanitized.active_days = [1, 2, 3, 4, 5, 6, 7]
+        }
+        if (sanitized.weight === undefined || sanitized.weight === null) {
+          sanitized.weight = 1
         }
         return sanitized
       })
       
       // Insert all tasks
-      const { error: tasksError } = await supabase.from('tasks').insert(sanitizedTasks)
-      if (tasksError) throw tasksError
+      const { data, error: tasksError } = await supabase.from('tasks').insert(sanitizedTasks).select()
+      if (tasksError) {
+        console.error('Migration task insert error:', tasksError)
+        throw tasksError
+      }
       results.tasks = tasks.length
     }
 
