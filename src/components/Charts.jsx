@@ -100,9 +100,12 @@ export function SleepChart({ data, isBatman = false, isJoker = false }) {
   const minSleep = sleepValues.length > 0 ? Math.max(4, Math.floor(Math.min(...sleepValues) - 1)) : 4
   const maxSleep = sleepValues.length > 0 ? Math.min(10, Math.ceil(Math.max(...sleepValues) + 1)) : 10
 
+  // Final safety check - ensure chartData is a valid array
+  const finalChartData = Array.isArray(chartData) ? chartData : []
+
   return (
     <ResponsiveContainer width="100%" height={300}>
-      <LineChart data={chartData}>
+      <LineChart data={finalChartData}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis 
           dataKey="date"
@@ -177,9 +180,12 @@ export function EnergyChart({ data, isBatman = false, isJoker = false }) {
   const minEnergy = energyValues.length > 0 ? Math.max(1, Math.min(...energyValues) - 1) : 1
   const maxEnergy = energyValues.length > 0 ? Math.min(10, Math.max(...energyValues) + 1) : 10
 
+  // Final safety check - ensure chartData is a valid array
+  const finalChartData = Array.isArray(chartData) ? chartData : []
+
   return (
     <ResponsiveContainer width="100%" height={300}>
-      <LineChart data={chartData}>
+      <LineChart data={finalChartData}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis 
           dataKey="date"
@@ -253,9 +259,12 @@ export function WeightChart({ data, isBatman = false, isJoker = false }) {
   const minWeight = 195
   const maxWeight = 260
 
+  // Final safety check - ensure chartData is a valid array
+  const finalChartData = Array.isArray(chartData) ? chartData : []
+
   return (
     <ResponsiveContainer width="100%" height={300}>
-      <LineChart data={chartData}>
+      <LineChart data={finalChartData}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis 
           dataKey="date"
@@ -300,9 +309,12 @@ export function CompletionChart({ data, isBatman = false, isJoker = false }) {
     return <div className="text-center text-muted-foreground py-8">No completion data available</div>
   }
 
+  // Final safety check - ensure chartData is a valid array
+  const finalChartData = Array.isArray(chartData) ? chartData : []
+
   return (
     <ResponsiveContainer width="100%" height={300}>
-      <BarChart data={chartData}>
+      <BarChart data={finalChartData}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis 
           dataKey="date"
