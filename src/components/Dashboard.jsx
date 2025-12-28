@@ -317,7 +317,13 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
                   </div>
                   <Badge 
                     variant={fitnessProgress.cardio.completed >= fitnessProgress.cardio.min ? 'default' : 'secondary'}
-                    className={`mt-2 ${isBatman ? 'bg-yellow-600 text-black' : ''}`}
+                    className={`mt-2 ${
+                      isBatman 
+                        ? (fitnessProgress.cardio.completed >= fitnessProgress.cardio.min 
+                            ? 'bg-yellow-600 text-black' 
+                            : 'bg-white text-black hover:bg-white')
+                        : ''
+                    }`}
                   >
                     {fitnessProgress.cardio.completed >= fitnessProgress.cardio.min ? 'Minimum met' : 'Below minimum'}
                   </Badge>
