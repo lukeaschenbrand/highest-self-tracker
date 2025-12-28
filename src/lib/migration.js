@@ -37,8 +37,20 @@ export async function migrateLocalStorageToSupabase() {
       // Delete all existing tasks
       await supabase.from('tasks').delete().neq('id', '')
       
+      // Filter to only include valid columns for Supabase schema
+      const validColumns = ['id', 'label', 'category', 'pillar', 'frequency', 'allow_pass', 'active_days', 'weight']
+      const sanitizedTasks = tasks.map(task => {
+        const sanitized = {}
+        for (const col of validColumns) {
+          if (task.hasOwnProperty(col)) {
+            sanitized[col] = task[col]
+          }
+        }
+        return sanitized
+      })
+      
       // Insert all tasks
-      const { error: tasksError } = await supabase.from('tasks').insert(tasks)
+      const { error: tasksError } = await supabase.from('tasks').insert(sanitizedTasks)
       if (tasksError) throw tasksError
       results.tasks = tasks.length
     }
