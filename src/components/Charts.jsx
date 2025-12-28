@@ -35,13 +35,16 @@ export function SleepChart({ data }) {
   
   // Build chart data for all dates from start to today
   // Keep full date (YYYY-MM-DD) for proper ordering
-  const chartData = dateRange.map(date => {
-    const sleep = dataMap.get(date)
-    return {
-      date: date, // Keep full date for ordering
-      sleep: sleep !== undefined ? sleep : null
-    }
-  })
+  // Explicitly ensure dates are sorted chronologically
+  const chartData = dateRange
+    .map(date => {
+      const sleep = dataMap.get(date)
+      return {
+        date: date, // Keep full date for ordering
+        sleep: sleep !== undefined ? sleep : null
+      }
+    })
+    .sort((a, b) => a.date.localeCompare(b.date)) // Explicitly sort by date
 
   // Check if we have any actual data (not just empty dates)
   const hasData = chartData.some(d => d.sleep !== null)
@@ -91,13 +94,16 @@ export function EnergyChart({ data }) {
   
   // Build chart data for all dates from start to today
   // Keep full date (YYYY-MM-DD) for proper ordering
-  const chartData = dateRange.map(date => {
-    const energy = dataMap.get(date)
-    return {
-      date: date, // Keep full date for ordering
-      energy: energy !== undefined ? energy : null
-    }
-  })
+  // Explicitly ensure dates are sorted chronologically
+  const chartData = dateRange
+    .map(date => {
+      const energy = dataMap.get(date)
+      return {
+        date: date, // Keep full date for ordering
+        energy: energy !== undefined ? energy : null
+      }
+    })
+    .sort((a, b) => a.date.localeCompare(b.date)) // Explicitly sort by date
 
   // Check if we have any actual data (not just empty dates)
   const hasData = chartData.some(d => d.energy !== null)
@@ -147,24 +153,26 @@ export function WeightChart({ data }) {
   
   // Build chart data for all dates from start to today
   // Keep full date (YYYY-MM-DD) for proper ordering
-  const chartData = dateRange.map(date => {
-    const weight = dataMap.get(date)
-    return {
-      date: date, // Keep full date for ordering
-      weight: weight !== undefined ? weight : null
-    }
-  })
+  // Explicitly ensure dates are sorted chronologically
+  const chartData = dateRange
+    .map(date => {
+      const weight = dataMap.get(date)
+      return {
+        date: date, // Keep full date for ordering
+        weight: weight !== undefined ? weight : null
+      }
+    })
+    .sort((a, b) => a.date.localeCompare(b.date)) // Explicitly sort by date
 
-  // Calculate min/max for Y-axis (with some padding)
-  const weightValues = chartData.map(d => d.weight).filter(v => v !== null)
-  
   // Check if we have any actual data (not just empty dates)
+  const weightValues = chartData.map(d => d.weight).filter(v => v !== null)
   if (weightValues.length === 0) {
     return <div className="text-center text-muted-foreground py-8">No weight data available</div>
   }
   
-  const minWeight = Math.floor(Math.min(...weightValues) - 5)
-  const maxWeight = Math.ceil(Math.max(...weightValues) + 5)
+  // Fixed Y-axis range: 195-260 lbs
+  const minWeight = 195
+  const maxWeight = 260
 
   return (
     <ResponsiveContainer width="100%" height={300}>
