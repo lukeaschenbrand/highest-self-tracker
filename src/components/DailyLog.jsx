@@ -584,20 +584,45 @@ export function DailyLog({ selectedDate, onSave, canEdit = true, isBatman = fals
             <label className={`text-sm font-medium mb-2 block ${isBatman ? 'text-yellow-400' : ''}`}>
               Energy (1-10): {metrics.energy_1_10}
             </label>
-            <input
-              type="range"
-              min="1"
-              max="10"
-              value={metrics.energy_1_10}
-              onChange={(e) => {
-                if (canEdit) {
-                  setMetrics(prev => ({ ...prev, energy_1_10: parseInt(e.target.value) }))
-                  setUnsavedChanges(true)
-                }
-              }}
-              className="w-full"
-              disabled={!canEdit}
-            />
+            {(() => {
+              // Calculate color from red (1) to green (10)
+              const energy = metrics.energy_1_10
+              const normalized = (energy - 1) / 9 // 0 to 1
+              const red = Math.round(255 * (1 - normalized))
+              const green = Math.round(255 * normalized)
+              const color = `rgb(${red}, ${green}, 0)`
+              
+              return (
+                <>
+                  <input
+                    type="range"
+                    min="1"
+                    max="10"
+                    value={metrics.energy_1_10}
+                    onChange={(e) => {
+                      if (canEdit) {
+                        setMetrics(prev => ({ ...prev, energy_1_10: parseInt(e.target.value) }))
+                        setUnsavedChanges(true)
+                      }
+                    }}
+                    className="w-full energy-slider"
+                    disabled={!canEdit}
+                    style={{ '--energy-color': color } as React.CSSProperties}
+                  />
+                  <style>{`
+                    .energy-slider {
+                      accent-color: ${color};
+                    }
+                    .energy-slider::-webkit-slider-thumb {
+                      background-color: ${color};
+                    }
+                    .energy-slider::-moz-range-thumb {
+                      background-color: ${color};
+                    }
+                  `}</style>
+                </>
+              )
+            })()}
             <div className="flex justify-between text-xs text-muted-foreground mt-1">
               <span>1</span>
               <span>10</span>
