@@ -329,6 +329,12 @@ export async function loadProjectStartDate() {
       saveToLocalStorage(STORAGE_KEYS.PROJECT_START_DATE, supabaseDate)
       return supabaseDate
     }
+    // If Supabase is empty but localStorage has data, migrate it
+    const localDate = loadFromLocalStorage(STORAGE_KEYS.PROJECT_START_DATE, null)
+    if (localDate) {
+      await saveProjectStartDateToSupabase(localDate)
+      return localDate
+    }
   }
   return loadFromLocalStorage(STORAGE_KEYS.PROJECT_START_DATE, null)
 }
