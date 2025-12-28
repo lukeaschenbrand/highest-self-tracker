@@ -406,7 +406,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
                 <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Sleep Trends</CardTitle>
               </CardHeader>
               <CardContent>
-                <SleepChart data={metricEntries} isBatman={isBatman} isJoker={isJoker} />
+                <SleepChart data={Array.isArray(metricEntries) ? metricEntries : []} isBatman={isBatman} isJoker={isJoker} />
               </CardContent>
             </Card>
 
@@ -415,7 +415,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
                 <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Energy Levels</CardTitle>
               </CardHeader>
               <CardContent>
-                <EnergyChart data={metricEntries} isBatman={isBatman} isJoker={isJoker} />
+                <EnergyChart data={Array.isArray(metricEntries) ? metricEntries : []} isBatman={isBatman} isJoker={isJoker} />
               </CardContent>
             </Card>
 
@@ -424,7 +424,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
                 <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Weight Trends</CardTitle>
               </CardHeader>
               <CardContent>
-                <WeightChart data={metricEntries} isBatman={isBatman} isJoker={isJoker} />
+                <WeightChart data={Array.isArray(metricEntries) ? metricEntries : []} isBatman={isBatman} isJoker={isJoker} />
               </CardContent>
             </Card>
 
@@ -433,7 +433,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
                 <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Daily Completion Rate</CardTitle>
               </CardHeader>
               <CardContent>
-                <CompletionChart data={getCompletionData()} isBatman={isBatman} isJoker={isJoker} />
+                <CompletionChart data={Array.isArray(getCompletionData()) ? getCompletionData() : []} isBatman={isBatman} isJoker={isJoker} />
               </CardContent>
             </Card>
           </div>
