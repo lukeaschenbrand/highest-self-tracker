@@ -34,8 +34,9 @@ export function calculateScore(logEntries, tasks, date, pillar = null) {
       return
     }
     
+    // Pass entries ('P') are excluded from percentage calculation
+    // They do not count toward numerator or denominator
     if (entry.status === 'P') {
-      // Pass = excluded from denominator
       return
     }
     
@@ -99,7 +100,9 @@ export function calculatePeriodScore(logEntries, tasks, startDate, endDate, pill
       )
       
       if (!entry) return // Blank day, excluded
-      if (entry.status === 'P') return // Pass, excluded
+      // Pass entries ('P') are excluded from percentage calculation
+      // They do not count toward numerator or denominator
+      if (entry.status === 'P') return
       
       totalDenominator += task.weight
       
