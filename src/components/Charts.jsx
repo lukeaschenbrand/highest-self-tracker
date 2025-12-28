@@ -9,22 +9,34 @@ function useDateRange() {
 
   useEffect(() => {
     const loadDateRange = async () => {
-      const projectStart = await getProjectStartDate()
-      const today = new Date()
-      const dates = []
-      const current = new Date(projectStart)
-      
-      while (current <= today) {
-        dates.push(formatDate(new Date(current)))
-        current.setDate(current.getDate() + 1)
+      try {
+        const projectStart = await getProjectStartDate()
+        if (!projectStart) {
+          setDateRange([])
+          return
+        }
+        const today = new Date()
+        const dates = []
+        const current = new Date(projectStart)
+        
+        while (current <= today) {
+          const dateStr = formatDate(new Date(current))
+          if (dateStr && typeof dateStr === 'string') {
+            dates.push(dateStr)
+          }
+          current.setDate(current.getDate() + 1)
+        }
+        
+        setDateRange(Array.isArray(dates) ? dates : [])
+      } catch (error) {
+        console.error('Error loading date range:', error)
+        setDateRange([])
       }
-      
-      setDateRange(dates)
     }
     loadDateRange()
   }, [])
 
-  return dateRange
+  return Array.isArray(dateRange) ? dateRange : []
 }
 
 // Helper to format date for display
