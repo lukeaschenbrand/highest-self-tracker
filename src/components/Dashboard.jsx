@@ -24,12 +24,14 @@ import {
 } from '@/lib/scoring'
 import { exportCurrentWeek, exportCurrentMonth, exportAll } from '@/lib/export'
 import { getProjectStartDate } from '@/lib/backfill'
+import { ImportDialog } from '@/components/ImportDialog'
 
 export function Dashboard({ selectedDate, onDateChange }) {
   const [tasks, setTasks] = useState([])
   const [logEntries, setLogEntries] = useState([])
   const [metricEntries, setMetricEntries] = useState([])
   const [period, setPeriod] = useState('day')
+  const [showImport, setShowImport] = useState(false)
 
   useEffect(() => {
     let loadedTasks = loadTasks()
@@ -198,6 +200,9 @@ export function Dashboard({ selectedDate, onDateChange }) {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Highest Self Dashboard</h1>
         <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setShowImport(true)}>
+            Import Data
+          </Button>
           <Button variant="outline" onClick={exportCurrentWeek}>
             Export Week
           </Button>
@@ -339,6 +344,20 @@ export function Dashboard({ selectedDate, onDateChange }) {
           </Card>
         </TabsContent>
       </Tabs>
+      
+      {showImport && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <ImportDialog 
+            onClose={() => setShowImport(false)} 
+            onImport={() => {
+              // Refresh data after import
+              setTasks(loadTasks())
+              setLogEntries(loadLogEntries())
+              setMetricEntries(loadMetricEntries())
+            }}
+          />
+        </div>
+      )}
     </div>
   )
 }

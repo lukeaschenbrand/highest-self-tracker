@@ -127,3 +127,161 @@ export function exportAll() {
   downloadCSV(csv, filename)
 }
 
+// CSV import functionality
+export function importFromCSV(csvContent) {
+  try {
+    const lines = csvContent.split('\n').filter(line => line.trim())
+    if (lines.length < 2) {
+      throw new Error('CSV file is empty or invalid')
+    }
+    
+    // Parse header row
+    const headers = parseCSVLine(lines[0])
+    const dateIndex = headers.indexOf('Date')
+    const sleepIndex = headers.indexOf('Sleep (hours)')
+    const energyIndex = headers.indexOf('Energy (1-10)')
+    const weightIndex = headers.indexOf('Weight (lbs)')
+    
+    if (dateIndex === -1) {
+      throw new Error('Date column not found in CSV')
+    }
+    
+    // Get task labels from headers (everything after Weight)
+    const taskLabels = headers.slice(weightIndex + 1)
+    
+    // Load existing tasks to map labels to task IDs
+    const tasks = loadTasks()
+    const taskLabelToId = new Map()
+    tasks.forEach(task => {
+      taskLabelToId.set(task.label, task.id)
+    })
+    
+    const logEntries = []
+    const metricEntries = []
+    
+    // Parse data rows
+    for (let i = 1; i < lines.length; i++) {
+      const row = parseCSVLine(lines[i])
+      if (row.length < headers.length) continue
+      
+      const date = row[dateIndex]
+      if (!date) continue
+      
+      // Parse metrics
+      const sleep = row[sleepIndex] ? parseFloat(row[sleepIndex]) : null
+      const energy = row[energyIndex] ? parseInt(row[energyIndex]) : null
+      const weight = row[weightIndex] ? (row[weightIndex] === 'P' ? 'P' : parseFloat(row[weightIndex])) : null
+      
+      if (sleep !== null || energy !== null || weight !== null) {
+        metricEntries.push({
+          date: date,
+          sleep_hours: sleep,
+          energy_1_10: energy,
+          weight_lbs: weight,
+        })
+      }
+      
+      // Parse task entries
+      taskLabels.forEach((label, idx) => {
+        const taskId = taskLabelToId.get(label)
+        if (!taskId) return // Skip if task doesn't exist
+        
+        const status = row[weightIndex + 1 + idx]
+        if (status && status.trim() !== '') {
+          logEntries.push({
+            date: date,
+            task_id: taskId,
+            status: status.trim(),
+            timestamp: new Date().toISOString(),
+          })
+        }
+      })
+    }
+    
+    return {
+      logEntries,
+      metricEntries,
+    }
+  } catch (error) {
+    console.error('Failed to parse CSV:', error)
+    throw error
+  }
+}
+
+// Helper to parse CSV line (handles quoted values)
+function parseCSVLine(line) {
+  const result = []
+  let current = ''
+  let inQuotes = false
+  
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i]
+    
+    if (char === '"') {
+      if (inQuotes && line[i + 1] === '"') {
+        // Escaped quote
+        current += '"'
+        i++
+      } else {
+        // Toggle quote state
+        inQuotes = !inQuotes
+      }
+    } else if (char === ',' && !inQuotes) {
+      // End of field
+      result.push(current.trim())
+      current = ''
+    } else {
+      current += char
+    }
+  }
+  
+  // Add last field
+  result.push(current.trim())
+  return result
+}
+
+// Import CSV file
+export function importCSVFile(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    
+    reader.onload = (e) => {
+      try {
+        const csvContent = e.target.result
+        const data = importFromCSV(csvContent)
+        resolve(data)
+      } catch (error) {
+        reject(error)
+      }
+    }
+    
+    reader.onerror = () => {
+      reject(new Error('Failed to read file'))
+    }
+    
+    reader.readAsText(file)
+  })
+}
+
+// Import JSON file (for full data backup)
+export function importJSONFile(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    
+    reader.onload = (e) => {
+      try {
+        const jsonContent = JSON.parse(e.target.result)
+        resolve(jsonContent)
+      } catch (error) {
+        reject(new Error('Invalid JSON file'))
+      }
+    }
+    
+    reader.onerror = () => {
+      reject(new Error('Failed to read file'))
+    }
+    
+    reader.readAsText(file)
+  })
+}
+
