@@ -218,9 +218,11 @@ export async function loadTasks() {
     const supabaseTasks = await loadTasksFromSupabase()
     if (supabaseTasks.length > 0) {
       // Merge with defaults to add any new tasks
-      const mergedTasks = mergeTasksWithDefaults(supabaseTasks, getDefaultTasks())
+      const defaultTasks = getDefaultTasks()
+      const mergedTasks = mergeTasksWithDefaults(supabaseTasks, defaultTasks)
       if (mergedTasks.length !== supabaseTasks.length) {
         // New tasks were added, save the merged list
+        console.log(`Merged ${mergedTasks.length - supabaseTasks.length} new task(s) into existing ${supabaseTasks.length} tasks`)
         await saveTasks(mergedTasks)
         return mergedTasks
       }
@@ -264,8 +266,16 @@ function mergeTasksWithDefaults(existingTasks, defaultTasks) {
   defaultTasks.forEach(defaultTask => {
     if (!existingTaskIds.has(defaultTask.id)) {
       merged.push(defaultTask)
-      console.log('Adding new default task:', defaultTask.label)
+      console.log('Adding new default task:', defaultTask.id, defaultTask.label)
     }
+  })
+  
+  // Sort merged tasks to maintain order (by pillar, then by id)
+  const pillarOrder = { 'Morning': 1, 'Body': 2, 'Work': 3, 'Weekly': 4 }
+  merged.sort((a, b) => {
+    const pillarDiff = (pillarOrder[a.pillar] || 99) - (pillarOrder[b.pillar] || 99)
+    if (pillarDiff !== 0) return pillarDiff
+    return a.id.localeCompare(b.id)
   })
   
   return merged
