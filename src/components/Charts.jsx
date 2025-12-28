@@ -42,10 +42,13 @@ export function SleepChart({ data, isBatman = false, isJoker = false }) {
     return <div className="text-center text-muted-foreground py-8">Loading...</div>
   }
   
+  // Ensure data is an array
+  const safeData = Array.isArray(data) ? data : []
+  
   // Create a map of existing data
   const dataMap = new Map()
-  data
-    .filter(d => d.sleep_hours !== null && d.sleep_hours !== undefined)
+  safeData
+    .filter(d => d && d.sleep_hours !== null && d.sleep_hours !== undefined)
     .forEach(d => {
       dataMap.set(d.date, parseFloat(d.sleep_hours))
     })
