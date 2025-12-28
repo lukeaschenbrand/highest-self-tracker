@@ -339,7 +339,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
                 <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Sleep Trends</CardTitle>
               </CardHeader>
               <CardContent>
-                <SleepChart data={metricEntries} isBatman={isBatman} />
+                <SleepChart data={metricEntries} isBatman={isBatman} isJoker={isJoker} />
               </CardContent>
             </Card>
 
