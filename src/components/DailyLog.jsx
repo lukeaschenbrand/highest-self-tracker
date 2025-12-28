@@ -16,7 +16,7 @@ import {
 import { getDefaultTasks, PILLARS, FREQUENCIES } from '@/lib/tasks'
 import { cn } from '@/lib/utils'
 
-export function DailyLog({ selectedDate, onSave, canEdit = true, isBatman = false, isJoker = false }) {
+export function DailyLog({ selectedDate, onSave, canEdit = true, isBatman = false }) {
   const [tasks, setTasks] = useState([])
   const [logEntries, setLogEntries] = useState({})
   const [metrics, setMetrics] = useState({
@@ -501,11 +501,7 @@ export function DailyLog({ selectedDate, onSave, canEdit = true, isBatman = fals
     const isExpanded = expandedPillars[pillar]
 
     return (
-      <Card className={`mb-4 ${
-        isBatman ? 'bg-gray-800 border-gray-700' 
-        : isJoker ? 'bg-slate-800/80 border-purple-700/50 backdrop-blur-sm' 
-        : ''
-      }`}>
+      <Card className={`mb-4 ${isBatman ? 'bg-gray-800 border-gray-700' : ''}`}>
         <CardHeader 
           className={canEdit ? "cursor-pointer" : ""}
           onClick={() => canEdit && togglePillar(pillar)}
@@ -557,11 +553,7 @@ export function DailyLog({ selectedDate, onSave, canEdit = true, isBatman = fals
       </div>
 
       {/* Metrics Section */}
-      <Card className={
-        isBatman ? 'bg-gray-800 border-gray-700' 
-        : isJoker ? 'bg-slate-800/80 border-purple-700/50 backdrop-blur-sm' 
-        : ''
-      }>
+      <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
         <CardHeader>
           <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Body Metrics</CardTitle>
         </CardHeader>
@@ -688,9 +680,7 @@ export function DailyLog({ selectedDate, onSave, canEdit = true, isBatman = fals
       {/* Save Button */}
       {canEdit && (
         <div className={`sticky bottom-4 p-4 rounded-lg border shadow-lg ${
-          isBatman ? 'bg-gray-800 border-gray-700' 
-          : isJoker ? 'bg-slate-800/90 border-purple-700/50 backdrop-blur-sm' 
-          : 'bg-background'
+          isBatman ? 'bg-gray-800 border-gray-700' : 'bg-background'
         }`}>
           <Button
             onClick={handleSave}

@@ -164,11 +164,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
 
     if (score === null) {
       return (
-        <Card className={
-          isBatman ? 'bg-gray-800 border-gray-700' 
-          : isJoker ? 'bg-slate-800/80 border-purple-700/50 backdrop-blur-sm' 
-          : ''
-        }>
+        <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
           <CardHeader>
             <CardTitle className={`text-base ${isBatman ? 'text-yellow-400' : ''}`}>{title}</CardTitle>
           </CardHeader>
@@ -202,8 +198,6 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
 
   const containerClass = isBatman 
     ? "max-w-6xl mx-auto p-4 space-y-6 bg-gray-900 min-h-screen"
-    : isJoker
-    ? "max-w-6xl mx-auto p-4 space-y-6 min-h-screen"
     : "max-w-6xl mx-auto p-4 space-y-6"
 
   return (
@@ -302,11 +296,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
           {/* Weekly Fitness Progress */}
           {period === 'week' && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-              <Card className={
-          isBatman ? 'bg-gray-800 border-gray-700' 
-          : isJoker ? 'bg-slate-800/80 border-purple-700/50 backdrop-blur-sm' 
-          : ''
-        }>
+              <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
                 <CardHeader>
                   <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Lifting Progress</CardTitle>
                 </CardHeader>
@@ -325,11 +315,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
                 </CardContent>
               </Card>
 
-              <Card className={
-          isBatman ? 'bg-gray-800 border-gray-700' 
-          : isJoker ? 'bg-slate-800/80 border-purple-700/50 backdrop-blur-sm' 
-          : ''
-        }>
+              <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
                 <CardHeader>
                   <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Cardio Progress</CardTitle>
                 </CardHeader>
@@ -364,11 +350,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
 
           {/* Charts Section */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-            <Card className={
-          isBatman ? 'bg-gray-800 border-gray-700' 
-          : isJoker ? 'bg-slate-800/80 border-purple-700/50 backdrop-blur-sm' 
-          : ''
-        }>
+            <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
               <CardHeader>
                 <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Sleep Trends</CardTitle>
               </CardHeader>
@@ -377,11 +359,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
               </CardContent>
             </Card>
 
-            <Card className={
-          isBatman ? 'bg-gray-800 border-gray-700' 
-          : isJoker ? 'bg-slate-800/80 border-purple-700/50 backdrop-blur-sm' 
-          : ''
-        }>
+            <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
               <CardHeader>
                 <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Energy Levels</CardTitle>
               </CardHeader>
@@ -390,11 +368,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
               </CardContent>
             </Card>
 
-            <Card className={
-          isBatman ? 'bg-gray-800 border-gray-700' 
-          : isJoker ? 'bg-slate-800/80 border-purple-700/50 backdrop-blur-sm' 
-          : ''
-        }>
+            <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
               <CardHeader>
                 <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Weight Trends</CardTitle>
               </CardHeader>
@@ -403,11 +377,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
               </CardContent>
             </Card>
 
-            <Card className={
-          isBatman ? 'bg-gray-800 border-gray-700' 
-          : isJoker ? 'bg-slate-800/80 border-purple-700/50 backdrop-blur-sm' 
-          : ''
-        }>
+            <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
               <CardHeader>
                 <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Daily Completion Rate</CardTitle>
               </CardHeader>
@@ -418,11 +388,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
           </div>
 
           {/* Metrics Table */}
-          <Card className={
-          isBatman ? 'bg-gray-800 border-gray-700' 
-          : isJoker ? 'bg-slate-800/80 border-purple-700/50 backdrop-blur-sm' 
-          : ''
-        }>
+          <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
             <CardHeader>
               <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Recent Body Metrics</CardTitle>
             </CardHeader>

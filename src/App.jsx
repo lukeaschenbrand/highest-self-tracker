@@ -122,16 +122,10 @@ function App() {
   const canEdit = isEditor()
 
   return (
-    <div className={`min-h-screen ${
-      isBatman ? 'bg-gray-900' 
-      : isJoker ? 'bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900' 
-      : 'bg-background'
-    }`}>
+    <div className={`min-h-screen ${isBatman ? 'bg-gray-900' : isJoker ? 'bg-gray-100' : 'bg-background'}`}>
       {/* Sticky Header */}
       <div className={`sticky top-0 z-50 border-b shadow-sm ${
-        isBatman ? 'bg-gray-800 border-gray-700' 
-        : isJoker ? 'bg-slate-800/90 border-purple-800/50 backdrop-blur-sm' 
-        : 'bg-card'
+        isBatman ? 'bg-gray-800 border-gray-700' : 'bg-card'
       }`}>
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -210,9 +204,7 @@ function App() {
         
         {/* Sticky Tabs */}
         <div className={`border-t ${
-          isBatman ? 'bg-gray-800 border-gray-700' 
-          : isJoker ? 'bg-slate-800/80 border-purple-800/50' 
-          : 'bg-background'
+          isBatman ? 'bg-gray-800 border-gray-700' : 'bg-background'
         }`}>
           <div className="max-w-7xl mx-auto px-4 py-2">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
