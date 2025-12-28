@@ -132,54 +132,55 @@ function App() {
       <div className={`sticky top-0 z-50 border-b shadow-sm ${
         isBatman ? 'bg-gray-800 border-gray-700' : 'bg-card'
       }`}>
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
               {isBatman ? (
                 <>
                   <img 
                     src="/batman-opener.png" 
                     alt="Batman" 
-                    className="w-8 h-8 rounded-full"
+                    className="w-6 h-6 sm:w-8 sm:h-8 rounded-full flex-shrink-0"
                   />
-                  <h1 className="text-2xl font-bold text-yellow-400">Welcome Back, Batman.</h1>
+                  <h1 className="text-lg sm:text-2xl font-bold text-yellow-400 truncate">Welcome Back, Batman.</h1>
                 </>
               ) : isJoker ? (
                 <>
                   <img 
                     src="/joker-opener.png" 
                     alt="Joker" 
-                    className="w-8 h-8 rounded-full"
+                    className="w-6 h-6 sm:w-8 sm:h-8 rounded-full flex-shrink-0"
                   />
-                  <h1 className="text-2xl font-bold text-purple-600">Welcome back, Joker.</h1>
+                  <h1 className="text-lg sm:text-2xl font-bold text-purple-600 truncate">Welcome back, Joker.</h1>
                 </>
               ) : (
-                <h1 className="text-2xl font-bold">Highest Self Tracker</h1>
+                <h1 className="text-lg sm:text-2xl font-bold truncate">Highest Self Tracker</h1>
               )}
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 flex-wrap">
               {canEdit && (
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => setShowBackfill(true)}
-                  className={isBatman ? 'bg-gray-700 hover:bg-yellow-600 hover:text-black text-yellow-400 border border-gray-600' : ''}
+                  className={`text-xs sm:text-sm whitespace-nowrap ${isBatman ? 'bg-gray-700 hover:bg-yellow-600 hover:text-black text-yellow-400 border border-gray-600' : ''}`}
                 >
-                  Initialize/Backfill
+                  <span className="hidden sm:inline">Initialize/Backfill</span>
+                  <span className="sm:hidden">Backfill</span>
                 </Button>
               )}
               <Button
                 variant="outline"
                 size="sm"
                 onClick={handleLogout}
-                className={isBatman ? 'bg-gray-700 hover:bg-yellow-400 hover:text-black text-yellow-400 border border-gray-600' : ''}
+                className={`text-xs sm:text-sm whitespace-nowrap ${isBatman ? 'bg-gray-700 hover:bg-yellow-400 hover:text-black text-yellow-400 border border-gray-600' : ''}`}
               >
                 Log Out
               </Button>
               <Button
                 variant="outline"
                 onClick={() => handleDateChange(-1)}
-                className={isBatman ? 'bg-gray-700 hover:bg-yellow-600 hover:text-black text-yellow-400 border border-gray-600' : ''}
+                className={`text-xs sm:text-sm whitespace-nowrap ${isBatman ? 'bg-gray-700 hover:bg-yellow-600 hover:text-black text-yellow-400 border border-gray-600' : ''}`}
               >
                 ←
               </Button>
@@ -187,9 +188,9 @@ function App() {
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
-                    className={isBatman 
+                    className={`text-xs sm:text-sm whitespace-nowrap ${isBatman 
                       ? 'bg-gray-800 border-gray-600 text-yellow-400 hover:bg-gray-800 hover:text-yellow-400 justify-start text-left font-normal' 
-                      : 'justify-start text-left font-normal'}
+                      : 'justify-start text-left font-normal'}`}
                   >
                     {formatDate(selectedDate)}
                   </Button>
@@ -212,14 +213,14 @@ function App() {
               <Button
                 variant="outline"
                 onClick={() => handleDateChange(1)}
-                className={isBatman ? 'bg-gray-700 hover:bg-yellow-600 hover:text-black text-yellow-400 border border-gray-600' : ''}
+                className={`text-xs sm:text-sm whitespace-nowrap ${isBatman ? 'bg-gray-700 hover:bg-yellow-600 hover:text-black text-yellow-400 border border-gray-600' : ''}`}
               >
                 →
               </Button>
               <Button
                 variant="outline"
                 onClick={() => setSelectedDate(new Date())}
-                className={isBatman ? 'bg-gray-700 hover:bg-yellow-400 hover:text-black text-yellow-400 border border-gray-600' : ''}
+                className={`text-xs sm:text-sm whitespace-nowrap ${isBatman ? 'bg-gray-700 hover:bg-yellow-400 hover:text-black text-yellow-400 border border-gray-600' : ''}`}
               >
                 Today
               </Button>
@@ -231,7 +232,7 @@ function App() {
         <div className={`border-t ${
           isBatman ? 'bg-gray-800 border-gray-700' : 'bg-background'
         }`}>
-          <div className="max-w-7xl mx-auto px-4 py-2">
+          <div className="max-w-7xl mx-auto px-2 sm:px-4 py-2">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className={isBatman ? 'bg-gray-800 border border-gray-700' : ''}>
                 <TabsTrigger 

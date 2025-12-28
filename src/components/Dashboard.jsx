@@ -235,12 +235,12 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
   return (
     <div className={containerClass}>
       <div className="flex flex-col gap-2">
-        <div className="flex items-center justify-between">
-          <h1 className={`text-3xl font-bold ${isBatman ? 'text-yellow-400' : ''}`}>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <h1 className={`text-xl sm:text-3xl font-bold ${isBatman ? 'text-yellow-400' : ''}`}>
             {isBatman ? "Batman's Actual Dashboard" : "Highest Self Dashboard"}
           </h1>
           {canEdit && (
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             {isSupabaseConfigured() && (
               <Button 
                 variant="outline" 
@@ -259,7 +259,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
                   }
                 }}
                 disabled={migrating}
-                className={isBatman ? 'bg-gray-700 hover:bg-yellow-600 hover:text-black text-yellow-400 border border-gray-600' : ''}
+                className={`text-xs sm:text-sm whitespace-nowrap ${isBatman ? 'bg-gray-700 hover:bg-yellow-600 hover:text-black text-yellow-400 border border-gray-600' : ''}`}
               >
                 {migrating ? 'Syncing...' : 'Sync to Cloud'}
               </Button>
@@ -267,28 +267,28 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
             <Button 
               variant="outline" 
               onClick={() => setShowImport(true)}
-              className={isBatman ? 'bg-gray-700 hover:bg-yellow-600 hover:text-black text-yellow-400 border border-gray-600' : ''}
+              className={`text-xs sm:text-sm whitespace-nowrap ${isBatman ? 'bg-gray-700 hover:bg-yellow-600 hover:text-black text-yellow-400 border border-gray-600' : ''}`}
             >
               Import Data
             </Button>
             <Button 
               variant="outline" 
               onClick={exportCurrentWeek}
-              className={isBatman ? 'bg-gray-700 hover:bg-yellow-600 hover:text-black text-yellow-400 border border-gray-600' : ''}
+              className={`text-xs sm:text-sm whitespace-nowrap ${isBatman ? 'bg-gray-700 hover:bg-yellow-600 hover:text-black text-yellow-400 border border-gray-600' : ''}`}
             >
               Export Week
             </Button>
             <Button 
               variant="outline" 
               onClick={exportCurrentMonth}
-              className={isBatman ? 'bg-gray-700 hover:bg-yellow-600 hover:text-black text-yellow-400 border border-gray-600' : ''}
+              className={`text-xs sm:text-sm whitespace-nowrap ${isBatman ? 'bg-gray-700 hover:bg-yellow-600 hover:text-black text-yellow-400 border border-gray-600' : ''}`}
             >
               Export Month
             </Button>
             <Button 
               variant="outline" 
               onClick={exportAll}
-              className={isBatman ? 'bg-gray-700 hover:bg-yellow-600 hover:text-black text-yellow-400 border border-gray-600' : ''}
+              className={`text-xs sm:text-sm whitespace-nowrap ${isBatman ? 'bg-gray-700 hover:bg-yellow-600 hover:text-black text-yellow-400 border border-gray-600' : ''}`}
             >
               Export All
             </Button>
