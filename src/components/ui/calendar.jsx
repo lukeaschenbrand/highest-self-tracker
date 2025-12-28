@@ -19,7 +19,7 @@ function Calendar({
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
         month: "space-y-4",
         caption: "flex justify-center pt-1 relative items-center",
-        caption_label: cn("text-sm font-medium", isBatman && "text-yellow-400"),
+        caption_label: cn("text-sm font-medium", isBatman && "text-yellow-400 text-lg font-semibold"),
         nav: "space-x-1 flex items-center",
         nav_button: cn(
           buttonVariants({ variant: "outline" }),
@@ -50,17 +50,22 @@ function Calendar({
           "bg-accent text-accent-foreground",
           isBatman && "bg-gray-700 text-yellow-400"
         ),
-        day_outside:
+        day_outside: cn(
           "day-outside text-muted-foreground opacity-50 aria-selected:bg-accent/50 aria-selected:text-muted-foreground aria-selected:opacity-30",
-        day_disabled: "text-muted-foreground opacity-50",
+          isBatman && "text-yellow-400 opacity-50"
+        ),
+        day_disabled: cn(
+          "text-muted-foreground opacity-50",
+          isBatman && "text-yellow-400"
+        ),
         day_range_middle:
           "aria-selected:bg-accent aria-selected:text-accent-foreground",
         day_hidden: "invisible",
         ...classNames,
       }}
       components={{
-        IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" />,
-        IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" />,
+        IconLeft: ({ ...props }) => <ChevronLeft className={cn("h-4 w-4", isBatman && "text-yellow-400")} />,
+        IconRight: ({ ...props }) => <ChevronRight className={cn("h-4 w-4", isBatman && "text-yellow-400")} />,
       }}
       {...props}
     />

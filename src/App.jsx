@@ -124,7 +124,7 @@ function App() {
   const canEdit = isEditor()
 
   return (
-    <div className={`min-h-screen ${isBatman ? 'bg-gray-900' : isJoker ? 'bg-gray-100' : 'bg-background'}`}>
+    <div className={`min-h-screen ${isBatman ? 'bg-gray-900 batman-font' : isJoker ? 'bg-gray-100' : 'bg-background'}`}>
       {/* Sticky Header */}
       <div className={`sticky top-0 z-50 border-b shadow-sm ${
         isBatman ? 'bg-gray-800 border-gray-700' : 'bg-card'
