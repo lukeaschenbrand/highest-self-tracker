@@ -280,7 +280,8 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
               Export All
             </Button>
           </div>
-        )}
+          )}
+        </div>
         {migrationStatus && (
           <div className={`text-sm ${migrationStatus.includes('failed') || migrationStatus.includes('not configured') ? (isBatman ? 'text-red-400' : 'text-red-600') : (isBatman ? 'text-green-400' : 'text-green-600')}`}>
             {migrationStatus}
