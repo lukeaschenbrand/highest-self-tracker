@@ -101,12 +101,32 @@ export function SleepChart({ data, isBatman = false, isJoker = false }) {
   const maxSleep = sleepValues.length > 0 ? Math.min(10, Math.ceil(Math.max(...sleepValues) + 1)) : 10
 
   // Final safety check - ensure chartData is a valid array with valid entries
-  const finalChartData = Array.isArray(chartData) 
-    ? chartData.filter(d => d && typeof d === 'object' && d.date && typeof d.date === 'string')
-    : []
+  // Double-check every property to ensure Recharts can process it
+  let finalChartData = []
+  if (Array.isArray(chartData) && chartData.length > 0) {
+    finalChartData = chartData
+      .filter(d => {
+        // Ensure each entry is a valid object with a string date
+        return d && 
+               typeof d === 'object' && 
+               d.date && 
+               typeof d.date === 'string' &&
+               d.date.length > 0
+      })
+      .map(d => ({
+        date: String(d.date),
+        sleep: typeof d.sleep === 'number' ? d.sleep : null
+      }))
+  }
 
   if (!Array.isArray(finalChartData) || finalChartData.length === 0) {
     return <div className="text-center text-muted-foreground py-8">No sleep data available</div>
+  }
+
+  // One more check - ensure all dates are valid strings
+  const allDatesValid = finalChartData.every(d => d && d.date && typeof d.date === 'string')
+  if (!allDatesValid) {
+    return <div className="text-center text-muted-foreground py-8">Invalid data format</div>
   }
 
   return (
@@ -199,12 +219,29 @@ export function EnergyChart({ data, isBatman = false, isJoker = false }) {
   const maxEnergy = energyValues.length > 0 ? Math.min(10, Math.max(...energyValues) + 1) : 10
 
   // Final safety check - ensure chartData is a valid array with valid entries
-  const finalChartData = Array.isArray(chartData) 
-    ? chartData.filter(d => d && typeof d === 'object' && d.date && typeof d.date === 'string')
-    : []
+  let finalChartData = []
+  if (Array.isArray(chartData) && chartData.length > 0) {
+    finalChartData = chartData
+      .filter(d => {
+        return d && 
+               typeof d === 'object' && 
+               d.date && 
+               typeof d.date === 'string' &&
+               d.date.length > 0
+      })
+      .map(d => ({
+        date: String(d.date),
+        energy: typeof d.energy === 'number' ? d.energy : null
+      }))
+  }
 
   if (!Array.isArray(finalChartData) || finalChartData.length === 0) {
     return <div className="text-center text-muted-foreground py-8">No energy data available</div>
+  }
+
+  const allDatesValid = finalChartData.every(d => d && d.date && typeof d.date === 'string')
+  if (!allDatesValid) {
+    return <div className="text-center text-muted-foreground py-8">Invalid data format</div>
   }
 
   return (
@@ -296,12 +333,29 @@ export function WeightChart({ data, isBatman = false, isJoker = false }) {
   const maxWeight = 260
 
   // Final safety check - ensure chartData is a valid array with valid entries
-  const finalChartData = Array.isArray(chartData) 
-    ? chartData.filter(d => d && typeof d === 'object' && d.date && typeof d.date === 'string')
-    : []
+  let finalChartData = []
+  if (Array.isArray(chartData) && chartData.length > 0) {
+    finalChartData = chartData
+      .filter(d => {
+        return d && 
+               typeof d === 'object' && 
+               d.date && 
+               typeof d.date === 'string' &&
+               d.date.length > 0
+      })
+      .map(d => ({
+        date: String(d.date),
+        weight: typeof d.weight === 'number' ? d.weight : null
+      }))
+  }
 
   if (!Array.isArray(finalChartData) || finalChartData.length === 0) {
     return <div className="text-center text-muted-foreground py-8">No weight data available</div>
+  }
+
+  const allDatesValid = finalChartData.every(d => d && d.date && typeof d.date === 'string')
+  if (!allDatesValid) {
+    return <div className="text-center text-muted-foreground py-8">Invalid data format</div>
   }
 
   return (
@@ -364,12 +418,30 @@ export function CompletionChart({ data, isBatman = false, isJoker = false }) {
   }
 
   // Final safety check - ensure chartData is a valid array with valid entries
-  const finalChartData = Array.isArray(chartData) 
-    ? chartData.filter(d => d && typeof d === 'object' && d.date && typeof d.date === 'string')
-    : []
+  let finalChartData = []
+  if (Array.isArray(chartData) && chartData.length > 0) {
+    finalChartData = chartData
+      .filter(d => {
+        return d && 
+               typeof d === 'object' && 
+               d.date && 
+               typeof d.date === 'string' &&
+               d.date.length > 0 &&
+               (d.score !== null && d.score !== undefined)
+      })
+      .map(d => ({
+        date: String(d.date),
+        score: typeof d.score === 'number' ? Number(d.score) : 0
+      }))
+  }
 
   if (!Array.isArray(finalChartData) || finalChartData.length === 0) {
     return <div className="text-center text-muted-foreground py-8">No completion data available</div>
+  }
+
+  const allDatesValid = finalChartData.every(d => d && d.date && typeof d.date === 'string')
+  if (!allDatesValid) {
+    return <div className="text-center text-muted-foreground py-8">Invalid data format</div>
   }
 
   return (
