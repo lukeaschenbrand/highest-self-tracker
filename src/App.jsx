@@ -214,7 +214,7 @@ function App() {
                   className={isBatman 
                     ? `${activeTab === 'log' ? 'bg-yellow-600 text-black border-yellow-600' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-600 hover:text-black border`
                     : isJoker
-                    ? `${activeTab === 'log' ? 'bg-purple-600 text-green-400 border-purple-600' : 'bg-green-500 text-purple-600 border-green-500'} hover:bg-purple-600 hover:text-green-400 border`
+                    ? `${activeTab === 'log' ? 'bg-purple-600 text-green-400 border-purple-600' : 'bg-gray-200 text-gray-700 border-gray-300'} hover:bg-purple-600 hover:text-green-400 border`
                     : ''}
                 >
                   Daily Log
@@ -224,7 +224,7 @@ function App() {
                   className={isBatman 
                     ? `${activeTab === 'dashboard' ? 'bg-yellow-600 text-black border-yellow-600' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-600 hover:text-black border`
                     : isJoker
-                    ? `${activeTab === 'dashboard' ? 'bg-purple-600 text-green-400 border-purple-600' : 'bg-green-500 text-purple-600 border-green-500'} hover:bg-purple-600 hover:text-green-400 border`
+                    ? `${activeTab === 'dashboard' ? 'bg-purple-600 text-green-400 border-purple-600' : 'bg-gray-200 text-gray-700 border-gray-300'} hover:bg-purple-600 hover:text-green-400 border`
                     : ''}
                 >
                   Dashboard

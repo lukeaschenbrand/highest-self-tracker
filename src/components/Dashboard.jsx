@@ -245,7 +245,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
             className={isBatman 
               ? `${period === 'day' ? 'bg-yellow-600 text-black border-yellow-600' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-600 hover:text-black border`
               : isJoker
-              ? `${period === 'day' ? 'bg-purple-600 text-green-400 border-purple-600' : 'bg-green-500 text-purple-600 border-green-500'} hover:bg-purple-600 hover:text-green-400 border`
+              ? `${period === 'day' ? 'bg-purple-600 text-green-400 border-purple-600' : 'bg-gray-200 text-gray-700 border-gray-300'} hover:bg-purple-600 hover:text-green-400 border`
               : ''}
           >
             Day
@@ -255,7 +255,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
             className={isBatman 
               ? `${period === 'week' ? 'bg-yellow-600 text-black border-yellow-600' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-600 hover:text-black border`
               : isJoker
-              ? `${period === 'week' ? 'bg-purple-600 text-green-400 border-purple-600' : 'bg-green-500 text-purple-600 border-green-500'} hover:bg-purple-600 hover:text-green-400 border`
+              ? `${period === 'week' ? 'bg-purple-600 text-green-400 border-purple-600' : 'bg-gray-200 text-gray-700 border-gray-300'} hover:bg-purple-600 hover:text-green-400 border`
               : ''}
           >
             Week
@@ -265,7 +265,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
             className={isBatman 
               ? `${period === 'month' ? 'bg-yellow-600 text-black border-yellow-600' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-600 hover:text-black border`
               : isJoker
-              ? `${period === 'month' ? 'bg-purple-600 text-green-400 border-purple-600' : 'bg-green-500 text-purple-600 border-green-500'} hover:bg-purple-600 hover:text-green-400 border`
+              ? `${period === 'month' ? 'bg-purple-600 text-green-400 border-purple-600' : 'bg-gray-200 text-gray-700 border-gray-300'} hover:bg-purple-600 hover:text-green-400 border`
               : ''}
           >
             Month
@@ -275,7 +275,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
             className={isBatman 
               ? `${period === 'year' ? 'bg-yellow-600 text-black border-yellow-600' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-600 hover:text-black border`
               : isJoker
-              ? `${period === 'year' ? 'bg-purple-600 text-green-400 border-purple-600' : 'bg-green-500 text-purple-600 border-green-500'} hover:bg-purple-600 hover:text-green-400 border`
+              ? `${period === 'year' ? 'bg-purple-600 text-green-400 border-purple-600' : 'bg-gray-200 text-gray-700 border-gray-300'} hover:bg-purple-600 hover:text-green-400 border`
               : ''}
           >
             Year
