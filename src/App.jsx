@@ -16,7 +16,7 @@ import { getAuth, isEditor, USER_TYPES, clearAuth } from './lib/auth'
 
 function App() {
   const [selectedDate, setSelectedDate] = useState(new Date())
-  const [activeTab, setActiveTab] = useState('log')
+  const [activeTab, setActiveTab] = useState('dashboard')
   const [refreshKey, setRefreshKey] = useState(0)
   const [showBackfill, setShowBackfill] = useState(false)
   const [authState, setAuthState] = useState(null) // null = checking, 'selecting' = show selector, 'password' = show password, 'authenticated' = show app
