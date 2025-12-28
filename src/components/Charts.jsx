@@ -1,20 +1,30 @@
+import { useState, useEffect } from 'react'
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import { getProjectStartDate } from '@/lib/backfill'
 import { formatDate, parseDate } from '@/lib/scoring'
 
 // Helper to get date range from project start to today
-function getDateRange() {
-  const projectStart = getProjectStartDate()
-  const today = new Date()
-  const dates = []
-  const current = new Date(projectStart)
-  
-  while (current <= today) {
-    dates.push(formatDate(new Date(current)))
-    current.setDate(current.getDate() + 1)
-  }
-  
-  return dates
+function useDateRange() {
+  const [dateRange, setDateRange] = useState([])
+
+  useEffect(() => {
+    const loadDateRange = async () => {
+      const projectStart = await getProjectStartDate()
+      const today = new Date()
+      const dates = []
+      const current = new Date(projectStart)
+      
+      while (current <= today) {
+        dates.push(formatDate(new Date(current)))
+        current.setDate(current.getDate() + 1)
+      }
+      
+      setDateRange(dates)
+    }
+    loadDateRange()
+  }, [])
+
+  return dateRange
 }
 
 // Helper to format date for display
@@ -23,7 +33,11 @@ function formatDateForDisplay(dateString) {
 }
 
 export function SleepChart({ data, isBatman = false, isJoker = false }) {
-  const dateRange = getDateRange()
+  const dateRange = useDateRange()
+  
+  if (dateRange.length === 0) {
+    return <div className="text-center text-muted-foreground py-8">Loading...</div>
+  }
   
   // Create a map of existing data
   const dataMap = new Map()
@@ -82,7 +96,11 @@ export function SleepChart({ data, isBatman = false, isJoker = false }) {
 }
 
 export function EnergyChart({ data, isBatman = false, isJoker = false }) {
-  const dateRange = getDateRange()
+  const dateRange = useDateRange()
+  
+  if (dateRange.length === 0) {
+    return <div className="text-center text-muted-foreground py-8">Loading...</div>
+  }
   
   // Create a map of existing data
   const dataMap = new Map()
@@ -141,7 +159,11 @@ export function EnergyChart({ data, isBatman = false, isJoker = false }) {
 }
 
 export function WeightChart({ data, isBatman = false, isJoker = false }) {
-  const dateRange = getDateRange()
+  const dateRange = useDateRange()
+  
+  if (dateRange.length === 0) {
+    return <div className="text-center text-muted-foreground py-8">Loading...</div>
+  }
   
   // Create a map of existing data
   const dataMap = new Map()
@@ -236,4 +258,3 @@ export function CompletionChart({ data, isBatman = false, isJoker = false }) {
     </ResponsiveContainer>
   )
 }
-

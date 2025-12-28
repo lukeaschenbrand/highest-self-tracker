@@ -5,7 +5,8 @@ import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { SleepChart, EnergyChart, WeightChart, CompletionChart } from '@/components/Charts'
 import { 
-  loadTasks, 
+  loadTasks,
+  saveTasks,
   loadLogEntries, 
   loadMetricEntries 
 } from '@/lib/storage'
@@ -34,13 +35,17 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
   const [showImport, setShowImport] = useState(false)
 
   useEffect(() => {
-    let loadedTasks = loadTasks()
-    if (loadedTasks.length === 0) {
-      loadedTasks = getDefaultTasks()
+    const loadData = async () => {
+      let loadedTasks = await loadTasks()
+      if (loadedTasks.length === 0) {
+        loadedTasks = getDefaultTasks()
+        await saveTasks(loadedTasks)
+      }
+      setTasks(loadedTasks)
+      setLogEntries(await loadLogEntries())
+      setMetricEntries(await loadMetricEntries())
     }
-    setTasks(loadedTasks)
-    setLogEntries(loadLogEntries())
-    setMetricEntries(loadMetricEntries())
+    loadData()
   }, [])
 
   // Refresh data when date changes
@@ -131,12 +136,21 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
   const overallScore = getOverallScore()
   const fitnessProgress = getWeeklyFitnessProgress()
 
+  const [projectStart, setProjectStart] = useState(null)
+
+  useEffect(() => {
+    const loadProjectStart = async () => {
+      const start = await getProjectStartDate()
+      setProjectStart(start)
+    }
+    loadProjectStart()
+  }, [])
+
   // Get completion data for chart
   const getCompletionData = () => {
+    if (!projectStart) return []
     // Get date range from project start to today
-    const projectStart = getProjectStartDate()
     const today = new Date()
-    
     const dates = []
     const current = new Date(projectStart)
     

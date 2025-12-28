@@ -9,7 +9,7 @@ import { Button } from './components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from './components/ui/popover'
 import { Calendar } from './components/ui/calendar'
 import { formatDate } from './lib/scoring'
-import { loadTasks, saveTasks } from './lib/storage'
+import { loadTasks, saveTasks, loadProjectStartDate } from './lib/storage'
 import { getDefaultTasks } from './lib/tasks'
 import { getProjectStartDate, initializeProject } from './lib/backfill'
 import { getAuth, isEditor, USER_TYPES, clearAuth } from './lib/auth'
@@ -36,20 +36,23 @@ function App() {
   // Initialize tasks on first load (only when authenticated)
   useEffect(() => {
     if (authState === 'authenticated') {
-      const tasks = loadTasks()
-      if (tasks.length === 0) {
-        const defaultTasks = getDefaultTasks()
-        saveTasks(defaultTasks)
+      const init = async () => {
+        const tasks = await loadTasks()
+        if (tasks.length === 0) {
+          const defaultTasks = getDefaultTasks()
+          await saveTasks(defaultTasks)
+        }
+        
+        // Check if project has been initialized
+        const projectStart = await loadProjectStartDate()
+        if (!projectStart) {
+          // Auto-initialize with 12/22/2024 (or current year)
+          const currentYear = new Date().getFullYear()
+          const initDate = `${currentYear}-12-22`
+          await initializeProject(initDate)
+        }
       }
-      
-      // Check if project has been initialized
-      const projectStart = localStorage.getItem('hst_project_start_date')
-      if (!projectStart) {
-        // Auto-initialize with 12/22/2024 (or current year)
-        const currentYear = new Date().getFullYear()
-        const initDate = `${currentYear}-12-22`
-        initializeProject(initDate)
-      }
+      init()
     }
   }, [authState])
 

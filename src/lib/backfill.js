@@ -1,6 +1,6 @@
 // Utility to backfill data for past days
 import { formatDate, parseDate } from './scoring'
-import { saveLogEntry, saveMetricEntry } from './storage'
+import { saveLogEntry, saveMetricEntry, saveProjectStartDate, loadProjectStartDate } from './storage'
 import { loadTasks } from './storage'
 import { getDefaultTasks } from './tasks'
 
@@ -42,7 +42,7 @@ export function backfillDateRange(startDate, endDate) {
  * Initialize project with start date
  * Creates the initial state for tracking
  */
-export function initializeProject(startDateString) {
+export async function initializeProject(startDateString) {
   // Parse the start date (format: YYYY-MM-DD or MM/DD/YYYY)
   let startDate
   if (startDateString.includes('/')) {
@@ -61,8 +61,8 @@ export function initializeProject(startDateString) {
     current.setDate(current.getDate() + 1)
   }
   
-  // Store the project start date in localStorage
-  localStorage.setItem('hst_project_start_date', formatDate(startDate))
+  // Store the project start date
+  await saveProjectStartDate(formatDate(startDate))
   
   return {
     startDate: formatDate(startDate),
@@ -75,8 +75,8 @@ export function initializeProject(startDateString) {
 /**
  * Get project start date from storage
  */
-export function getProjectStartDate() {
-  const stored = localStorage.getItem('hst_project_start_date')
+export async function getProjectStartDate() {
+  const stored = await loadProjectStartDate()
   if (stored) {
     return parseDate(stored)
   }

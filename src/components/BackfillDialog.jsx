@@ -1,25 +1,34 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { initializeProject, getProjectStartDate } from '@/lib/backfill'
 import { formatDate } from '@/lib/scoring'
+import { loadProjectStartDate } from '@/lib/storage'
 
 export function BackfillDialog({ onClose }) {
-  const [startDate, setStartDate] = useState(() => {
-    const projectStart = getProjectStartDate()
-    // Default to 12/22 of current year if not set
-    if (!localStorage.getItem('hst_project_start_date')) {
-      const currentYear = new Date().getFullYear()
-      return `${currentYear}-12-22`
-    }
-    return formatDate(projectStart)
-  })
+  const [startDate, setStartDate] = useState('')
   const [status, setStatus] = useState('')
+  const [loading, setLoading] = useState(true)
 
-  const handleInitialize = () => {
+  useEffect(() => {
+    const init = async () => {
+      const projectStart = await getProjectStartDate()
+      if (projectStart) {
+        setStartDate(formatDate(projectStart))
+      } else {
+        // Default to 12/22 of current year if not set
+        const currentYear = new Date().getFullYear()
+        setStartDate(`${currentYear}-12-22`)
+      }
+      setLoading(false)
+    }
+    init()
+  }, [])
+
+  const handleInitialize = async () => {
     try {
-      const result = initializeProject(startDate)
+      const result = await initializeProject(startDate)
       setStatus(`Project initialized! Start date: ${result.startDate}, Total days: ${result.totalDays}`)
       setTimeout(() => {
         if (onClose) onClose()
@@ -28,6 +37,16 @@ export function BackfillDialog({ onClose }) {
     } catch (error) {
       setStatus(`Error: ${error.message}`)
     }
+  }
+
+  if (loading) {
+    return (
+      <Card className="max-w-md mx-auto mt-8">
+        <CardContent className="p-6">
+          <div className="text-center">Loading...</div>
+        </CardContent>
+      </Card>
+    )
   }
 
   return (
@@ -70,4 +89,3 @@ export function BackfillDialog({ onClose }) {
     </Card>
   )
 }
-

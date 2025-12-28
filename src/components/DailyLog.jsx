@@ -36,65 +36,68 @@ export function DailyLog({ selectedDate, onSave, canEdit = true, isBatman = fals
   const inputOrder = useRef([])
 
   useEffect(() => {
-    // Load tasks or initialize with defaults
-    let loadedTasks = loadTasks()
-    if (loadedTasks.length === 0) {
-      loadedTasks = getDefaultTasks()
-      saveTasks(loadedTasks)
-    }
-    setTasks(loadedTasks)
-    
-    // Reset input order when date or tasks change
-    // We'll rebuild it as inputs register
-    inputOrder.current = []
-    inputRefs.current = {}
-
-    // Load existing entries for this date
-    const dateStr = formatDate(selectedDate)
-    const dayOfWeek = selectedDate.getDay()
-    
-    const entries = {}
-    loadedTasks.forEach(task => {
-      // Check if task is active today
-      if (task.frequency === FREQUENCIES.WEEKLY) {
-        // Weekly tasks are always available
-        const entry = getLogEntry(dateStr, task.id)
-        if (entry) {
-          entries[task.id] = entry.status
-        }
-      } else if (task.active_days.includes(dayOfWeek)) {
-        const entry = getLogEntry(dateStr, task.id)
-        if (entry) {
-          entries[task.id] = entry.status
-        }
+    const loadData = async () => {
+      // Load tasks or initialize with defaults
+      let loadedTasks = await loadTasks()
+      if (loadedTasks.length === 0) {
+        loadedTasks = getDefaultTasks()
+        await saveTasks(loadedTasks)
       }
-    })
-    setLogEntries(entries)
+      setTasks(loadedTasks)
+      
+      // Reset input order when date or tasks change
+      // We'll rebuild it as inputs register
+      inputOrder.current = []
+      inputRefs.current = {}
 
-    // Load metrics
-    const metricEntry = getMetricEntry(dateStr)
-    if (metricEntry) {
-      setMetrics({
-        sleep_hours: metricEntry.sleep_hours || '',
-        energy_1_10: metricEntry.energy_1_10 || 5,
-        weight_lbs: metricEntry.weight_lbs === 'P' ? '' : (metricEntry.weight_lbs || ''),
-        weight_pass: metricEntry.weight_lbs === 'P',
+      // Load existing entries for this date
+      const dateStr = formatDate(selectedDate)
+      const dayOfWeek = selectedDate.getDay()
+      
+      const entries = {}
+      loadedTasks.forEach(task => {
+        // Check if task is active today
+        if (task.frequency === FREQUENCIES.WEEKLY) {
+          // Weekly tasks are always available
+          const entry = getLogEntry(dateStr, task.id)
+          if (entry) {
+            entries[task.id] = entry.status
+          }
+        } else if (task.active_days.includes(dayOfWeek)) {
+          const entry = getLogEntry(dateStr, task.id)
+          if (entry) {
+            entries[task.id] = entry.status
+          }
+        }
       })
-    }
+      setLogEntries(entries)
 
-    // Load unsaved state from localStorage
-    const unsavedKey = `unsaved_${dateStr}`
-    const unsaved = localStorage.getItem(unsavedKey)
-    if (unsaved) {
-      try {
-        const parsed = JSON.parse(unsaved)
-        setLogEntries(prev => ({ ...prev, ...parsed.logEntries }))
-        setMetrics(prev => ({ ...prev, ...parsed.metrics }))
-        setUnsavedChanges(true)
-      } catch (e) {
-        console.error('Failed to load unsaved state:', e)
+      // Load metrics
+      const metricEntry = getMetricEntry(dateStr)
+      if (metricEntry) {
+        setMetrics({
+          sleep_hours: metricEntry.sleep_hours || '',
+          energy_1_10: metricEntry.energy_1_10 || 5,
+          weight_lbs: metricEntry.weight_lbs === 'P' ? '' : (metricEntry.weight_lbs || ''),
+          weight_pass: metricEntry.weight_lbs === 'P',
+        })
+      }
+
+      // Load unsaved state from localStorage
+      const unsavedKey = `unsaved_${dateStr}`
+      const unsaved = localStorage.getItem(unsavedKey)
+      if (unsaved) {
+        try {
+          const parsed = JSON.parse(unsaved)
+          setLogEntries(prev => ({ ...prev, ...parsed.logEntries }))
+          setMetrics(prev => ({ ...prev, ...parsed.metrics }))
+          setUnsavedChanges(true)
+        } catch (e) {
+          console.error('Failed to load unsaved state:', e)
+        }
       }
     }
+    loadData()
   }, [selectedDate])
 
   // Save unsaved state to localStorage
@@ -114,17 +117,17 @@ export function DailyLog({ selectedDate, onSave, canEdit = true, isBatman = fals
     setUnsavedChanges(true)
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const dateStr = formatDate(selectedDate)
     const dayOfWeek = selectedDate.getDay()
 
     // Save all log entries
-    tasks.forEach(task => {
+    for (const task of tasks) {
       if (task.frequency === FREQUENCIES.WEEKLY || task.active_days.includes(dayOfWeek)) {
         const status = logEntries[task.id]
         // Save if status exists (including 0 for tweets)
         if (status !== undefined && status !== null && status !== '') {
-          saveLogEntry({
+          await saveLogEntry({
             date: dateStr,
             task_id: task.id,
             status: status.toString(),
@@ -132,10 +135,10 @@ export function DailyLog({ selectedDate, onSave, canEdit = true, isBatman = fals
           })
         }
       }
-    })
+    }
 
     // Save metrics
-    saveMetricEntry({
+    await saveMetricEntry({
       date: dateStr,
       sleep_hours: metrics.sleep_hours ? parseFloat(metrics.sleep_hours) : null,
       energy_1_10: parseInt(metrics.energy_1_10) || null,
