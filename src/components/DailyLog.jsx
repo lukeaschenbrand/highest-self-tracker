@@ -322,7 +322,7 @@ export function DailyLog({ selectedDate, onSave, canEdit = true, isBatman = fals
                 }
               }}
               disabled={!canEdit}
-              className={`w-20 h-8 ${isBatman ? 'bg-gray-700 border-gray-600 text-yellow-400' : ''}`}
+              className={`w-20 h-8 ${isBatman ? 'bg-gray-700 border-gray-600 text-yellow-400 hover:bg-yellow-400 hover:text-black transition-colors' : ''}`}
               onKeyDown={(e) => {
                 // Enter key navigation
                 if (e.key === 'Enter') {
@@ -374,7 +374,7 @@ export function DailyLog({ selectedDate, onSave, canEdit = true, isBatman = fals
                   }
                 }}
                 disabled={!canEdit}
-                className={`w-20 h-8 ${isBatman ? 'bg-gray-700 border-gray-600 text-yellow-400' : ''}`}
+                className={`w-20 h-8 ${isBatman ? 'bg-gray-700 border-gray-600 text-yellow-400 hover:bg-yellow-400 hover:text-black transition-colors' : ''}`}
                 placeholder="pass"
               />
             )}
@@ -486,7 +486,7 @@ export function DailyLog({ selectedDate, onSave, canEdit = true, isBatman = fals
             ref={(el) => {
               if (el && canEdit) registerInput(task.id, el)
             }}
-            className={`w-24 h-8 text-sm ${isBatman ? 'bg-gray-700 border-gray-600 text-yellow-400' : ''}`}
+            className={`w-24 h-8 text-sm ${isBatman ? 'bg-gray-700 border-gray-600 text-yellow-400 hover:bg-yellow-400 hover:text-black transition-colors' : ''}`}
             placeholder={hasPass ? "y/n/p" : "y/n"}
           />
         </div>
@@ -576,7 +576,7 @@ export function DailyLog({ selectedDate, onSave, canEdit = true, isBatman = fals
               }}
               placeholder="7.5"
               disabled={!canEdit}
-              className={isBatman ? 'bg-gray-700 border-gray-600 text-yellow-400' : ''}
+              className={isBatman ? 'bg-gray-700 border-gray-600 text-yellow-400 hover:bg-yellow-400 hover:text-black transition-colors' : ''}
             />
           </div>
 
@@ -622,7 +622,7 @@ export function DailyLog({ selectedDate, onSave, canEdit = true, isBatman = fals
                 }}
                 placeholder="180"
                 disabled={!canEdit || metrics.weight_pass}
-                className={`flex-1 ${isBatman ? 'bg-gray-700 border-gray-600 text-yellow-400' : ''}`}
+                className={`flex-1 ${isBatman ? 'bg-gray-700 border-gray-600 text-yellow-400 hover:bg-yellow-400 hover:text-black transition-colors' : ''}`}
               />
               <Button
                 variant={metrics.weight_pass ? 'default' : 'outline'}
@@ -637,7 +637,7 @@ export function DailyLog({ selectedDate, onSave, canEdit = true, isBatman = fals
                   }
                 }}
                 disabled={!canEdit}
-                className={isBatman ? 'border-gray-600 text-yellow-400 hover:bg-gray-700' : ''}
+                className={isBatman ? 'bg-gray-700 hover:bg-yellow-400 hover:text-black text-yellow-400 border border-gray-600' : ''}
               >
                 P
               </Button>

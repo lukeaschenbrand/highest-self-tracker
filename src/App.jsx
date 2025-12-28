@@ -136,8 +136,7 @@ function App() {
                     alt="Batman" 
                     className="w-8 h-8"
                     style={{ 
-                      mixBlendMode: 'multiply',
-                      filter: 'contrast(1.2) brightness(1.1)',
+                      filter: 'brightness(0) saturate(100%) invert(84%) sepia(95%) saturate(1352%) hue-rotate(358deg) brightness(105%) contrast(105%)',
                       backgroundColor: 'transparent'
                     }}
                   />
@@ -153,7 +152,7 @@ function App() {
                   variant="outline"
                   size="sm"
                   onClick={() => setShowBackfill(true)}
-                  className={isBatman ? 'bg-yellow-400 hover:bg-yellow-500 text-black border-yellow-400' : ''}
+                  className={isBatman ? 'bg-gray-700 hover:bg-yellow-400 hover:text-black text-yellow-400 border border-gray-600' : ''}
                 >
                   Initialize/Backfill
                 </Button>
@@ -162,14 +161,14 @@ function App() {
                 variant="outline"
                 size="sm"
                 onClick={handleLogout}
-                className={isBatman ? 'bg-yellow-400 hover:bg-yellow-500 text-black border-yellow-400' : ''}
+                className={isBatman ? 'bg-gray-700 hover:bg-yellow-400 hover:text-black text-yellow-400 border border-gray-600' : ''}
               >
                 Log Out
               </Button>
               <Button
                 variant="outline"
                 onClick={() => handleDateChange(-1)}
-                className={isBatman ? 'bg-yellow-400 hover:bg-yellow-500 text-black border-yellow-400' : ''}
+                className={isBatman ? 'bg-gray-700 hover:bg-yellow-400 hover:text-black text-yellow-400 border border-gray-600' : ''}
               >
                 ←
               </Button>
@@ -180,23 +179,23 @@ function App() {
                   const newDate = new Date(e.target.value)
                   setSelectedDate(newDate)
                 }}
-                className={`px-3 py-2 border rounded-md ${
+                className={`px-3 py-2 border rounded-md transition-colors ${
                   isBatman 
-                    ? 'bg-gray-800 border-gray-600 text-yellow-400' 
+                    ? 'bg-gray-800 border-gray-600 text-yellow-400 hover:bg-yellow-400 hover:text-black' 
                     : ''
                 }`}
               />
               <Button
                 variant="outline"
                 onClick={() => handleDateChange(1)}
-                className={isBatman ? 'bg-yellow-400 hover:bg-yellow-500 text-black border-yellow-400' : ''}
+                className={isBatman ? 'bg-gray-700 hover:bg-yellow-400 hover:text-black text-yellow-400 border border-gray-600' : ''}
               >
                 →
               </Button>
               <Button
                 variant="outline"
                 onClick={() => setSelectedDate(new Date())}
-                className={isBatman ? 'bg-yellow-400 hover:bg-yellow-500 text-black border-yellow-400' : ''}
+                className={isBatman ? 'bg-gray-700 hover:bg-yellow-400 hover:text-black text-yellow-400 border border-gray-600' : ''}
               >
                 Today
               </Button>

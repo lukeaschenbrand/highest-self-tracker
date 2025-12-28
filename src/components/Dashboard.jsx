@@ -209,28 +209,28 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
             <Button 
               variant="outline" 
               onClick={() => setShowImport(true)}
-              className={isBatman ? 'bg-yellow-400 hover:bg-yellow-500 text-black border-yellow-400' : ''}
+              className={isBatman ? 'bg-gray-700 hover:bg-yellow-400 hover:text-black text-yellow-400 border border-gray-600' : ''}
             >
               Import Data
             </Button>
             <Button 
               variant="outline" 
               onClick={exportCurrentWeek}
-              className={isBatman ? 'bg-yellow-400 hover:bg-yellow-500 text-black border-yellow-400' : ''}
+              className={isBatman ? 'bg-gray-700 hover:bg-yellow-400 hover:text-black text-yellow-400 border border-gray-600' : ''}
             >
               Export Week
             </Button>
             <Button 
               variant="outline" 
               onClick={exportCurrentMonth}
-              className={isBatman ? 'bg-yellow-400 hover:bg-yellow-500 text-black border-yellow-400' : ''}
+              className={isBatman ? 'bg-gray-700 hover:bg-yellow-400 hover:text-black text-yellow-400 border border-gray-600' : ''}
             >
               Export Month
             </Button>
             <Button 
               variant="outline" 
               onClick={exportAll}
-              className={isBatman ? 'bg-yellow-400 hover:bg-yellow-500 text-black border-yellow-400' : ''}
+              className={isBatman ? 'bg-gray-700 hover:bg-yellow-400 hover:text-black text-yellow-400 border border-gray-600' : ''}
             >
               Export All
             </Button>
