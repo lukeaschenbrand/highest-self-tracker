@@ -41,7 +41,7 @@ async function saveTasksToSupabase(tasks) {
     
     // Insert all tasks - only include columns that exist in the schema
     if (tasks.length > 0) {
-      // Filter to only include valid columns for Supabase schema
+      // First, try with all columns including active_days
       const validColumns = ['id', 'label', 'category', 'pillar', 'frequency', 'allow_pass', 'active_days', 'weight']
       const sanitizedTasks = tasks.map(task => {
         const sanitized = {}
@@ -65,7 +65,37 @@ async function saveTasksToSupabase(tasks) {
         return sanitized
       })
       
-      const { data, error } = await supabase.from('tasks').insert(sanitizedTasks).select()
+      let { data, error } = await supabase.from('tasks').insert(sanitizedTasks).select()
+      
+      // If active_days column doesn't exist, try without it
+      if (error && error.message && error.message.includes('active_days')) {
+        console.warn('active_days column not found, saving tasks without it. Please run the SQL migration to add the column.')
+        const columnsWithoutActiveDays = ['id', 'label', 'category', 'pillar', 'frequency', 'allow_pass', 'weight']
+        const tasksWithoutActiveDays = tasks.map(task => {
+          const sanitized = {}
+          for (const col of columnsWithoutActiveDays) {
+            if (task.hasOwnProperty(col)) {
+              sanitized[col] = task[col]
+            }
+          }
+          if (sanitized.weight === undefined || sanitized.weight === null) {
+            sanitized.weight = 1
+          }
+          return sanitized
+        })
+        
+        const { data: data2, error: error2 } = await supabase.from('tasks').insert(tasksWithoutActiveDays).select()
+        if (error2) {
+          console.error('Supabase insert error details:', error2)
+          console.error('First task being inserted:', tasksWithoutActiveDays[0])
+          throw error2
+        }
+        console.log(`Successfully saved ${tasksWithoutActiveDays.length} tasks to Supabase (without active_days column)`)
+        console.log('⚠️ Please run this SQL in Supabase to add the active_days column:')
+        console.log('ALTER TABLE tasks ADD COLUMN IF NOT EXISTS active_days INTEGER[] DEFAULT ARRAY[1,2,3,4,5,6,7];')
+        return true
+      }
+      
       if (error) {
         console.error('Supabase insert error details:', error)
         console.error('First task being inserted:', sanitizedTasks[0])
