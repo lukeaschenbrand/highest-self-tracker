@@ -285,7 +285,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
         <TabsContent value={period} className="mt-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
             <div className="lg:col-span-5">
-              <ScoreCard title="Overall Highest Self" score={overallScore} />
+              <ScoreCard title="Overall Performance" score={overallScore} />
             </div>
             <ScoreCard title="Morning" score={getPillarScore(PILLARS.MORNING)} />
             <ScoreCard title="Body" score={getPillarScore(PILLARS.BODY)} />
