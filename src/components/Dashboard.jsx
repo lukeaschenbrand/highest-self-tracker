@@ -203,7 +203,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
   return (
     <div className={containerClass}>
       <div className="flex items-center justify-between">
-        <h1 className={`text-3xl font-bold ${isBatman ? 'text-yellow-400' : ''}`}>Highest Self Dashboard</h1>
+        <h1 className={`text-3xl font-bold ${isBatman ? 'text-yellow-400' : ''}`}>Batman's Actual Dashboard</h1>
         {canEdit && (
           <div className="flex gap-2">
             <Button 
