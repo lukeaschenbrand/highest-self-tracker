@@ -32,37 +32,41 @@ export function exportToCSV(startDate, endDate) {
     taskMap.set(task.id, task)
   })
   
-  // Use default task order, but get labels from stored tasks if they exist
-  // This ensures consistent column order even if tasks were modified
+  // Always use default task order and default labels to ensure consistency
+  // This prevents issues with corrupted stored task labels
   const tasks = defaultTasks.map(defaultTask => {
     const storedTask = taskMap.get(defaultTask.id)
-    return storedTask || defaultTask
-  })
-  
-  // Filter out tasks without valid labels
-  const validTasks = tasks.filter(task => {
-    const label = task.label?.trim()
-    if (!label || label === '0' || label === '') {
-      console.warn(`Task ${task.id} has invalid label: "${label}", using default`)
-      // Use default task label if stored task has invalid label
-      const defaultTask = defaultTasks.find(t => t.id === task.id)
-      if (defaultTask && defaultTask.label) {
-        task.label = defaultTask.label
-        return true
-      }
-      return false
+    // Always use default label to ensure consistency
+    // But keep stored task properties (like allow_pass) if needed
+    return {
+      ...defaultTask,
+      ...(storedTask && { 
+        // Only merge non-label properties from stored task
+        allow_pass: storedTask.allow_pass,
+        active_days: storedTask.active_days,
+        weight: storedTask.weight,
+        is_numeric: storedTask.is_numeric,
+      })
     }
-    return true
   })
   
   // Build header row
   const headers = ['Date', 'Sleep (hours)', 'Energy (1-10)', 'Weight (lbs)']
   
-  // Add task columns with validated labels (in default order)
-  validTasks.forEach(task => {
-    const label = task.label.trim()
-    headers.push(label)
+  // Add task columns using default labels (always consistent)
+  tasks.forEach((task, index) => {
+    const label = task.label?.trim()
+    if (!label || label === '0' || label === '') {
+      console.error(`Task ${task.id} at index ${index} has invalid label: "${label}"`)
+      // This should never happen with default tasks, but add safety check
+      headers.push(`Task_${task.id}`)
+    } else {
+      headers.push(label)
+    }
   })
+  
+  console.log('Export headers:', headers)
+  console.log('Column N (index 13):', headers[13])
   
   // Build data rows
   const rows = dates.map(date => {
