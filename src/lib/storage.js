@@ -67,32 +67,31 @@ async function saveTasksToSupabase(tasks) {
       
       let { data, error } = await supabase.from('tasks').insert(sanitizedTasks).select()
       
-      // If active_days column doesn't exist, try without it
-      if (error && error.message && error.message.includes('active_days')) {
-        console.warn('active_days column not found, saving tasks without it. Please run the SQL migration to add the column.')
-        const columnsWithoutActiveDays = ['id', 'label', 'category', 'pillar', 'frequency', 'allow_pass', 'weight']
-        const tasksWithoutActiveDays = tasks.map(task => {
+      // If columns don't exist, try with only basic columns
+      if (error && error.message && (error.message.includes('active_days') || error.message.includes('weight'))) {
+        console.warn('Some columns not found in database. Saving tasks with only basic columns.')
+        console.warn('Please run this SQL in Supabase to add missing columns:')
+        console.warn('ALTER TABLE tasks ADD COLUMN IF NOT EXISTS active_days INTEGER[] DEFAULT ARRAY[1,2,3,4,5,6,7], ADD COLUMN IF NOT EXISTS weight INTEGER DEFAULT 1;')
+        
+        // Try with only the basic required columns
+        const basicColumns = ['id', 'label', 'category', 'pillar', 'frequency', 'allow_pass']
+        const basicTasks = tasks.map(task => {
           const sanitized = {}
-          for (const col of columnsWithoutActiveDays) {
+          for (const col of basicColumns) {
             if (task.hasOwnProperty(col)) {
               sanitized[col] = task[col]
             }
           }
-          if (sanitized.weight === undefined || sanitized.weight === null) {
-            sanitized.weight = 1
-          }
           return sanitized
         })
         
-        const { data: data2, error: error2 } = await supabase.from('tasks').insert(tasksWithoutActiveDays).select()
+        const { data: data2, error: error2 } = await supabase.from('tasks').insert(basicTasks).select()
         if (error2) {
           console.error('Supabase insert error details:', error2)
-          console.error('First task being inserted:', tasksWithoutActiveDays[0])
+          console.error('First task being inserted:', basicTasks[0])
           throw error2
         }
-        console.log(`Successfully saved ${tasksWithoutActiveDays.length} tasks to Supabase (without active_days column)`)
-        console.log('⚠️ Please run this SQL in Supabase to add the active_days column:')
-        console.log('ALTER TABLE tasks ADD COLUMN IF NOT EXISTS active_days INTEGER[] DEFAULT ARRAY[1,2,3,4,5,6,7];')
+        console.log(`Successfully saved ${basicTasks.length} tasks to Supabase (using basic columns only)`)
         return true
       }
       
