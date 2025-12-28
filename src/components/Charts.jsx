@@ -100,8 +100,14 @@ export function SleepChart({ data, isBatman = false, isJoker = false }) {
   const minSleep = sleepValues.length > 0 ? Math.max(4, Math.floor(Math.min(...sleepValues) - 1)) : 4
   const maxSleep = sleepValues.length > 0 ? Math.min(10, Math.ceil(Math.max(...sleepValues) + 1)) : 10
 
-  // Final safety check - ensure chartData is a valid array
-  const finalChartData = Array.isArray(chartData) ? chartData : []
+  // Final safety check - ensure chartData is a valid array with valid entries
+  const finalChartData = Array.isArray(chartData) 
+    ? chartData.filter(d => d && typeof d === 'object' && d.date && typeof d.date === 'string')
+    : []
+
+  if (!Array.isArray(finalChartData) || finalChartData.length === 0) {
+    return <div className="text-center text-muted-foreground py-8">No sleep data available</div>
+  }
 
   return (
     <ResponsiveContainer width="100%" height={300}>
@@ -109,7 +115,13 @@ export function SleepChart({ data, isBatman = false, isJoker = false }) {
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis 
           dataKey="date"
-          tickFormatter={(value) => formatDateForDisplay(value)}
+          tickFormatter={(value) => {
+            try {
+              return formatDateForDisplay(value)
+            } catch {
+              return ''
+            }
+          }}
           type="category"
           interval={0}
           angle={-45}
@@ -118,7 +130,13 @@ export function SleepChart({ data, isBatman = false, isJoker = false }) {
         />
         <YAxis domain={[minSleep, maxSleep]} />
         <Tooltip 
-          labelFormatter={(value) => formatDateForDisplay(value)}
+          labelFormatter={(value) => {
+            try {
+              return formatDateForDisplay(value)
+            } catch {
+              return ''
+            }
+          }}
         />
         <Legend />
         <Line type="monotone" dataKey="sleep" stroke={isBatman ? "#eab308" : isJoker ? "#9333ea" : "#8884d8"} strokeWidth={2} name="Sleep (hours)" connectNulls={false} />
@@ -180,8 +198,14 @@ export function EnergyChart({ data, isBatman = false, isJoker = false }) {
   const minEnergy = energyValues.length > 0 ? Math.max(1, Math.min(...energyValues) - 1) : 1
   const maxEnergy = energyValues.length > 0 ? Math.min(10, Math.max(...energyValues) + 1) : 10
 
-  // Final safety check - ensure chartData is a valid array
-  const finalChartData = Array.isArray(chartData) ? chartData : []
+  // Final safety check - ensure chartData is a valid array with valid entries
+  const finalChartData = Array.isArray(chartData) 
+    ? chartData.filter(d => d && typeof d === 'object' && d.date && typeof d.date === 'string')
+    : []
+
+  if (!Array.isArray(finalChartData) || finalChartData.length === 0) {
+    return <div className="text-center text-muted-foreground py-8">No energy data available</div>
+  }
 
   return (
     <ResponsiveContainer width="100%" height={300}>
@@ -189,7 +213,13 @@ export function EnergyChart({ data, isBatman = false, isJoker = false }) {
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis 
           dataKey="date"
-          tickFormatter={(value) => formatDateForDisplay(value)}
+          tickFormatter={(value) => {
+            try {
+              return formatDateForDisplay(value)
+            } catch {
+              return ''
+            }
+          }}
           type="category"
           interval={0}
           angle={-45}
@@ -198,7 +228,13 @@ export function EnergyChart({ data, isBatman = false, isJoker = false }) {
         />
         <YAxis domain={[minEnergy, maxEnergy]} />
         <Tooltip 
-          labelFormatter={(value) => formatDateForDisplay(value)}
+          labelFormatter={(value) => {
+            try {
+              return formatDateForDisplay(value)
+            } catch {
+              return ''
+            }
+          }}
         />
         <Legend />
         <Line type="monotone" dataKey="energy" stroke={isBatman ? "#eab308" : isJoker ? "#9333ea" : "#82ca9d"} strokeWidth={2} name="Energy (1-10)" connectNulls={false} />
@@ -259,8 +295,14 @@ export function WeightChart({ data, isBatman = false, isJoker = false }) {
   const minWeight = 195
   const maxWeight = 260
 
-  // Final safety check - ensure chartData is a valid array
-  const finalChartData = Array.isArray(chartData) ? chartData : []
+  // Final safety check - ensure chartData is a valid array with valid entries
+  const finalChartData = Array.isArray(chartData) 
+    ? chartData.filter(d => d && typeof d === 'object' && d.date && typeof d.date === 'string')
+    : []
+
+  if (!Array.isArray(finalChartData) || finalChartData.length === 0) {
+    return <div className="text-center text-muted-foreground py-8">No weight data available</div>
+  }
 
   return (
     <ResponsiveContainer width="100%" height={300}>
@@ -268,7 +310,13 @@ export function WeightChart({ data, isBatman = false, isJoker = false }) {
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis 
           dataKey="date"
-          tickFormatter={(value) => formatDateForDisplay(value)}
+          tickFormatter={(value) => {
+            try {
+              return formatDateForDisplay(value)
+            } catch {
+              return ''
+            }
+          }}
           type="category"
           interval={0}
           angle={-45}
@@ -277,7 +325,13 @@ export function WeightChart({ data, isBatman = false, isJoker = false }) {
         />
         <YAxis domain={[minWeight, maxWeight]} />
         <Tooltip 
-          labelFormatter={(value) => formatDateForDisplay(value)}
+          labelFormatter={(value) => {
+            try {
+              return formatDateForDisplay(value)
+            } catch {
+              return ''
+            }
+          }}
         />
         <Legend />
         <Line type="monotone" dataKey="weight" stroke={isBatman ? "#eab308" : isJoker ? "#9333ea" : "#8884d8"} strokeWidth={2} name="Weight (lbs)" connectNulls={false} />
@@ -309,8 +363,14 @@ export function CompletionChart({ data, isBatman = false, isJoker = false }) {
     return <div className="text-center text-muted-foreground py-8">No completion data available</div>
   }
 
-  // Final safety check - ensure chartData is a valid array
-  const finalChartData = Array.isArray(chartData) ? chartData : []
+  // Final safety check - ensure chartData is a valid array with valid entries
+  const finalChartData = Array.isArray(chartData) 
+    ? chartData.filter(d => d && typeof d === 'object' && d.date && typeof d.date === 'string')
+    : []
+
+  if (!Array.isArray(finalChartData) || finalChartData.length === 0) {
+    return <div className="text-center text-muted-foreground py-8">No completion data available</div>
+  }
 
   return (
     <ResponsiveContainer width="100%" height={300}>
@@ -318,7 +378,13 @@ export function CompletionChart({ data, isBatman = false, isJoker = false }) {
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis 
           dataKey="date"
-          tickFormatter={(value) => formatDateForDisplay(value)}
+          tickFormatter={(value) => {
+            try {
+              return formatDateForDisplay(value)
+            } catch {
+              return ''
+            }
+          }}
           type="category"
           interval={0}
           angle={-45}
@@ -327,7 +393,13 @@ export function CompletionChart({ data, isBatman = false, isJoker = false }) {
         />
         <YAxis domain={[0, 100]} />
         <Tooltip 
-          labelFormatter={(value) => formatDateForDisplay(value)}
+          labelFormatter={(value) => {
+            try {
+              return formatDateForDisplay(value)
+            } catch {
+              return ''
+            }
+          }}
         />
         <Legend />
         <Bar dataKey="score" fill={isBatman ? "#eab308" : isJoker ? "#9333ea" : "#8884d8"} name="Completion %" />
