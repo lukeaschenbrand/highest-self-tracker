@@ -287,7 +287,7 @@ export function getDefaultTasks() {
 // Check if task is active on a given date
 export function isTaskActiveOnDate(task, date) {
   const dayOfWeek = date.getDay() // 0 = Sunday, 1 = Monday, etc.
-  return task.active_days.includes(dayOfWeek)
+  return task.active_days && Array.isArray(task.active_days) && task.active_days.includes(dayOfWeek)
 }
 
 // Get tasks for a specific date, filtered by active days

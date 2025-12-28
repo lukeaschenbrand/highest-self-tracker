@@ -119,7 +119,8 @@ async function loadTasksFromSupabase() {
   try {
     const { data, error } = await supabase.from('tasks').select('*').order('id')
     if (error) throw error
-    return data || []
+    // Normalize tasks to ensure they have all required properties
+    return normalizeTasks(data || [])
   } catch (error) {
     console.error('Failed to load tasks from Supabase:', error)
     return []
@@ -291,30 +292,57 @@ export async function loadTasks() {
   // Fall back to localStorage
   const localTasks = loadFromLocalStorage(STORAGE_KEYS.TASKS, [])
   if (localTasks.length > 0) {
+    // Normalize tasks first to ensure they have all properties
+    const normalizedLocal = normalizeTasks(localTasks)
     // Merge with defaults to add any new tasks
-    const mergedTasks = mergeTasksWithDefaults(localTasks, getDefaultTasks())
-    if (mergedTasks.length !== localTasks.length) {
+    const mergedTasks = mergeTasksWithDefaults(normalizedLocal, getDefaultTasks())
+    if (mergedTasks.length !== normalizedLocal.length) {
       // New tasks were added, save the merged list
       await saveTasks(mergedTasks)
       return mergedTasks
     }
-    return localTasks
+    return mergedTasks
   }
   
-  // No tasks at all, return defaults
+  // No tasks at all, return defaults (already normalized)
   return getDefaultTasks()
+}
+
+// Helper function to normalize a task - ensures all required properties exist
+function normalizeTask(task) {
+  if (!task) return task
+  
+  // Ensure active_days is always an array
+  if (!task.active_days || !Array.isArray(task.active_days)) {
+    task.active_days = [1, 2, 3, 4, 5, 6, 7] // Default to all days
+  }
+  
+  // Ensure weight exists
+  if (task.weight === undefined || task.weight === null) {
+    task.weight = 1
+  }
+  
+  return task
+}
+
+// Helper function to normalize an array of tasks
+function normalizeTasks(tasks) {
+  if (!Array.isArray(tasks)) return []
+  return tasks.map(normalizeTask)
 }
 
 // Helper function to merge existing tasks with default tasks
 // Adds any missing tasks from defaults without removing existing ones
 function mergeTasksWithDefaults(existingTasks, defaultTasks) {
-  const existingTaskIds = new Set(existingTasks.map(t => t.id))
-  const merged = [...existingTasks]
+  // First normalize existing tasks to ensure they have all properties
+  const normalizedExisting = existingTasks.map(normalizeTask)
+  const existingTaskIds = new Set(normalizedExisting.map(t => t.id))
+  const merged = [...normalizedExisting]
   
   // Add any default tasks that don't exist yet
   defaultTasks.forEach(defaultTask => {
     if (!existingTaskIds.has(defaultTask.id)) {
-      merged.push(defaultTask)
+      merged.push(normalizeTask(defaultTask))
       console.log('Adding new default task:', defaultTask.id, defaultTask.label)
     }
   })

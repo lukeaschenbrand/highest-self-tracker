@@ -10,6 +10,10 @@ export function calculateScore(logEntries, tasks, date, pillar = null) {
   const dayOfWeek = date.getDay()
   relevantTasks = relevantTasks.filter(task => {
     if (task.frequency === 'weekly') return true
+    // Defensive check: ensure active_days exists and is an array
+    if (!task.active_days || !Array.isArray(task.active_days)) {
+      return false
+    }
     return task.active_days.includes(dayOfWeek)
   })
   
@@ -86,6 +90,10 @@ export function calculatePeriodScore(logEntries, tasks, startDate, endDate, pill
     
     relevantTasks = relevantTasks.filter(task => {
       if (task.frequency === 'weekly') return true
+      // Defensive check: ensure active_days exists and is an array
+      if (!task.active_days || !Array.isArray(task.active_days)) {
+        return false
+      }
       return task.active_days.includes(dayOfWeek)
     })
     

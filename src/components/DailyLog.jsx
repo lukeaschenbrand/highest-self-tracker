@@ -63,7 +63,7 @@ export function DailyLog({ selectedDate, onSave, canEdit = true, isBatman = fals
           if (entry) {
             entries[task.id] = entry.status
           }
-        } else if (task.active_days.includes(dayOfWeek)) {
+        } else if (task.active_days && Array.isArray(task.active_days) && task.active_days.includes(dayOfWeek)) {
           const entry = getLogEntry(dateStr, task.id)
           if (entry) {
             entries[task.id] = entry.status
@@ -123,7 +123,7 @@ export function DailyLog({ selectedDate, onSave, canEdit = true, isBatman = fals
 
     // Save all log entries
     for (const task of tasks) {
-      if (task.frequency === FREQUENCIES.WEEKLY || task.active_days.includes(dayOfWeek)) {
+      if (task.frequency === FREQUENCIES.WEEKLY || (task.active_days && Array.isArray(task.active_days) && task.active_days.includes(dayOfWeek))) {
         const status = logEntries[task.id]
         // Save if status exists (including 0 for tweets)
         if (status !== undefined && status !== null && status !== '') {
@@ -197,7 +197,7 @@ export function DailyLog({ selectedDate, onSave, canEdit = true, isBatman = fals
       const pillarTasks = tasks.filter(task => {
         if (task.pillar !== pillar) return false
         if (task.frequency === FREQUENCIES.WEEKLY) return true
-        return task.active_days.includes(dayOfWeek)
+        return task.active_days && Array.isArray(task.active_days) && task.active_days.includes(dayOfWeek)
       })
       orderedTasks.push(...pillarTasks)
     })

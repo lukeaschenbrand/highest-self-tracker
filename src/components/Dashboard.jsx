@@ -207,7 +207,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
     const pillarTasks = tasks.filter(task => {
       if (task.pillar !== pillar) return false
       if (task.frequency === 'weekly') return true
-      return task.active_days.includes(dayOfWeek)
+      return task.active_days && Array.isArray(task.active_days) && task.active_days.includes(dayOfWeek)
     })
 
     // Get entries for this pillar on the selected date
@@ -522,7 +522,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
                   // Get ALL tasks for this date (all pillars)
                   const allTasks = tasks.filter(task => {
                     if (task.frequency === 'weekly') return true
-                    return task.active_days.includes(dayOfWeek)
+                    return task.active_days && Array.isArray(task.active_days) && task.active_days.includes(dayOfWeek)
                   })
                   
                   // Group tasks by pillar
