@@ -239,28 +239,28 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
       </div>
 
       <Tabs value={period} onValueChange={setPeriod}>
-        <TabsList className={isBatman ? 'bg-gray-700' : ''}>
+        <TabsList className={isBatman ? 'bg-gray-800 border border-gray-700' : ''}>
           <TabsTrigger 
             value="day"
-            className={isBatman ? 'data-[state=active]:bg-gray-600 data-[state=active]:text-yellow-400 text-gray-300' : ''}
+            className={isBatman ? 'data-[state=active]:bg-yellow-400 data-[state=active]:text-black data-[state=active]:border-yellow-400 bg-gray-700 text-gray-300 border border-gray-600' : ''}
           >
             Day
           </TabsTrigger>
           <TabsTrigger 
             value="week"
-            className={isBatman ? 'data-[state=active]:bg-gray-600 data-[state=active]:text-yellow-400 text-gray-300' : ''}
+            className={isBatman ? 'data-[state=active]:bg-yellow-400 data-[state=active]:text-black data-[state=active]:border-yellow-400 bg-gray-700 text-gray-300 border border-gray-600' : ''}
           >
             Week
           </TabsTrigger>
           <TabsTrigger 
             value="month"
-            className={isBatman ? 'data-[state=active]:bg-gray-600 data-[state=active]:text-yellow-400 text-gray-300' : ''}
+            className={isBatman ? 'data-[state=active]:bg-yellow-400 data-[state=active]:text-black data-[state=active]:border-yellow-400 bg-gray-700 text-gray-300 border border-gray-600' : ''}
           >
             Month
           </TabsTrigger>
           <TabsTrigger 
             value="year"
-            className={isBatman ? 'data-[state=active]:bg-gray-600 data-[state=active]:text-yellow-400 text-gray-300' : ''}
+            className={isBatman ? 'data-[state=active]:bg-yellow-400 data-[state=active]:text-black data-[state=active]:border-yellow-400 bg-gray-700 text-gray-300 border border-gray-600' : ''}
           >
             Year
           </TabsTrigger>

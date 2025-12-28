@@ -135,6 +135,11 @@ function App() {
                     src="/batman-icon.png" 
                     alt="Batman" 
                     className="w-8 h-8"
+                    style={{ 
+                      mixBlendMode: 'multiply',
+                      filter: 'contrast(1.2) brightness(1.1)',
+                      backgroundColor: 'transparent'
+                    }}
                   />
                   <h1 className="text-2xl font-bold text-yellow-400">Welcome Back, Batman.</h1>
                 </>
@@ -159,7 +164,7 @@ function App() {
                 onClick={handleLogout}
                 className={isBatman ? 'bg-yellow-400 hover:bg-yellow-500 text-black border-yellow-400' : ''}
               >
-                Logout
+                Log Out
               </Button>
               <Button
                 variant="outline"
@@ -205,16 +210,16 @@ function App() {
         }`}>
           <div className="max-w-7xl mx-auto px-4 py-2">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className={isBatman ? 'bg-gray-700' : ''}>
+              <TabsList className={isBatman ? 'bg-gray-800 border border-gray-700' : ''}>
                 <TabsTrigger 
                   value="log"
-                  className={isBatman ? 'data-[state=active]:bg-gray-600 data-[state=active]:text-yellow-400 text-gray-300' : ''}
+                  className={isBatman ? 'data-[state=active]:bg-yellow-400 data-[state=active]:text-black data-[state=active]:border-yellow-400 bg-gray-700 text-gray-300 border border-gray-600' : ''}
                 >
                   Daily Log
                 </TabsTrigger>
                 <TabsTrigger 
                   value="dashboard"
-                  className={isBatman ? 'data-[state=active]:bg-gray-600 data-[state=active]:text-yellow-400 text-gray-300' : ''}
+                  className={isBatman ? 'data-[state=active]:bg-yellow-400 data-[state=active]:text-black data-[state=active]:border-yellow-400 bg-gray-700 text-gray-300 border border-gray-600' : ''}
                 >
                   Dashboard
                 </TabsTrigger>
