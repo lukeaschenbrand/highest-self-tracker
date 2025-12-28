@@ -130,18 +130,7 @@ function App() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               {isBatman ? (
-                <>
-                  <img 
-                    src="/batman-icon.png" 
-                    alt="Batman" 
-                    className="w-8 h-8"
-                    style={{ 
-                      filter: 'brightness(0) saturate(100%) invert(84%) sepia(95%) saturate(1352%) hue-rotate(358deg) brightness(105%) contrast(105%)',
-                      backgroundColor: 'transparent'
-                    }}
-                  />
-                  <h1 className="text-2xl font-bold text-yellow-400">Welcome Back, Batman.</h1>
-                </>
+                <h1 className="text-2xl font-bold text-yellow-400">Welcome Back, Batman.</h1>
               ) : (
                 <h1 className="text-2xl font-bold">Highest Self Tracker</h1>
               )}
@@ -212,13 +201,13 @@ function App() {
               <TabsList className={isBatman ? 'bg-gray-800 border border-gray-700' : ''}>
                 <TabsTrigger 
                   value="log"
-                  className={isBatman ? 'data-[state=active]:bg-yellow-400 data-[state=active]:text-black data-[state=active]:border-yellow-400 bg-gray-700 text-gray-300 border border-gray-600' : ''}
+                  className={isBatman ? 'data-[state=active]:bg-yellow-400 data-[state=active]:text-black data-[state=active]:border-yellow-400 bg-gray-700 hover:bg-yellow-400 hover:text-black text-yellow-400 border border-gray-600' : ''}
                 >
                   Daily Log
                 </TabsTrigger>
                 <TabsTrigger 
                   value="dashboard"
-                  className={isBatman ? 'data-[state=active]:bg-yellow-400 data-[state=active]:text-black data-[state=active]:border-yellow-400 bg-gray-700 text-gray-300 border border-gray-600' : ''}
+                  className={isBatman ? 'data-[state=active]:bg-yellow-400 data-[state=active]:text-black data-[state=active]:border-yellow-400 bg-gray-700 hover:bg-yellow-400 hover:text-black text-yellow-400 border border-gray-600' : ''}
                 >
                   Dashboard
                 </TabsTrigger>
