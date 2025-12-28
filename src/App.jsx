@@ -131,7 +131,14 @@ function App() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               {isBatman ? (
-                <h1 className="text-2xl font-bold text-yellow-400">Welcome Back, Batman.</h1>
+                <>
+                  <img 
+                    src="/batman-opener.png" 
+                    alt="Batman" 
+                    className="w-8 h-8 rounded-full"
+                  />
+                  <h1 className="text-2xl font-bold text-yellow-400">Welcome Back, Batman.</h1>
+                </>
               ) : isJoker ? (
                 <>
                   <img 
