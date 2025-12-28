@@ -71,7 +71,7 @@ async function saveTasksToSupabase(tasks) {
       if (error && error.message && (error.message.includes('active_days') || error.message.includes('weight'))) {
         console.warn('Some columns not found in database. Saving tasks with only basic columns.')
         console.warn('Please run this SQL in Supabase to add missing columns:')
-        console.warn('ALTER TABLE tasks ADD COLUMN IF NOT EXISTS active_days INTEGER[] DEFAULT ARRAY[1,2,3,4,5,6,7], ADD COLUMN IF NOT EXISTS weight INTEGER DEFAULT 1;')
+        console.warn('ALTER TABLE tasks ADD COLUMN IF NOT EXISTS active_days INTEGER[] DEFAULT ARRAY[0,1,2,3,4,5,6], ADD COLUMN IF NOT EXISTS weight INTEGER DEFAULT 1;')
         
         // Try with only the basic required columns
         const basicColumns = ['id', 'label', 'category', 'pillar', 'frequency', 'allow_pass']
