@@ -22,7 +22,7 @@ function formatDateForDisplay(dateString) {
   return dateString.split('-').slice(1).join('/') // MM/DD format
 }
 
-export function SleepChart({ data }) {
+export function SleepChart({ data, isBatman = false }) {
   const dateRange = getDateRange()
   
   // Create a map of existing data
@@ -75,13 +75,13 @@ export function SleepChart({ data }) {
           labelFormatter={(value) => formatDateForDisplay(value)}
         />
         <Legend />
-        <Line type="monotone" dataKey="sleep" stroke="#8884d8" strokeWidth={2} name="Sleep (hours)" connectNulls={false} />
+        <Line type="monotone" dataKey="sleep" stroke={isBatman ? "#eab308" : "#8884d8"} strokeWidth={2} name="Sleep (hours)" connectNulls={false} />
       </LineChart>
     </ResponsiveContainer>
   )
 }
 
-export function EnergyChart({ data }) {
+export function EnergyChart({ data, isBatman = false }) {
   const dateRange = getDateRange()
   
   // Create a map of existing data
@@ -134,13 +134,13 @@ export function EnergyChart({ data }) {
           labelFormatter={(value) => formatDateForDisplay(value)}
         />
         <Legend />
-        <Line type="monotone" dataKey="energy" stroke="#82ca9d" strokeWidth={2} name="Energy (1-10)" connectNulls={false} />
+        <Line type="monotone" dataKey="energy" stroke={isBatman ? "#eab308" : "#82ca9d"} strokeWidth={2} name="Energy (1-10)" connectNulls={false} />
       </LineChart>
     </ResponsiveContainer>
   )
 }
 
-export function WeightChart({ data }) {
+export function WeightChart({ data, isBatman = false }) {
   const dateRange = getDateRange()
   
   // Create a map of existing data
@@ -192,13 +192,13 @@ export function WeightChart({ data }) {
           labelFormatter={(value) => formatDateForDisplay(value)}
         />
         <Legend />
-        <Line type="monotone" dataKey="weight" stroke="#8884d8" strokeWidth={2} name="Weight (lbs)" connectNulls={false} />
+        <Line type="monotone" dataKey="weight" stroke={isBatman ? "#eab308" : "#8884d8"} strokeWidth={2} name="Weight (lbs)" connectNulls={false} />
       </LineChart>
     </ResponsiveContainer>
   )
 }
 
-export function CompletionChart({ data }) {
+export function CompletionChart({ data, isBatman = false }) {
   // data should be array of { date, score } objects
   // Already filtered to project start date range, so no need to slice
   // Keep full date (YYYY-MM-DD) for proper ordering
@@ -231,7 +231,7 @@ export function CompletionChart({ data }) {
           labelFormatter={(value) => formatDateForDisplay(value)}
         />
         <Legend />
-        <Bar dataKey="score" fill="#8884d8" name="Completion %" />
+        <Bar dataKey="score" fill={isBatman ? "#eab308" : "#8884d8"} name="Completion %" />
       </BarChart>
     </ResponsiveContainer>
   )
