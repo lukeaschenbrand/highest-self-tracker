@@ -18,7 +18,7 @@ export function ViewerSelector({ onSelect }) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center p-4 batman-font">
       <div className="text-center space-y-8 max-w-4xl w-full">
         <h1 className="text-5xl font-bold text-white mb-12">
           Who's viewing?
