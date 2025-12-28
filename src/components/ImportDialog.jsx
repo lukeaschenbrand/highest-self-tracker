@@ -18,8 +18,18 @@ export function ImportDialog({ onClose, onImport }) {
 
     try {
       const fileName = file.name.toLowerCase()
+      const fileType = file.type
       
-      if (fileName.endsWith('.csv')) {
+      // Check if it's a CSV file (by extension or content type)
+      const isCSV = fileName.endsWith('.csv') || 
+                    fileType === 'text/csv' || 
+                    fileType === 'application/vnd.ms-excel' ||
+                    (!fileName.includes('.') && fileType.startsWith('text/'))
+      
+      // Check if it's a JSON file
+      const isJSON = fileName.endsWith('.json') || fileType === 'application/json'
+      
+      if (isCSV) {
         // Import CSV
         const data = await importCSVFile(file)
         
@@ -44,7 +54,7 @@ export function ImportDialog({ onClose, onImport }) {
             window.location.reload()
           }, 1500)
         }
-      } else if (fileName.endsWith('.json')) {
+      } else if (isJSON) {
         // Import JSON (full backup)
         const data = await importJSONFile(file)
         
@@ -65,10 +75,49 @@ export function ImportDialog({ onClose, onImport }) {
           throw new Error('Failed to import JSON data')
         }
       } else {
-        throw new Error('Unsupported file type. Please use .csv or .json files.')
+        // Try to detect by reading first few bytes
+        const reader = new FileReader()
+        reader.onload = async (e) => {
+          try {
+            const content = e.target.result
+            // Check if it looks like CSV (has commas and Date column)
+            if (content.includes(',') && content.includes('Date')) {
+              const data = await importCSVFile(file)
+              data.logEntries.forEach(entry => saveLogEntry(entry))
+              data.metricEntries.forEach(entry => saveMetricEntry(entry))
+              setStatus(`Successfully imported ${data.logEntries.length} log entries and ${data.metricEntries.length} metric entries!`)
+              if (onImport) {
+                setTimeout(() => {
+                  onImport()
+                  if (onClose) onClose()
+                }, 1500)
+              }
+            } else if (content.trim().startsWith('{')) {
+              // Looks like JSON
+              const data = JSON.parse(content)
+              if (importData(data)) {
+                setStatus('Successfully imported all data from JSON backup!')
+                if (onImport) {
+                  setTimeout(() => {
+                    onImport()
+                    if (onClose) onClose()
+                  }, 1500)
+                }
+              }
+            } else {
+              throw new Error('Unsupported file type. Please use .csv or .json files.')
+            }
+          } catch (err) {
+            setStatus(`Error: ${err.message}`)
+            setIsLoading(false)
+          }
+        }
+        reader.readAsText(file.slice(0, 1000)) // Read first 1KB to detect format
+        return // Don't set loading to false yet, wait for detection
       }
     } catch (error) {
-      setStatus(`Error: ${error.message}`)
+      console.error('Import error:', error)
+      setStatus(`Error: ${error.message}. Please check the console for details.`)
     } finally {
       setIsLoading(false)
     }
@@ -86,13 +135,13 @@ export function ImportDialog({ onClose, onImport }) {
           </label>
           <Input
             type="file"
-            accept=".csv,.json"
+            accept=".csv,.json,text/csv,application/json,text/plain"
             onChange={handleFileSelect}
             disabled={isLoading}
             className="cursor-pointer"
           />
           <p className="text-xs text-muted-foreground mt-2">
-            Supported formats: CSV (exported from this app) or JSON (full backup)
+            Supported formats: CSV (exported from this app) or JSON (full backup). Files without extensions will be detected by content.
           </p>
         </div>
         
