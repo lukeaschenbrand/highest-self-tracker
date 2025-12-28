@@ -128,9 +128,16 @@ function App() {
       }`}>
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div>
+            <div className="flex items-center gap-3">
               {isBatman ? (
-                <h1 className="text-2xl font-bold text-yellow-400">Welcome Back, Batman</h1>
+                <>
+                  <img 
+                    src="/batman-icon.png" 
+                    alt="Batman" 
+                    className="w-8 h-8"
+                  />
+                  <h1 className="text-2xl font-bold text-yellow-400">Welcome Back, Batman.</h1>
+                </>
               ) : (
                 <h1 className="text-2xl font-bold">Highest Self Tracker</h1>
               )}
@@ -141,7 +148,7 @@ function App() {
                   variant="outline"
                   size="sm"
                   onClick={() => setShowBackfill(true)}
-                  className={isBatman ? 'border-gray-600 text-yellow-400 hover:bg-gray-700' : ''}
+                  className={isBatman ? 'bg-yellow-400 hover:bg-yellow-500 text-black border-yellow-400' : ''}
                 >
                   Initialize/Backfill
                 </Button>
@@ -150,14 +157,14 @@ function App() {
                 variant="outline"
                 size="sm"
                 onClick={handleLogout}
-                className={isBatman ? 'border-gray-600 text-yellow-400 hover:bg-gray-700' : ''}
+                className={isBatman ? 'bg-yellow-400 hover:bg-yellow-500 text-black border-yellow-400' : ''}
               >
                 Logout
               </Button>
               <Button
                 variant="outline"
                 onClick={() => handleDateChange(-1)}
-                className={isBatman ? 'border-gray-600 text-yellow-400 hover:bg-gray-700' : ''}
+                className={isBatman ? 'bg-yellow-400 hover:bg-yellow-500 text-black border-yellow-400' : ''}
               >
                 ←
               </Button>
@@ -177,14 +184,14 @@ function App() {
               <Button
                 variant="outline"
                 onClick={() => handleDateChange(1)}
-                className={isBatman ? 'border-gray-600 text-yellow-400 hover:bg-gray-700' : ''}
+                className={isBatman ? 'bg-yellow-400 hover:bg-yellow-500 text-black border-yellow-400' : ''}
               >
                 →
               </Button>
               <Button
                 variant="outline"
                 onClick={() => setSelectedDate(new Date())}
-                className={isBatman ? 'border-gray-600 text-yellow-400 hover:bg-gray-700' : ''}
+                className={isBatman ? 'bg-yellow-400 hover:bg-yellow-500 text-black border-yellow-400' : ''}
               >
                 Today
               </Button>

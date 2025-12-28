@@ -36,7 +36,7 @@ export function ViewerSelector({ onSelect }) {
               <img 
                 src="/joker-opener.png" 
                 alt="Joker" 
-                className="w-full h-auto rounded-lg mb-4"
+                className="w-full h-[400px] object-cover rounded-lg mb-4"
               />
               <h2 className="text-3xl font-bold text-purple-400 mb-2">Joker</h2>
               <p className="text-gray-300">View Only</p>
@@ -54,7 +54,7 @@ export function ViewerSelector({ onSelect }) {
               <img 
                 src="/batman-opener.png" 
                 alt="Batman" 
-                className="w-full h-auto rounded-lg mb-4"
+                className="w-full h-[400px] object-cover rounded-lg mb-4"
               />
               <h2 className="text-3xl font-bold text-yellow-400 mb-2">Batman</h2>
               <p className="text-gray-300">Editor Mode</p>
