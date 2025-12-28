@@ -192,7 +192,7 @@ export function WeightChart({ data }) {
           labelFormatter={(value) => formatDateForDisplay(value)}
         />
         <Legend />
-        <Line type="monotone" dataKey="weight" stroke="#ffc658" strokeWidth={2} name="Weight (lbs)" connectNulls={false} />
+        <Line type="monotone" dataKey="weight" stroke="#8884d8" strokeWidth={2} name="Weight (lbs)" connectNulls={false} />
       </LineChart>
     </ResponsiveContainer>
   )
