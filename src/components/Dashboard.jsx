@@ -164,7 +164,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
 
     if (score === null) {
       return (
-        <Card className={isBatman ? 'bg-gray-800 border-gray-700' : isJoker ? 'bg-gray-100 border-gray-300' : ''}>
+        <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
           <CardHeader>
             <CardTitle className={`text-base ${isBatman ? 'text-yellow-400' : ''}`}>{title}</CardTitle>
           </CardHeader>
@@ -177,7 +177,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
     }
 
     return (
-      <Card className={isBatman ? 'bg-gray-800 border-gray-700' : isJoker ? 'bg-gray-100 border-gray-300' : ''}>
+      <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
         <CardHeader>
           <CardTitle className={`text-base ${isBatman ? 'text-yellow-400' : ''}`}>{title}</CardTitle>
         </CardHeader>
@@ -245,7 +245,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
             className={isBatman 
               ? `${period === 'day' ? 'bg-yellow-600 text-black border-yellow-600' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-600 hover:text-black border`
               : isJoker
-              ? `${period === 'day' ? 'bg-purple-600 text-green-400 border-purple-600' : 'bg-gray-200 text-gray-700 border-gray-300'} hover:bg-green-500 hover:text-purple-600 border`
+              ? `${period === 'day' ? 'bg-purple-600 text-green-400 border-purple-600' : 'bg-green-500 text-purple-600 border-green-500'} hover:bg-purple-600 hover:text-green-400 border`
               : ''}
           >
             Day
@@ -255,7 +255,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
             className={isBatman 
               ? `${period === 'week' ? 'bg-yellow-600 text-black border-yellow-600' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-600 hover:text-black border`
               : isJoker
-              ? `${period === 'week' ? 'bg-purple-600 text-green-400 border-purple-600' : 'bg-gray-200 text-gray-700 border-gray-300'} hover:bg-green-500 hover:text-purple-600 border`
+              ? `${period === 'week' ? 'bg-purple-600 text-green-400 border-purple-600' : 'bg-green-500 text-purple-600 border-green-500'} hover:bg-purple-600 hover:text-green-400 border`
               : ''}
           >
             Week
@@ -265,7 +265,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
             className={isBatman 
               ? `${period === 'month' ? 'bg-yellow-600 text-black border-yellow-600' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-600 hover:text-black border`
               : isJoker
-              ? `${period === 'month' ? 'bg-purple-600 text-green-400 border-purple-600' : 'bg-gray-200 text-gray-700 border-gray-300'} hover:bg-green-500 hover:text-purple-600 border`
+              ? `${period === 'month' ? 'bg-purple-600 text-green-400 border-purple-600' : 'bg-green-500 text-purple-600 border-green-500'} hover:bg-purple-600 hover:text-green-400 border`
               : ''}
           >
             Month
@@ -275,7 +275,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
             className={isBatman 
               ? `${period === 'year' ? 'bg-yellow-600 text-black border-yellow-600' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-600 hover:text-black border`
               : isJoker
-              ? `${period === 'year' ? 'bg-purple-600 text-green-400 border-purple-600' : 'bg-gray-200 text-gray-700 border-gray-300'} hover:bg-green-500 hover:text-purple-600 border`
+              ? `${period === 'year' ? 'bg-purple-600 text-green-400 border-purple-600' : 'bg-green-500 text-purple-600 border-green-500'} hover:bg-purple-600 hover:text-green-400 border`
               : ''}
           >
             Year
@@ -296,7 +296,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
           {/* Weekly Fitness Progress */}
           {period === 'week' && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-              <Card className={isBatman ? 'bg-gray-800 border-gray-700' : isJoker ? 'bg-gray-100 border-gray-300' : ''}>
+              <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
                 <CardHeader>
                   <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Lifting Progress</CardTitle>
                 </CardHeader>
@@ -315,7 +315,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
                 </CardContent>
               </Card>
 
-              <Card className={isBatman ? 'bg-gray-800 border-gray-700' : isJoker ? 'bg-gray-100 border-gray-300' : ''}>
+              <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
                 <CardHeader>
                   <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Cardio Progress</CardTitle>
                 </CardHeader>
@@ -350,7 +350,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
 
           {/* Charts Section */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-            <Card className={isBatman ? 'bg-gray-800 border-gray-700' : isJoker ? 'bg-gray-100 border-gray-300' : ''}>
+            <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
               <CardHeader>
                 <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Sleep Trends</CardTitle>
               </CardHeader>
@@ -359,7 +359,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
               </CardContent>
             </Card>
 
-            <Card className={isBatman ? 'bg-gray-800 border-gray-700' : isJoker ? 'bg-gray-100 border-gray-300' : ''}>
+            <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
               <CardHeader>
                 <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Energy Levels</CardTitle>
               </CardHeader>
@@ -368,7 +368,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
               </CardContent>
             </Card>
 
-            <Card className={isBatman ? 'bg-gray-800 border-gray-700' : isJoker ? 'bg-gray-100 border-gray-300' : ''}>
+            <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
               <CardHeader>
                 <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Weight Trends</CardTitle>
               </CardHeader>
@@ -377,7 +377,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
               </CardContent>
             </Card>
 
-            <Card className={isBatman ? 'bg-gray-800 border-gray-700' : isJoker ? 'bg-gray-100 border-gray-300' : ''}>
+            <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
               <CardHeader>
                 <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Daily Completion Rate</CardTitle>
               </CardHeader>
@@ -388,7 +388,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
           </div>
 
           {/* Metrics Table */}
-          <Card className={isBatman ? 'bg-gray-800 border-gray-700' : isJoker ? 'bg-gray-100 border-gray-300' : ''}>
+          <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
             <CardHeader>
               <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Recent Body Metrics</CardTitle>
             </CardHeader>

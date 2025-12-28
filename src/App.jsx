@@ -125,7 +125,7 @@ function App() {
     <div className={`min-h-screen ${isBatman ? 'bg-gray-900' : isJoker ? 'bg-gray-100' : 'bg-background'}`}>
       {/* Sticky Header */}
       <div className={`sticky top-0 z-50 border-b shadow-sm ${
-        isBatman ? 'bg-gray-800 border-gray-700' : isJoker ? 'bg-gray-100 border-gray-300' : 'bg-card'
+        isBatman ? 'bg-gray-800 border-gray-700' : 'bg-card'
       }`}>
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -204,7 +204,7 @@ function App() {
         
         {/* Sticky Tabs */}
         <div className={`border-t ${
-          isBatman ? 'bg-gray-800 border-gray-700' : isJoker ? 'bg-gray-100 border-gray-300' : 'bg-background'
+          isBatman ? 'bg-gray-800 border-gray-700' : 'bg-background'
         }`}>
           <div className="max-w-7xl mx-auto px-4 py-2">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -214,7 +214,7 @@ function App() {
                   className={isBatman 
                     ? `${activeTab === 'log' ? 'bg-yellow-600 text-black border-yellow-600' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-600 hover:text-black border`
                     : isJoker
-                    ? `${activeTab === 'log' ? 'bg-purple-600 text-green-400 border-purple-600' : 'bg-gray-200 text-gray-700 border-gray-300'} hover:bg-green-500 hover:text-purple-600 border`
+                    ? `${activeTab === 'log' ? 'bg-purple-600 text-green-400 border-purple-600' : 'bg-green-500 text-purple-600 border-green-500'} hover:bg-purple-600 hover:text-green-400 border`
                     : ''}
                 >
                   Daily Log
@@ -224,7 +224,7 @@ function App() {
                   className={isBatman 
                     ? `${activeTab === 'dashboard' ? 'bg-yellow-600 text-black border-yellow-600' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-600 hover:text-black border`
                     : isJoker
-                    ? `${activeTab === 'dashboard' ? 'bg-purple-600 text-green-400 border-purple-600' : 'bg-gray-200 text-gray-700 border-gray-300'} hover:bg-green-500 hover:text-purple-600 border`
+                    ? `${activeTab === 'dashboard' ? 'bg-purple-600 text-green-400 border-purple-600' : 'bg-green-500 text-purple-600 border-green-500'} hover:bg-purple-600 hover:text-green-400 border`
                     : ''}
                 >
                   Dashboard
