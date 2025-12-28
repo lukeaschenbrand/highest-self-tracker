@@ -154,6 +154,8 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
   // Get completion data for chart
   const getCompletionData = () => {
     if (!projectStart) return []
+    if (!Array.isArray(logEntries) || !Array.isArray(tasks)) return []
+    
     // Get date range from project start to today
     const today = new Date()
     const dates = []
@@ -164,13 +166,23 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
       current.setDate(current.getDate() + 1)
     }
 
-    return dates.map(date => {
+    const result = []
+    for (const date of dates) {
       const score = calculateScore(logEntries, tasks, date)
-      return {
-        date: formatDate(date),
-        score: score
+      const dateStr = formatDate(date)
+      
+      // Only include entries with valid scores and dates
+      if (dateStr && typeof dateStr === 'string' && dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        if (score !== null && score !== undefined && !isNaN(score)) {
+          result.push({
+            date: dateStr,
+            score: Number(score)
+          })
+        }
       }
-    })
+    }
+    
+    return result.sort((a, b) => a.date.localeCompare(b.date))
   }
 
   const ScoreCard = ({ title, score, pillar }) => {
