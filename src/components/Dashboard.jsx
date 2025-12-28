@@ -26,6 +26,8 @@ import {
 import { exportCurrentWeek, exportCurrentMonth, exportAll } from '@/lib/export'
 import { getProjectStartDate } from '@/lib/backfill'
 import { ImportDialog } from '@/components/ImportDialog'
+import { migrateLocalStorageToSupabase } from '@/lib/migration'
+import { isSupabaseConfigured } from '@/lib/supabase'
 
 export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman = false, isJoker = false }) {
   const [tasks, setTasks] = useState([])
