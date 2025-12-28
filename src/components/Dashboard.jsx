@@ -8,7 +8,8 @@ import {
   loadTasks,
   saveTasks,
   loadLogEntries, 
-  loadMetricEntries 
+  loadMetricEntries,
+  getLogEntry
 } from '@/lib/storage'
 import { getDefaultTasks, PILLARS } from '@/lib/tasks'
 import { 
@@ -38,6 +39,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
   const [projectStart, setProjectStart] = useState(null)
   const [migrating, setMigrating] = useState(false)
   const [migrationStatus, setMigrationStatus] = useState('')
+  const [expandedPillar, setExpandedPillar] = useState(null)
 
   useEffect(() => {
     const loadData = async () => {
@@ -60,6 +62,8 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
       setMetricEntries(await loadMetricEntries())
     }
     refreshData()
+    // Reset expanded pillar when date changes
+    setExpandedPillar(null)
   }, [selectedDate])
 
   const getOverallScore = () => {
@@ -194,6 +198,32 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
       return 'text-red-600'
     }
 
+    const isExpanded = expandedPillar === pillar
+    const dateStr = formatDate(selectedDate)
+    const dayOfWeek = selectedDate.getDay()
+    
+    // Get tasks for this pillar
+    const pillarTasks = tasks.filter(task => {
+      if (task.pillar !== pillar) return false
+      if (task.frequency === 'weekly') return true
+      return task.active_days.includes(dayOfWeek)
+    })
+
+    // Get entries for this pillar on the selected date
+    const pillarEntries = pillarTasks.map(task => {
+      const entry = getLogEntry(dateStr, task.id)
+      return {
+        task,
+        entry: entry ? entry.status : null
+      }
+    })
+
+    const handleCardClick = () => {
+      if (period === 'day' && pillar) {
+        setExpandedPillar(isExpanded ? null : pillar)
+      }
+    }
+
     if (score === null) {
       return (
         <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
@@ -211,7 +241,12 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
     return (
       <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
         <CardHeader>
-          <CardTitle className={`text-base ${isBatman ? 'text-yellow-400' : ''}`}>{title}</CardTitle>
+          <CardTitle 
+            className={`text-base ${isBatman ? 'text-yellow-400' : ''} ${period === 'day' && pillar ? 'cursor-pointer hover:opacity-80' : ''}`}
+            onClick={handleCardClick}
+          >
+            {title} {period === 'day' && pillar && (isExpanded ? '▼' : '▶')}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className={`text-4xl font-bold ${getColor(score)}`}>
@@ -223,6 +258,26 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
               style={{ width: `${score}%` }}
             />
           </div>
+          
+          {/* Show daily entries when expanded and viewing day period */}
+          {isExpanded && period === 'day' && (
+            <div className="mt-4 space-y-2 pt-4 border-t border-gray-600">
+              <p className={`text-xs font-semibold mb-2 ${isBatman ? 'text-yellow-400' : 'text-muted-foreground'}`}>
+                {formatDate(selectedDate)} entries:
+              </p>
+              {pillarEntries.map(({ task, entry }) => (
+                <div key={task.id} className="flex items-center justify-between text-sm">
+                  <span className={isBatman ? 'text-yellow-400' : ''}>{task.label}</span>
+                  <Badge 
+                    variant={entry === 'Y' ? 'default' : entry === 'P' ? 'secondary' : entry === 'N' ? 'destructive' : 'outline'}
+                    className={isBatman ? (entry === 'Y' ? 'bg-yellow-600 text-black' : entry === 'P' ? 'bg-gray-600 text-yellow-400' : entry === 'N' ? 'bg-red-600 text-white' : 'bg-gray-700 text-yellow-400') : ''}
+                  >
+                    {entry === 'Y' ? 'Yes' : entry === 'P' ? 'Pass' : entry === 'N' ? 'No' : entry || '—'}
+                  </Badge>
+                </div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
     )

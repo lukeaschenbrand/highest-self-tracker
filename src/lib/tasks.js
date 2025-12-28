@@ -114,6 +114,16 @@ export function getDefaultTasks() {
       allow_pass: false,
       weight: 1,
     },
+    {
+      id: 'body_2',
+      pillar: PILLARS.BODY,
+      category: CATEGORIES.PERSONAL,
+      label: '>15 minutes of sun',
+      frequency: FREQUENCIES.DAILY,
+      active_days: [1, 2, 3, 4, 5, 6, 7],
+      allow_pass: false,
+      weight: 1,
+    },
     
     // Work Pillar - Daily (Mon-Sat)
     {
