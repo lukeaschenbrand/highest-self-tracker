@@ -142,8 +142,7 @@ export function SleepChart({ data, isBatman = false, isJoker = false }) {
               return ''
             }
           }}
-          type="category"
-          interval={0}
+          interval="preserveStartEnd"
           angle={-45}
           textAnchor="end"
           height={60}
@@ -257,8 +256,7 @@ export function EnergyChart({ data, isBatman = false, isJoker = false }) {
               return ''
             }
           }}
-          type="category"
-          interval={0}
+          interval="preserveStartEnd"
           angle={-45}
           textAnchor="end"
           height={60}
@@ -371,8 +369,7 @@ export function WeightChart({ data, isBatman = false, isJoker = false }) {
               return ''
             }
           }}
-          type="category"
-          interval={0}
+          interval="preserveStartEnd"
           angle={-45}
           textAnchor="end"
           height={60}
@@ -457,8 +454,7 @@ export function CompletionChart({ data, isBatman = false, isJoker = false }) {
               return ''
             }
           }}
-          type="category"
-          interval={0}
+          interval="preserveStartEnd"
           angle={-45}
           textAnchor="end"
           height={60}
