@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS tasks (
   pillar TEXT NOT NULL,
   frequency TEXT NOT NULL,
   allow_pass BOOLEAN DEFAULT false,
-  active_days INTEGER[] DEFAULT ARRAY[1,2,3,4,5,6,7],
+  active_days INTEGER[] DEFAULT ARRAY[0,1,2,3,4,5,6],
   weight INTEGER DEFAULT 1,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()

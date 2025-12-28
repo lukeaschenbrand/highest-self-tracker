@@ -53,7 +53,7 @@ export async function migrateLocalStorageToSupabase() {
         }
         // Ensure required fields have defaults
         if (!sanitized.active_days || !Array.isArray(sanitized.active_days)) {
-          sanitized.active_days = [1, 2, 3, 4, 5, 6, 7]
+          sanitized.active_days = [0, 1, 2, 3, 4, 5, 6] // Default to all days (Sun-Sat)
         }
         if (sanitized.weight === undefined || sanitized.weight === null) {
           sanitized.weight = 1

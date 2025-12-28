@@ -3,12 +3,12 @@
 
 -- Add missing columns to tasks table
 ALTER TABLE tasks 
-  ADD COLUMN IF NOT EXISTS active_days INTEGER[] DEFAULT ARRAY[1,2,3,4,5,6,7],
+  ADD COLUMN IF NOT EXISTS active_days INTEGER[] DEFAULT ARRAY[0,1,2,3,4,5,6],
   ADD COLUMN IF NOT EXISTS weight INTEGER DEFAULT 1;
 
 -- Update existing tasks to have default values if they're NULL
 UPDATE tasks 
-SET active_days = ARRAY[1,2,3,4,5,6,7] 
+SET active_days = ARRAY[0,1,2,3,4,5,6] 
 WHERE active_days IS NULL;
 
 UPDATE tasks 
