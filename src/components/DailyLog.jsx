@@ -16,7 +16,7 @@ import {
 import { getDefaultTasks, PILLARS, FREQUENCIES } from '@/lib/tasks'
 import { cn } from '@/lib/utils'
 
-export function DailyLog({ selectedDate, onSave, canEdit = true, isBatman = false }) {
+export function DailyLog({ selectedDate, onSave, canEdit = true, isBatman = false, isJoker = false }) {
   const [tasks, setTasks] = useState([])
   const [logEntries, setLogEntries] = useState({})
   const [metrics, setMetrics] = useState({
@@ -501,7 +501,11 @@ export function DailyLog({ selectedDate, onSave, canEdit = true, isBatman = fals
     const isExpanded = expandedPillars[pillar]
 
     return (
-      <Card className={`mb-4 ${isBatman ? 'bg-gray-800 border-gray-700' : ''}`}>
+      <Card className={`mb-4 ${
+        isBatman ? 'bg-gray-800 border-gray-700' 
+        : isJoker ? 'bg-slate-800/80 border-purple-700/50 backdrop-blur-sm' 
+        : ''
+      }`}>
         <CardHeader 
           className={canEdit ? "cursor-pointer" : ""}
           onClick={() => canEdit && togglePillar(pillar)}
