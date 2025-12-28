@@ -185,9 +185,9 @@ function App() {
                   const newDate = new Date(e.target.value)
                   setSelectedDate(newDate)
                 }}
-                className={`px-3 py-2 border rounded-md transition-colors ${
+                className={`px-3 py-2 border rounded-md ${
                   isBatman 
-                    ? 'bg-gray-800 border-gray-600 text-yellow-400 hover:bg-yellow-600 hover:text-black' 
+                    ? 'bg-gray-800 border-gray-600 text-yellow-400 date-input-batman' 
                     : ''
                 }`}
               />
