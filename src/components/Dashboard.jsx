@@ -408,7 +408,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {metricEntries.slice(-7).reverse().map(entry => (
+                {(Array.isArray(metricEntries) ? metricEntries : []).slice(-7).reverse().map(entry => (
                   <div 
                     key={entry.date} 
                     className={`flex items-center justify-between p-2 border rounded ${

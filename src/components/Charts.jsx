@@ -29,6 +29,9 @@ function useDateRange() {
 
 // Helper to format date for display
 function formatDateForDisplay(dateString) {
+  if (!dateString || typeof dateString !== 'string') {
+    return ''
+  }
   return dateString.split('-').slice(1).join('/') // MM/DD format
 }
 
@@ -102,10 +105,13 @@ export function EnergyChart({ data, isBatman = false, isJoker = false }) {
     return <div className="text-center text-muted-foreground py-8">Loading...</div>
   }
   
+  // Ensure data is an array
+  const safeData = Array.isArray(data) ? data : []
+  
   // Create a map of existing data
   const dataMap = new Map()
-  data
-    .filter(d => d.energy_1_10 !== null && d.energy_1_10 !== undefined)
+  safeData
+    .filter(d => d && d.energy_1_10 !== null && d.energy_1_10 !== undefined)
     .forEach(d => {
       dataMap.set(d.date, parseInt(d.energy_1_10))
     })
@@ -165,10 +171,13 @@ export function WeightChart({ data, isBatman = false, isJoker = false }) {
     return <div className="text-center text-muted-foreground py-8">Loading...</div>
   }
   
+  // Ensure data is an array
+  const safeData = Array.isArray(data) ? data : []
+  
   // Create a map of existing data
   const dataMap = new Map()
-  data
-    .filter(d => d.weight_lbs !== null && d.weight_lbs !== undefined && d.weight_lbs !== 'P')
+  safeData
+    .filter(d => d && d.weight_lbs !== null && d.weight_lbs !== undefined && d.weight_lbs !== 'P')
     .forEach(d => {
       dataMap.set(d.date, parseFloat(d.weight_lbs))
     })
@@ -221,11 +230,14 @@ export function WeightChart({ data, isBatman = false, isJoker = false }) {
 }
 
 export function CompletionChart({ data, isBatman = false, isJoker = false }) {
+  // Ensure data is an array
+  const safeData = Array.isArray(data) ? data : []
+  
   // data should be array of { date, score } objects
   // Already filtered to project start date range, so no need to slice
   // Keep full date (YYYY-MM-DD) for proper ordering
-  const chartData = data
-    .filter(d => d.score !== null && d.score !== undefined)
+  const chartData = safeData
+    .filter(d => d && d.score !== null && d.score !== undefined)
     .map(d => ({
       date: d.date, // Keep full date for ordering
       score: d.score
