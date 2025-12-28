@@ -39,9 +39,21 @@ async function saveTasksToSupabase(tasks) {
     // Delete all existing tasks
     await supabase.from('tasks').delete().neq('id', '')
     
-    // Insert all tasks
+    // Insert all tasks - only include columns that exist in the schema
     if (tasks.length > 0) {
-      const { error } = await supabase.from('tasks').insert(tasks)
+      // Filter to only include valid columns for Supabase schema
+      const validColumns = ['id', 'label', 'category', 'pillar', 'frequency', 'allow_pass', 'active_days', 'weight']
+      const sanitizedTasks = tasks.map(task => {
+        const sanitized = {}
+        for (const col of validColumns) {
+          if (task.hasOwnProperty(col)) {
+            sanitized[col] = task[col]
+          }
+        }
+        return sanitized
+      })
+      
+      const { error } = await supabase.from('tasks').insert(sanitizedTasks)
       if (error) throw error
     }
     
