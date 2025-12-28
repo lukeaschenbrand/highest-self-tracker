@@ -6,6 +6,8 @@ import { ViewerSelector } from './components/ViewerSelector'
 import { PasswordEntry } from './components/PasswordEntry'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs'
 import { Button } from './components/ui/button'
+import { Popover, PopoverContent, PopoverTrigger } from './components/ui/popover'
+import { Calendar } from './components/ui/calendar'
 import { formatDate } from './lib/scoring'
 import { loadTasks, saveTasks } from './lib/storage'
 import { getDefaultTasks } from './lib/tasks'
@@ -174,27 +176,40 @@ function App() {
               <Button
                 variant="outline"
                 onClick={() => handleDateChange(-1)}
-                className={isBatman ? 'bg-gray-700 hover:bg-yellow-400 hover:text-black text-yellow-400 border border-gray-600' : ''}
+                className={isBatman ? 'bg-gray-700 hover:bg-yellow-600 hover:text-black text-yellow-400 border border-gray-600' : ''}
               >
                 ←
               </Button>
-              <input
-                type="date"
-                value={formatDate(selectedDate)}
-                onChange={(e) => {
-                  const newDate = new Date(e.target.value)
-                  setSelectedDate(newDate)
-                }}
-                className={`px-3 py-2 border rounded-md ${
-                  isBatman 
-                    ? 'bg-gray-800 border-gray-600 text-yellow-400 date-input-batman' 
-                    : ''
-                }`}
-              />
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={isBatman 
+                      ? 'bg-gray-800 border-gray-600 text-yellow-400 hover:bg-gray-800 hover:text-yellow-400 justify-start text-left font-normal' 
+                      : 'justify-start text-left font-normal'}
+                  >
+                    {formatDate(selectedDate)}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className={`w-auto p-0 ${isBatman ? 'bg-gray-800 border-gray-700' : ''}`} align="start">
+                  <Calendar
+                    mode="single"
+                    selected={selectedDate}
+                    onSelect={(date) => {
+                      if (date) {
+                        setSelectedDate(date)
+                      }
+                    }}
+                    initialFocus
+                    isBatman={isBatman}
+                    className={isBatman ? 'bg-gray-800' : ''}
+                  />
+                </PopoverContent>
+              </Popover>
               <Button
                 variant="outline"
                 onClick={() => handleDateChange(1)}
-                className={isBatman ? 'bg-gray-700 hover:bg-yellow-400 hover:text-black text-yellow-400 border border-gray-600' : ''}
+                className={isBatman ? 'bg-gray-700 hover:bg-yellow-600 hover:text-black text-yellow-400 border border-gray-600' : ''}
               >
                 →
               </Button>

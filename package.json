@@ -10,10 +10,12 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
+    "@radix-ui/react-popover": "^1.1.15",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "lucide-react": "^0.303.0",
     "react": "^18.2.0",
+    "react-day-picker": "^9.13.0",
     "react-dom": "^18.2.0",
     "recharts": "^2.15.4",
     "tailwind-merge": "^2.2.0"
@@ -33,4 +35,3 @@
     "vite": "^5.0.8"
   }
 }
-
