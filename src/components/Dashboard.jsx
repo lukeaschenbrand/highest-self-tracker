@@ -40,6 +40,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
   const [migrating, setMigrating] = useState(false)
   const [migrationStatus, setMigrationStatus] = useState('')
   const [expandedPillar, setExpandedPillar] = useState(null)
+  const [expandedMetricDate, setExpandedMetricDate] = useState(null)
 
   useEffect(() => {
     const loadData = async () => {
@@ -512,22 +513,70 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
               <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Recent Body Metrics</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {(Array.isArray(metricEntries) ? metricEntries : []).slice(-7).reverse().map(entry => (
-                  <div 
-                    key={entry.date} 
-                    className={`flex items-center justify-between p-2 border rounded ${
-                      isBatman ? 'border-gray-700 bg-gray-700' : ''
-                    }`}
-                  >
-                    <span className={`text-sm font-medium ${isBatman ? 'text-yellow-400' : ''}`}>{entry.date}</span>
-                    <div className={`flex gap-4 text-sm ${isBatman ? 'text-yellow-400' : ''}`}>
-                      <span>Sleep: {entry.sleep_hours || '—'}h</span>
-                      <span>Energy: {entry.energy_1_10 || '—'}/10</span>
-                      <span>Weight: {entry.weight_lbs === 'P' ? 'P' : (entry.weight_lbs || '—')}lbs</span>
+              <div className="space-y-2">
+                {(Array.isArray(metricEntries) ? metricEntries : []).slice(-7).reverse().map(entry => {
+                  const isExpanded = expandedMetricDate === entry.date
+                  const entryDate = parseDate(entry.date)
+                  const dayOfWeek = entryDate.getDay()
+                  
+                  // Get Body pillar tasks for this date
+                  const bodyTasks = tasks.filter(task => {
+                    if (task.pillar !== PILLARS.BODY) return false
+                    if (task.frequency === 'weekly') return true
+                    return task.active_days.includes(dayOfWeek)
+                  })
+                  
+                  // Get entries for Body tasks on this date
+                  const bodyEntries = bodyTasks.map(task => {
+                    const logEntry = getLogEntry(entry.date, task.id)
+                    return {
+                      task,
+                      entry: logEntry ? logEntry.status : null
+                    }
+                  })
+                  
+                  return (
+                    <div key={entry.date}>
+                      <div 
+                        onClick={() => setExpandedMetricDate(isExpanded ? null : entry.date)}
+                        className={`flex items-center justify-between p-2 border rounded cursor-pointer hover:opacity-80 transition-opacity ${
+                          isBatman ? 'border-gray-700 bg-gray-700' : ''
+                        }`}
+                      >
+                        <span className={`text-sm font-medium ${isBatman ? 'text-yellow-400' : ''}`}>
+                          {entry.date} {isExpanded ? '▼' : '▶'}
+                        </span>
+                        <div className={`flex gap-4 text-sm ${isBatman ? 'text-yellow-400' : ''}`}>
+                          <span>Sleep: {entry.sleep_hours || '—'}h</span>
+                          <span>Energy: {entry.energy_1_10 || '—'}/10</span>
+                          <span>Weight: {entry.weight_lbs === 'P' ? 'P' : (entry.weight_lbs || '—')}lbs</span>
+                        </div>
+                      </div>
+                      
+                      {/* Expanded details showing Body task entries */}
+                      {isExpanded && (
+                        <div className={`mt-2 ml-4 p-3 border rounded space-y-2 ${
+                          isBatman ? 'border-gray-600 bg-gray-800' : 'border-gray-200 bg-gray-50'
+                        }`}>
+                          <p className={`text-xs font-semibold mb-2 ${isBatman ? 'text-yellow-400' : 'text-muted-foreground'}`}>
+                            Body tasks for {entry.date}:
+                          </p>
+                          {bodyEntries.map(({ task, entry: taskEntry }) => (
+                            <div key={task.id} className="flex items-center justify-between text-sm">
+                              <span className={isBatman ? 'text-yellow-400' : ''}>{task.label}</span>
+                              <Badge 
+                                variant={taskEntry === 'Y' ? 'default' : taskEntry === 'P' ? 'secondary' : taskEntry === 'N' ? 'destructive' : 'outline'}
+                                className={isBatman ? (taskEntry === 'Y' ? 'bg-yellow-600 text-black' : taskEntry === 'P' ? 'bg-gray-600 text-yellow-400' : taskEntry === 'N' ? 'bg-red-600 text-white' : 'bg-gray-700 text-yellow-400') : ''}
+                              >
+                                {taskEntry === 'Y' ? 'Yes' : taskEntry === 'P' ? 'Pass' : taskEntry === 'N' ? 'No' : taskEntry || '—'}
+                              </Badge>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </CardContent>
           </Card>
