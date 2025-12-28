@@ -81,7 +81,7 @@ export function exportToCSV(startDate, endDate) {
     ]
     
     // Add task statuses (in same order as headers)
-    validTasks.forEach(task => {
+    tasks.forEach(task => {
       const entry = logEntries.find(
         e => e.date === dateStr && e.task_id === task.id
       )
