@@ -68,6 +68,10 @@ export function SleepChart({ data, isBatman = false, isJoker = false }) {
   // Build chart data for all dates from start to today
   // Keep full date (YYYY-MM-DD) for proper ordering
   // Explicitly ensure dates are sorted chronologically
+  if (!Array.isArray(dateRange) || dateRange.length === 0) {
+    return <div className="text-center text-muted-foreground py-8">Loading...</div>
+  }
+  
   const chartData = dateRange
     .filter(date => date && typeof date === 'string') // Ensure date is a valid string
     .map(date => {
@@ -77,10 +81,16 @@ export function SleepChart({ data, isBatman = false, isJoker = false }) {
         sleep: sleep !== undefined ? sleep : null
       }
     })
+    .filter(d => d && d.date) // Remove any invalid entries
     .sort((a, b) => String(a.date).localeCompare(String(b.date))) // Explicitly sort by date
 
+  // Ensure chartData is a valid array
+  if (!Array.isArray(chartData) || chartData.length === 0) {
+    return <div className="text-center text-muted-foreground py-8">No sleep data available</div>
+  }
+
   // Check if we have any actual data (not just empty dates)
-  const hasData = chartData.some(d => d.sleep !== null)
+  const hasData = chartData.some(d => d && d.sleep !== null)
   if (!hasData) {
     return <div className="text-center text-muted-foreground py-8">No sleep data available</div>
   }
@@ -135,6 +145,10 @@ export function EnergyChart({ data, isBatman = false, isJoker = false }) {
   // Build chart data for all dates from start to today
   // Keep full date (YYYY-MM-DD) for proper ordering
   // Explicitly ensure dates are sorted chronologically
+  if (!Array.isArray(dateRange) || dateRange.length === 0) {
+    return <div className="text-center text-muted-foreground py-8">Loading...</div>
+  }
+  
   const chartData = dateRange
     .filter(date => date && typeof date === 'string') // Ensure date is a valid string
     .map(date => {
@@ -144,10 +158,16 @@ export function EnergyChart({ data, isBatman = false, isJoker = false }) {
         energy: energy !== undefined ? energy : null
       }
     })
+    .filter(d => d && d.date) // Remove any invalid entries
     .sort((a, b) => String(a.date).localeCompare(String(b.date))) // Explicitly sort by date
 
+  // Ensure chartData is a valid array
+  if (!Array.isArray(chartData) || chartData.length === 0) {
+    return <div className="text-center text-muted-foreground py-8">No energy data available</div>
+  }
+
   // Check if we have any actual data (not just empty dates)
-  const hasData = chartData.some(d => d.energy !== null)
+  const hasData = chartData.some(d => d && d.energy !== null)
   if (!hasData) {
     return <div className="text-center text-muted-foreground py-8">No energy data available</div>
   }
@@ -202,6 +222,10 @@ export function WeightChart({ data, isBatman = false, isJoker = false }) {
   // Build chart data for all dates from start to today
   // Keep full date (YYYY-MM-DD) for proper ordering
   // Explicitly ensure dates are sorted chronologically
+  if (!Array.isArray(dateRange) || dateRange.length === 0) {
+    return <div className="text-center text-muted-foreground py-8">Loading...</div>
+  }
+  
   const chartData = dateRange
     .filter(date => date && typeof date === 'string') // Ensure date is a valid string
     .map(date => {
@@ -211,10 +235,16 @@ export function WeightChart({ data, isBatman = false, isJoker = false }) {
         weight: weight !== undefined ? weight : null
       }
     })
+    .filter(d => d && d.date) // Remove any invalid entries
     .sort((a, b) => String(a.date).localeCompare(String(b.date))) // Explicitly sort by date
 
+  // Ensure chartData is a valid array
+  if (!Array.isArray(chartData) || chartData.length === 0) {
+    return <div className="text-center text-muted-foreground py-8">No weight data available</div>
+  }
+
   // Check if we have any actual data (not just empty dates)
-  const weightValues = chartData.map(d => d.weight).filter(v => v !== null)
+  const weightValues = chartData.map(d => d && d.weight).filter(v => v !== null)
   if (weightValues.length === 0) {
     return <div className="text-center text-muted-foreground py-8">No weight data available</div>
   }
@@ -251,6 +281,10 @@ export function CompletionChart({ data, isBatman = false, isJoker = false }) {
   // Ensure data is an array
   const safeData = Array.isArray(data) ? data : []
   
+  if (safeData.length === 0) {
+    return <div className="text-center text-muted-foreground py-8">No completion data available</div>
+  }
+  
   // data should be array of { date, score } objects
   // Already filtered to project start date range, so no need to slice
   // Keep full date (YYYY-MM-DD) for proper ordering
@@ -258,10 +292,11 @@ export function CompletionChart({ data, isBatman = false, isJoker = false }) {
     .filter(d => d && d.score !== null && d.score !== undefined && d.date)
     .map(d => ({
       date: String(d.date), // Ensure date is always a string
-      score: d.score
+      score: Number(d.score) || 0 // Ensure score is a number
     }))
+    .filter(d => d && d.date) // Remove any invalid entries
 
-  if (chartData.length === 0) {
+  if (!Array.isArray(chartData) || chartData.length === 0) {
     return <div className="text-center text-muted-foreground py-8">No completion data available</div>
   }
 
