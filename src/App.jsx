@@ -141,7 +141,7 @@ function App() {
                   variant="outline"
                   size="sm"
                   onClick={() => setShowBackfill(true)}
-                  className={isBatman ? 'bg-gray-700 hover:bg-yellow-400 hover:text-black text-yellow-400 border border-gray-600' : ''}
+                  className={isBatman ? 'bg-gray-700 hover:bg-yellow-600 hover:text-black text-yellow-400 border border-gray-600' : ''}
                 >
                   Initialize/Backfill
                 </Button>
@@ -170,7 +170,7 @@ function App() {
                 }}
                 className={`px-3 py-2 border rounded-md transition-colors ${
                   isBatman 
-                    ? 'bg-gray-800 border-gray-600 text-yellow-400 hover:bg-yellow-400 hover:text-black' 
+                    ? 'bg-gray-800 border-gray-600 text-yellow-400 hover:bg-yellow-600 hover:text-black' 
                     : ''
                 }`}
               />
@@ -201,13 +201,13 @@ function App() {
               <TabsList className={isBatman ? 'bg-gray-800 border border-gray-700' : ''}>
                 <TabsTrigger 
                   value="log"
-                  className={isBatman ? `${activeTab === 'log' ? 'bg-yellow-400 text-black border-yellow-400' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-400 hover:text-black border` : ''}
+                  className={isBatman ? `${activeTab === 'log' ? 'bg-yellow-600 text-black border-yellow-600' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-600 hover:text-black border` : ''}
                 >
                   Daily Log
                 </TabsTrigger>
                 <TabsTrigger 
                   value="dashboard"
-                  className={isBatman ? `${activeTab === 'dashboard' ? 'bg-yellow-400 text-black border-yellow-400' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-400 hover:text-black border` : ''}
+                  className={isBatman ? `${activeTab === 'dashboard' ? 'bg-yellow-600 text-black border-yellow-600' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-600 hover:text-black border` : ''}
                 >
                   Dashboard
                 </TabsTrigger>

@@ -187,7 +187,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
           </div>
           <div className={`mt-2 h-2 rounded-full overflow-hidden ${isBatman ? 'bg-gray-700' : 'bg-muted'}`}>
             <div
-              className={`h-full ${isBatman ? 'bg-yellow-400' : (score >= 80 ? 'bg-green-600' : score >= 60 ? 'bg-yellow-600' : 'bg-red-600')}`}
+              className={`h-full ${isBatman ? 'bg-yellow-600' : (score >= 80 ? 'bg-green-600' : score >= 60 ? 'bg-yellow-600' : 'bg-red-600')}`}
               style={{ width: `${score}%` }}
             />
           </div>
@@ -209,28 +209,28 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
             <Button 
               variant="outline" 
               onClick={() => setShowImport(true)}
-              className={isBatman ? 'bg-gray-700 hover:bg-yellow-400 hover:text-black text-yellow-400 border border-gray-600' : ''}
+              className={isBatman ? 'bg-gray-700 hover:bg-yellow-600 hover:text-black text-yellow-400 border border-gray-600' : ''}
             >
               Import Data
             </Button>
             <Button 
               variant="outline" 
               onClick={exportCurrentWeek}
-              className={isBatman ? 'bg-gray-700 hover:bg-yellow-400 hover:text-black text-yellow-400 border border-gray-600' : ''}
+              className={isBatman ? 'bg-gray-700 hover:bg-yellow-600 hover:text-black text-yellow-400 border border-gray-600' : ''}
             >
               Export Week
             </Button>
             <Button 
               variant="outline" 
               onClick={exportCurrentMonth}
-              className={isBatman ? 'bg-gray-700 hover:bg-yellow-400 hover:text-black text-yellow-400 border border-gray-600' : ''}
+              className={isBatman ? 'bg-gray-700 hover:bg-yellow-600 hover:text-black text-yellow-400 border border-gray-600' : ''}
             >
               Export Month
             </Button>
             <Button 
               variant="outline" 
               onClick={exportAll}
-              className={isBatman ? 'bg-gray-700 hover:bg-yellow-400 hover:text-black text-yellow-400 border border-gray-600' : ''}
+              className={isBatman ? 'bg-gray-700 hover:bg-yellow-600 hover:text-black text-yellow-400 border border-gray-600' : ''}
             >
               Export All
             </Button>
@@ -242,25 +242,25 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
         <TabsList className={isBatman ? 'bg-gray-800 border border-gray-700' : ''}>
           <TabsTrigger 
             value="day"
-            className={isBatman ? `${period === 'day' ? 'bg-yellow-400 text-black border-yellow-400' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-400 hover:text-black border` : ''}
+            className={isBatman ? `${period === 'day' ? 'bg-yellow-600 text-black border-yellow-600' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-600 hover:text-black border` : ''}
           >
             Day
           </TabsTrigger>
           <TabsTrigger 
             value="week"
-            className={isBatman ? `${period === 'week' ? 'bg-yellow-400 text-black border-yellow-400' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-400 hover:text-black border` : ''}
+            className={isBatman ? `${period === 'week' ? 'bg-yellow-600 text-black border-yellow-600' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-600 hover:text-black border` : ''}
           >
             Week
           </TabsTrigger>
           <TabsTrigger 
             value="month"
-            className={isBatman ? `${period === 'month' ? 'bg-yellow-400 text-black border-yellow-400' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-400 hover:text-black border` : ''}
+            className={isBatman ? `${period === 'month' ? 'bg-yellow-600 text-black border-yellow-600' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-600 hover:text-black border` : ''}
           >
             Month
           </TabsTrigger>
           <TabsTrigger 
             value="year"
-            className={isBatman ? `${period === 'year' ? 'bg-yellow-400 text-black border-yellow-400' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-400 hover:text-black border` : ''}
+            className={isBatman ? `${period === 'year' ? 'bg-yellow-600 text-black border-yellow-600' : 'bg-gray-700 text-yellow-400 border-gray-600'} hover:bg-yellow-600 hover:text-black border` : ''}
           >
             Year
           </TabsTrigger>
@@ -290,7 +290,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
                   </div>
                   <div className={`mt-2 h-2 rounded-full overflow-hidden ${isBatman ? 'bg-gray-700' : 'bg-muted'}`}>
                     <div
-                      className={`h-full ${isBatman ? 'bg-yellow-400' : 'bg-blue-600'}`}
+                      className={`h-full ${isBatman ? 'bg-yellow-600' : 'bg-blue-600'}`}
                       style={{ 
                         width: `${Math.min(100, (fitnessProgress.lifting.completed / fitnessProgress.lifting.target) * 100)}%` 
                       }}
@@ -309,7 +309,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
                   </div>
                   <div className={`mt-2 h-2 rounded-full overflow-hidden ${isBatman ? 'bg-gray-700' : 'bg-muted'}`}>
                     <div
-                      className={`h-full ${isBatman ? 'bg-yellow-400' : (fitnessProgress.cardio.completed >= fitnessProgress.cardio.min ? 'bg-green-600' : 'bg-yellow-600')}`}
+                      className={`h-full ${isBatman ? 'bg-yellow-600' : (fitnessProgress.cardio.completed >= fitnessProgress.cardio.min ? 'bg-green-600' : 'bg-yellow-600')}`}
                       style={{ 
                         width: `${Math.min(100, (fitnessProgress.cardio.completed / fitnessProgress.cardio.max) * 100)}%` 
                       }}
@@ -317,7 +317,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
                   </div>
                   <Badge 
                     variant={fitnessProgress.cardio.completed >= fitnessProgress.cardio.min ? 'default' : 'secondary'}
-                    className={`mt-2 ${isBatman ? 'bg-yellow-400 text-black' : ''}`}
+                    className={`mt-2 ${isBatman ? 'bg-yellow-600 text-black' : ''}`}
                   >
                     {fitnessProgress.cardio.completed >= fitnessProgress.cardio.min ? 'Minimum met' : 'Below minimum'}
                   </Badge>

@@ -322,7 +322,7 @@ export function DailyLog({ selectedDate, onSave, canEdit = true, isBatman = fals
                 }
               }}
               disabled={!canEdit}
-              className={`w-20 h-8 ${isBatman ? 'bg-gray-700 border-gray-600 text-yellow-400 hover:bg-yellow-400 hover:text-black transition-colors' : ''}`}
+              className={`w-20 h-8 ${isBatman ? 'bg-gray-700 border-gray-600 text-yellow-400 hover:bg-yellow-600 hover:text-black transition-colors' : ''}`}
               onKeyDown={(e) => {
                 // Enter key navigation
                 if (e.key === 'Enter') {
@@ -374,7 +374,7 @@ export function DailyLog({ selectedDate, onSave, canEdit = true, isBatman = fals
                   }
                 }}
                 disabled={!canEdit}
-                className={`w-20 h-8 ${isBatman ? 'bg-gray-700 border-gray-600 text-yellow-400 hover:bg-yellow-400 hover:text-black transition-colors' : ''}`}
+                className={`w-20 h-8 ${isBatman ? 'bg-gray-700 border-gray-600 text-yellow-400 hover:bg-yellow-600 hover:text-black transition-colors' : ''}`}
                 placeholder="pass"
               />
             )}
@@ -486,7 +486,7 @@ export function DailyLog({ selectedDate, onSave, canEdit = true, isBatman = fals
             ref={(el) => {
               if (el && canEdit) registerInput(task.id, el)
             }}
-            className={`w-24 h-8 text-sm ${isBatman ? 'bg-gray-700 border-gray-600 text-yellow-400 hover:bg-yellow-400 hover:text-black transition-colors' : ''}`}
+            className={`w-24 h-8 text-sm ${isBatman ? 'bg-gray-700 border-gray-600 text-yellow-400 hover:bg-yellow-600 hover:text-black transition-colors' : ''}`}
             placeholder={hasPass ? "y/n/p" : "y/n"}
           />
         </div>
@@ -576,7 +576,7 @@ export function DailyLog({ selectedDate, onSave, canEdit = true, isBatman = fals
               }}
               placeholder="7.5"
               disabled={!canEdit}
-              className={isBatman ? 'bg-gray-700 border-gray-600 text-yellow-400 hover:bg-yellow-400 hover:text-black transition-colors' : ''}
+              className={isBatman ? 'bg-gray-700 border-gray-600 text-yellow-400 hover:bg-yellow-600 hover:text-black transition-colors' : ''}
             />
           </div>
 

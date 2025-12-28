@@ -57,7 +57,7 @@ export function PasswordEntry({ onSuccess, onCancel }) {
               type="button"
               variant="outline"
               onClick={onCancel}
-              className="border-gray-600 text-gray-300 hover:bg-gray-700"
+              className="bg-gray-700 hover:bg-yellow-600 hover:text-black text-yellow-400 border border-gray-600"
             >
               Cancel
             </Button>
