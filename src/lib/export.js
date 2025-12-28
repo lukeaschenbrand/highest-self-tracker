@@ -137,13 +137,17 @@ export function importFromCSV(csvContent) {
     
     // Parse header row
     const headers = parseCSVLine(lines[0])
+    console.log('CSV Headers:', headers)
+    
     const dateIndex = headers.indexOf('Date')
     const sleepIndex = headers.indexOf('Sleep (hours)')
     const energyIndex = headers.indexOf('Energy (1-10)')
     const weightIndex = headers.indexOf('Weight (lbs)')
     
+    console.log('Column indices:', { dateIndex, sleepIndex, energyIndex, weightIndex })
+    
     if (dateIndex === -1) {
-      throw new Error('Date column not found in CSV')
+      throw new Error(`Date column not found in CSV. Found columns: ${headers.join(', ')}`)
     }
     
     // Get task labels from headers (everything after Weight)
@@ -162,41 +166,62 @@ export function importFromCSV(csvContent) {
     // Parse data rows
     for (let i = 1; i < lines.length; i++) {
       const row = parseCSVLine(lines[i])
-      if (row.length < headers.length) continue
       
-      const date = row[dateIndex]
+      // Skip empty rows
+      if (row.length === 0 || row.every(cell => !cell || cell.trim() === '')) {
+        continue
+      }
+      
+      // Handle rows that might be shorter than headers (partial data)
+      if (row.length < dateIndex + 1) continue
+      
+      const date = row[dateIndex]?.trim()
       if (!date) continue
       
-      // Parse metrics
-      const sleep = row[sleepIndex] ? parseFloat(row[sleepIndex]) : null
-      const energy = row[energyIndex] ? parseInt(row[energyIndex]) : null
-      const weight = row[weightIndex] ? (row[weightIndex] === 'P' ? 'P' : parseFloat(row[weightIndex])) : null
+      // Parse metrics (handle missing columns gracefully)
+      const sleep = sleepIndex >= 0 && row[sleepIndex] && row[sleepIndex].trim() !== '' 
+        ? parseFloat(row[sleepIndex]) 
+        : null
+      const energy = energyIndex >= 0 && row[energyIndex] && row[energyIndex].trim() !== '' 
+        ? parseInt(row[energyIndex]) 
+        : null
+      const weight = weightIndex >= 0 && row[weightIndex] && row[weightIndex].trim() !== '' 
+        ? (row[weightIndex].trim() === 'P' ? 'P' : parseFloat(row[weightIndex])) 
+        : null
       
-      if (sleep !== null || energy !== null || weight !== null) {
-        metricEntries.push({
-          date: date,
-          sleep_hours: sleep,
-          energy_1_10: energy,
-          weight_lbs: weight,
-        })
-      }
+      // Always create metric entry if we have a date (even if all metrics are null)
+      // This ensures the date is tracked
+      metricEntries.push({
+        date: date,
+        sleep_hours: sleep,
+        energy_1_10: energy,
+        weight_lbs: weight,
+      })
       
       // Parse task entries
       taskLabels.forEach((label, idx) => {
         const taskId = taskLabelToId.get(label)
-        if (!taskId) return // Skip if task doesn't exist
+        if (!taskId) {
+          console.warn(`Task not found for label: ${label}`)
+          return // Skip if task doesn't exist
+        }
         
-        const status = row[weightIndex + 1 + idx]
-        if (status && status.trim() !== '') {
-          logEntries.push({
-            date: date,
-            task_id: taskId,
-            status: status.trim(),
-            timestamp: new Date().toISOString(),
-          })
+        const colIndex = weightIndex + 1 + idx
+        if (colIndex < row.length) {
+          const status = row[colIndex]?.trim()
+          if (status && status !== '') {
+            logEntries.push({
+              date: date,
+              task_id: taskId,
+              status: status,
+              timestamp: new Date().toISOString(),
+            })
+          }
         }
       })
     }
+    
+    console.log(`Parsed CSV: ${metricEntries.length} metric entries, ${logEntries.length} log entries`)
     
     return {
       logEntries,
