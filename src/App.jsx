@@ -125,7 +125,7 @@ function App() {
     <div className={`min-h-screen ${isBatman ? 'bg-gray-900' : isJoker ? 'bg-gray-100' : 'bg-background'}`}>
       {/* Sticky Header */}
       <div className={`sticky top-0 z-50 border-b shadow-sm ${
-        isBatman ? 'bg-gray-800 border-gray-700' : 'bg-card'
+        isBatman ? 'bg-gray-800 border-gray-700' : isJoker ? 'bg-gray-100 border-gray-300' : 'bg-card'
       }`}>
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -204,7 +204,7 @@ function App() {
         
         {/* Sticky Tabs */}
         <div className={`border-t ${
-          isBatman ? 'bg-gray-800 border-gray-700' : 'bg-background'
+          isBatman ? 'bg-gray-800 border-gray-700' : isJoker ? 'bg-gray-100 border-gray-300' : 'bg-background'
         }`}>
           <div className="max-w-7xl mx-auto px-4 py-2">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
