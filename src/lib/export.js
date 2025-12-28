@@ -34,11 +34,11 @@ export function exportToCSV(startDate, endDate) {
   
   // Always use default task order and default labels to ensure consistency
   // This prevents issues with corrupted stored task labels
-  const tasks = defaultTasks.map(defaultTask => {
+  const tasks = defaultTasks.map((defaultTask, idx) => {
     const storedTask = taskMap.get(defaultTask.id)
     // Always use default label to ensure consistency
     // But keep stored task properties (like allow_pass) if needed
-    return {
+    const task = {
       ...defaultTask,
       ...(storedTask && { 
         // Only merge non-label properties from stored task
@@ -48,6 +48,14 @@ export function exportToCSV(startDate, endDate) {
         is_numeric: storedTask.is_numeric,
       })
     }
+    
+    // Debug: log if label is wrong
+    if (task.label !== defaultTask.label) {
+      console.warn(`Task ${task.id} label mismatch: default="${defaultTask.label}", got="${task.label}"`)
+      task.label = defaultTask.label // Force use default
+    }
+    
+    return task
   })
   
   // Build header row
@@ -55,18 +63,29 @@ export function exportToCSV(startDate, endDate) {
   
   // Add task columns using default labels (always consistent)
   tasks.forEach((task, index) => {
-    const label = task.label?.trim()
-    if (!label || label === '0' || label === '') {
+    // Force use default label - never trust stored label
+    const defaultTask = defaultTasks[index]
+    const label = defaultTask ? defaultTask.label : task.label
+    
+    if (!label || label.trim() === '' || label === '0') {
       console.error(`Task ${task.id} at index ${index} has invalid label: "${label}"`)
-      // This should never happen with default tasks, but add safety check
       headers.push(`Task_${task.id}`)
     } else {
-      headers.push(label)
+      headers.push(label.trim())
+      // Debug column N specifically
+      if (index === 9) {
+        console.log(`Column N (index ${index + 4}): "${label}" from task ${task.id}`)
+      }
+      if (task.id === 'weekly_7') {
+        console.log(`Laundry column (index ${index + 4}): "${label}" from task ${task.id}`)
+      }
     }
   })
   
   console.log('Export headers:', headers)
+  console.log('Total headers:', headers.length)
   console.log('Column N (index 13):', headers[13])
+  console.log('Last column:', headers[headers.length - 1])
   
   // Build data rows
   const rows = dates.map(date => {
