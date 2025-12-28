@@ -607,7 +607,7 @@ export function DailyLog({ selectedDate, onSave, canEdit = true, isBatman = fals
                     }}
                     className="w-full energy-slider"
                     disabled={!canEdit}
-                    style={{ '--energy-color': color } as React.CSSProperties}
+                    style={{ '--energy-color': color }}
                   />
                   <style>{`
                     .energy-slider {
