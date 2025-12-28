@@ -142,7 +142,7 @@ function App() {
                     alt="Batman" 
                     className="w-6 h-6 sm:w-8 sm:h-8 rounded-full flex-shrink-0"
                   />
-                  <h1 className="text-lg sm:text-2xl font-bold text-yellow-400 truncate">Welcome Back, Batman.</h1>
+                  <h1 className="text-lg sm:text-2xl font-bold text-yellow-400 truncate">Welcome back, Batman.</h1>
                 </>
               ) : isJoker ? (
                 <>
