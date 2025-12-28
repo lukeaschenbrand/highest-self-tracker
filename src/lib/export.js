@@ -9,9 +9,10 @@ import {
   getMonthEnd 
 } from './scoring'
 import { loadTasks, loadLogEntries, loadMetricEntries } from './storage'
+import { getDefaultTasks } from './tasks'
 
 export function exportToCSV(startDate, endDate) {
-  const tasks = loadTasks()
+  const storedTasks = loadTasks()
   const logEntries = loadLogEntries()
   const metricEntries = loadMetricEntries()
   
@@ -23,12 +24,44 @@ export function exportToCSV(startDate, endDate) {
     current.setDate(current.getDate() + 1)
   }
   
+  // Use default task order to ensure consistent column order
+  // Map stored tasks by ID for lookup, but use default order for headers
+  const defaultTasks = getDefaultTasks()
+  const taskMap = new Map()
+  storedTasks.forEach(task => {
+    taskMap.set(task.id, task)
+  })
+  
+  // Use default task order, but get labels from stored tasks if they exist
+  // This ensures consistent column order even if tasks were modified
+  const tasks = defaultTasks.map(defaultTask => {
+    const storedTask = taskMap.get(defaultTask.id)
+    return storedTask || defaultTask
+  })
+  
+  // Filter out tasks without valid labels
+  const validTasks = tasks.filter(task => {
+    const label = task.label?.trim()
+    if (!label || label === '0' || label === '') {
+      console.warn(`Task ${task.id} has invalid label: "${label}", using default`)
+      // Use default task label if stored task has invalid label
+      const defaultTask = defaultTasks.find(t => t.id === task.id)
+      if (defaultTask && defaultTask.label) {
+        task.label = defaultTask.label
+        return true
+      }
+      return false
+    }
+    return true
+  })
+  
   // Build header row
   const headers = ['Date', 'Sleep (hours)', 'Energy (1-10)', 'Weight (lbs)']
   
-  // Add task columns
-  tasks.forEach(task => {
-    headers.push(task.label)
+  // Add task columns with validated labels (in default order)
+  validTasks.forEach(task => {
+    const label = task.label.trim()
+    headers.push(label)
   })
   
   // Build data rows
@@ -43,8 +76,8 @@ export function exportToCSV(startDate, endDate) {
       metric?.weight_lbs ?? '',
     ]
     
-    // Add task statuses
-    tasks.forEach(task => {
+    // Add task statuses (in same order as headers)
+    validTasks.forEach(task => {
       const entry = logEntries.find(
         e => e.date === dateStr && e.task_id === task.id
       )
