@@ -28,7 +28,7 @@ export function getDefaultTasks() {
       category: CATEGORIES.PERSONAL,
       label: 'No phone for first 15 minutes',
       frequency: FREQUENCIES.DAILY,
-      active_days: [1, 2, 3, 4, 5, 6, 7], // All days
+      active_days: [0, 1, 2, 3, 4, 5, 6], // All days (Sun-Sat)
       allow_pass: false,
       weight: 1,
     },
@@ -38,7 +38,7 @@ export function getDefaultTasks() {
       category: CATEGORIES.PERSONAL,
       label: 'Stretch upon waking',
       frequency: FREQUENCIES.DAILY,
-      active_days: [1, 2, 3, 4, 5, 6, 7],
+      active_days: [0, 1, 2, 3, 4, 5, 6], // All days (Sun-Sat)
       allow_pass: false,
       weight: 1,
     },
@@ -48,7 +48,7 @@ export function getDefaultTasks() {
       category: CATEGORIES.PERSONAL,
       label: 'Shower within 30 minutes',
       frequency: FREQUENCIES.DAILY,
-      active_days: [1, 2, 3, 4, 5, 6, 7],
+      active_days: [0, 1, 2, 3, 4, 5, 6], // All days (Sun-Sat)
       allow_pass: false,
       weight: 1,
     },
@@ -58,7 +58,7 @@ export function getDefaultTasks() {
       category: CATEGORIES.PERSONAL,
       label: 'Shave',
       frequency: FREQUENCIES.DAILY,
-      active_days: [1, 2, 3, 4, 5, 6, 7],
+      active_days: [0, 1, 2, 3, 4, 5, 6], // All days (Sun-Sat)
       allow_pass: false,
       weight: 1,
     },
@@ -68,7 +68,7 @@ export function getDefaultTasks() {
       category: CATEGORIES.PERSONAL,
       label: 'Lay out clothes for next day',
       frequency: FREQUENCIES.DAILY,
-      active_days: [1, 2, 3, 4, 5, 6, 7],
+      active_days: [0, 1, 2, 3, 4, 5, 6], // All days (Sun-Sat)
       allow_pass: false,
       weight: 1,
     },
@@ -78,7 +78,7 @@ export function getDefaultTasks() {
       category: CATEGORIES.PERSONAL,
       label: 'Vitamins taken & laid out',
       frequency: FREQUENCIES.DAILY,
-      active_days: [1, 2, 3, 4, 5, 6, 7],
+      active_days: [0, 1, 2, 3, 4, 5, 6], // All days (Sun-Sat)
       allow_pass: false,
       weight: 1,
     },
@@ -88,7 +88,7 @@ export function getDefaultTasks() {
       category: CATEGORIES.PERSONAL,
       label: 'Breakfast eaten',
       frequency: FREQUENCIES.DAILY,
-      active_days: [1, 2, 3, 4, 5, 6, 7],
+      active_days: [0, 1, 2, 3, 4, 5, 6], // All days (Sun-Sat)
       allow_pass: false,
       weight: 1,
     },
@@ -98,7 +98,7 @@ export function getDefaultTasks() {
       category: CATEGORIES.PERSONAL,
       label: 'Meditated',
       frequency: FREQUENCIES.DAILY,
-      active_days: [1, 2, 3, 4, 5, 6, 7],
+      active_days: [0, 1, 2, 3, 4, 5, 6], // All days (Sun-Sat)
       allow_pass: false,
       weight: 1,
     },
@@ -110,7 +110,7 @@ export function getDefaultTasks() {
       category: CATEGORIES.PERSONAL,
       label: 'Steps ≥ 10,000',
       frequency: FREQUENCIES.DAILY,
-      active_days: [1, 2, 3, 4, 5, 6, 7],
+      active_days: [0, 1, 2, 3, 4, 5, 6], // All days (Sun-Sat)
       allow_pass: false,
       weight: 1,
     },
@@ -120,7 +120,7 @@ export function getDefaultTasks() {
       category: CATEGORIES.PERSONAL,
       label: '>15 minutes of sun',
       frequency: FREQUENCIES.DAILY,
-      active_days: [1, 2, 3, 4, 5, 6, 7],
+      active_days: [0, 1, 2, 3, 4, 5, 6], // All days (Sun-Sat)
       allow_pass: false,
       weight: 1,
     },

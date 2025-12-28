@@ -313,8 +313,9 @@ function normalizeTask(task) {
   if (!task) return task
   
   // Ensure active_days is always an array
+  // JavaScript Date.getDay(): 0=Sunday, 1=Monday, ..., 6=Saturday
   if (!task.active_days || !Array.isArray(task.active_days)) {
-    task.active_days = [1, 2, 3, 4, 5, 6, 7] // Default to all days
+    task.active_days = [0, 1, 2, 3, 4, 5, 6] // Default to all days (Sun-Sat)
   }
   
   // Ensure weight exists
