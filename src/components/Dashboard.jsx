@@ -50,8 +50,11 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
 
   // Refresh data when date changes
   useEffect(() => {
-    setLogEntries(loadLogEntries())
-    setMetricEntries(loadMetricEntries())
+    const refreshData = async () => {
+      setLogEntries(await loadLogEntries())
+      setMetricEntries(await loadMetricEntries())
+    }
+    refreshData()
   }, [selectedDate])
 
   const getOverallScore = () => {
@@ -217,7 +220,9 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
   return (
     <div className={containerClass}>
       <div className="flex items-center justify-between">
-        <h1 className={`text-3xl font-bold ${isBatman ? 'text-yellow-400' : ''}`}>Batman's Actual Dashboard</h1>
+        <h1 className={`text-3xl font-bold ${isBatman ? 'text-yellow-400' : ''}`}>
+          {isBatman ? "Batman's Actual Dashboard" : "Highest Self Dashboard"}
+        </h1>
         {canEdit && (
           <div className="flex gap-2">
             <Button 
@@ -433,11 +438,11 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <ImportDialog 
             onClose={() => setShowImport(false)} 
-            onImport={() => {
+            onImport={async () => {
               // Refresh data after import
-              setTasks(loadTasks())
-              setLogEntries(loadLogEntries())
-              setMetricEntries(loadMetricEntries())
+              setTasks(await loadTasks())
+              setLogEntries(await loadLogEntries())
+              setMetricEntries(await loadMetricEntries())
             }}
           />
         </div>
