@@ -210,6 +210,7 @@ export async function loadTasks() {
     // If Supabase is empty but localStorage has data, migrate it
     const localTasks = loadFromLocalStorage(STORAGE_KEYS.TASKS, [])
     if (localTasks.length > 0) {
+      console.log('Migrating tasks from localStorage to Supabase:', localTasks.length, 'tasks')
       await saveTasksToSupabase(localTasks)
       return localTasks
     }
@@ -252,6 +253,7 @@ export async function loadLogEntries() {
     // If Supabase is empty but localStorage has data, migrate it
     const localEntries = loadFromLocalStorage(STORAGE_KEYS.LOG_ENTRIES, [])
     if (localEntries.length > 0) {
+      console.log('Migrating log entries from localStorage to Supabase:', localEntries.length, 'entries')
       for (const entry of localEntries) {
         await saveLogEntryToSupabase(entry)
       }
@@ -294,6 +296,7 @@ export async function loadMetricEntries() {
     // If Supabase is empty but localStorage has data, migrate it
     const localEntries = loadFromLocalStorage(STORAGE_KEYS.METRIC_ENTRIES, [])
     if (localEntries.length > 0) {
+      console.log('Migrating metric entries from localStorage to Supabase:', localEntries.length, 'entries')
       for (const entry of localEntries) {
         await saveMetricEntryToSupabase(entry)
       }
