@@ -26,7 +26,7 @@ import { exportCurrentWeek, exportCurrentMonth, exportAll } from '@/lib/export'
 import { getProjectStartDate } from '@/lib/backfill'
 import { ImportDialog } from '@/components/ImportDialog'
 
-export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman = false }) {
+export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman = false, isJoker = false }) {
   const [tasks, setTasks] = useState([])
   const [logEntries, setLogEntries] = useState([])
   const [metricEntries, setMetricEntries] = useState([])
@@ -348,7 +348,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
                 <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Energy Levels</CardTitle>
               </CardHeader>
               <CardContent>
-                <EnergyChart data={metricEntries} isBatman={isBatman} />
+                <EnergyChart data={metricEntries} isBatman={isBatman} isJoker={isJoker} />
               </CardContent>
             </Card>
 
@@ -357,7 +357,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
                 <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Weight Trends</CardTitle>
               </CardHeader>
               <CardContent>
-                <WeightChart data={metricEntries} isBatman={isBatman} />
+                <WeightChart data={metricEntries} isBatman={isBatman} isJoker={isJoker} />
               </CardContent>
             </Card>
 
@@ -366,7 +366,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
                 <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Daily Completion Rate</CardTitle>
               </CardHeader>
               <CardContent>
-                <CompletionChart data={getCompletionData()} isBatman={isBatman} />
+                <CompletionChart data={getCompletionData()} isBatman={isBatman} isJoker={isJoker} />
               </CardContent>
             </Card>
           </div>

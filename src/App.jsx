@@ -118,6 +118,7 @@ function App() {
 
   // Show main app (authenticated)
   const isBatman = userType === USER_TYPES.BATMAN
+  const isJoker = userType === USER_TYPES.JOKER
   const canEdit = isEditor()
 
   return (
@@ -131,6 +132,15 @@ function App() {
             <div className="flex items-center gap-3">
               {isBatman ? (
                 <h1 className="text-2xl font-bold text-yellow-400">Welcome Back, Batman.</h1>
+              ) : isJoker ? (
+                <>
+                  <img 
+                    src="/joker-opener.png" 
+                    alt="Joker" 
+                    className="w-8 h-8 rounded-full"
+                  />
+                  <h1 className="text-2xl font-bold text-purple-600">Welcome back, Joker.</h1>
+                </>
               ) : (
                 <h1 className="text-2xl font-bold">Highest Self Tracker</h1>
               )}
@@ -219,13 +229,22 @@ function App() {
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsContent value="log" className="mt-0">
-          <DailyLog 
-            selectedDate={selectedDate} 
-            onSave={handleSave}
-            canEdit={canEdit}
-            isBatman={isBatman}
-            key={`log-${formatDate(selectedDate)}`}
-          />
+          {isJoker && activeTab === 'log' ? (
+            <div className="min-h-screen flex items-center justify-center">
+              <div className="text-center">
+                <h2 className="text-4xl font-bold text-purple-600 mb-4">Nice try.</h2>
+                <p className="text-2xl text-gray-700">You wish you were Batman.</p>
+              </div>
+            </div>
+          ) : (
+            <DailyLog 
+              selectedDate={selectedDate} 
+              onSave={handleSave}
+              canEdit={canEdit}
+              isBatman={isBatman}
+              key={`log-${formatDate(selectedDate)}`}
+            />
+          )}
         </TabsContent>
 
         <TabsContent value="dashboard" className="mt-0">
