@@ -557,7 +557,11 @@ export function DailyLog({ selectedDate, onSave, canEdit = true, isBatman = fals
       </div>
 
       {/* Metrics Section */}
-      <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
+      <Card className={
+        isBatman ? 'bg-gray-800 border-gray-700' 
+        : isJoker ? 'bg-slate-800/80 border-purple-700/50 backdrop-blur-sm' 
+        : ''
+      }>
         <CardHeader>
           <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Body Metrics</CardTitle>
         </CardHeader>
@@ -684,7 +688,9 @@ export function DailyLog({ selectedDate, onSave, canEdit = true, isBatman = fals
       {/* Save Button */}
       {canEdit && (
         <div className={`sticky bottom-4 p-4 rounded-lg border shadow-lg ${
-          isBatman ? 'bg-gray-800 border-gray-700' : 'bg-background'
+          isBatman ? 'bg-gray-800 border-gray-700' 
+          : isJoker ? 'bg-slate-800/90 border-purple-700/50 backdrop-blur-sm' 
+          : 'bg-background'
         }`}>
           <Button
             onClick={handleSave}
