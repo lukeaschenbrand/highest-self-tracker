@@ -57,14 +57,15 @@ export function SleepChart({ data, isBatman = false, isJoker = false }) {
   // Keep full date (YYYY-MM-DD) for proper ordering
   // Explicitly ensure dates are sorted chronologically
   const chartData = dateRange
+    .filter(date => date && typeof date === 'string') // Ensure date is a valid string
     .map(date => {
       const sleep = dataMap.get(date)
       return {
-        date: date, // Keep full date for ordering
+        date: String(date), // Ensure date is always a string
         sleep: sleep !== undefined ? sleep : null
       }
     })
-    .sort((a, b) => a.date.localeCompare(b.date)) // Explicitly sort by date
+    .sort((a, b) => String(a.date).localeCompare(String(b.date))) // Explicitly sort by date
 
   // Check if we have any actual data (not just empty dates)
   const hasData = chartData.some(d => d.sleep !== null)
@@ -123,14 +124,15 @@ export function EnergyChart({ data, isBatman = false, isJoker = false }) {
   // Keep full date (YYYY-MM-DD) for proper ordering
   // Explicitly ensure dates are sorted chronologically
   const chartData = dateRange
+    .filter(date => date && typeof date === 'string') // Ensure date is a valid string
     .map(date => {
       const energy = dataMap.get(date)
       return {
-        date: date, // Keep full date for ordering
+        date: String(date), // Ensure date is always a string
         energy: energy !== undefined ? energy : null
       }
     })
-    .sort((a, b) => a.date.localeCompare(b.date)) // Explicitly sort by date
+    .sort((a, b) => String(a.date).localeCompare(String(b.date))) // Explicitly sort by date
 
   // Check if we have any actual data (not just empty dates)
   const hasData = chartData.some(d => d.energy !== null)
@@ -189,14 +191,15 @@ export function WeightChart({ data, isBatman = false, isJoker = false }) {
   // Keep full date (YYYY-MM-DD) for proper ordering
   // Explicitly ensure dates are sorted chronologically
   const chartData = dateRange
+    .filter(date => date && typeof date === 'string') // Ensure date is a valid string
     .map(date => {
       const weight = dataMap.get(date)
       return {
-        date: date, // Keep full date for ordering
+        date: String(date), // Ensure date is always a string
         weight: weight !== undefined ? weight : null
       }
     })
-    .sort((a, b) => a.date.localeCompare(b.date)) // Explicitly sort by date
+    .sort((a, b) => String(a.date).localeCompare(String(b.date))) // Explicitly sort by date
 
   // Check if we have any actual data (not just empty dates)
   const weightValues = chartData.map(d => d.weight).filter(v => v !== null)
@@ -240,9 +243,9 @@ export function CompletionChart({ data, isBatman = false, isJoker = false }) {
   // Already filtered to project start date range, so no need to slice
   // Keep full date (YYYY-MM-DD) for proper ordering
   const chartData = safeData
-    .filter(d => d && d.score !== null && d.score !== undefined)
+    .filter(d => d && d.score !== null && d.score !== undefined && d.date)
     .map(d => ({
-      date: d.date, // Keep full date for ordering
+      date: String(d.date), // Ensure date is always a string
       score: d.score
     }))
 
