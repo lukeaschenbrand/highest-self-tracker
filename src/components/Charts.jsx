@@ -17,6 +17,11 @@ function getDateRange() {
   return dates
 }
 
+// Helper to format date for display
+function formatDateForDisplay(dateString) {
+  return dateString.split('-').slice(1).join('/') // MM/DD format
+}
+
 export function SleepChart({ data }) {
   const dateRange = getDateRange()
   
@@ -29,10 +34,11 @@ export function SleepChart({ data }) {
     })
   
   // Build chart data for all dates from start to today
+  // Keep full date (YYYY-MM-DD) for proper ordering
   const chartData = dateRange.map(date => {
     const sleep = dataMap.get(date)
     return {
-      date: date.split('-').slice(1).join('/'), // MM/DD format
+      date: date, // Keep full date for ordering
       sleep: sleep !== undefined ? sleep : null
     }
   })
@@ -53,7 +59,8 @@ export function SleepChart({ data }) {
       <LineChart data={chartData}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis 
-          dataKey="date" 
+          dataKey="date"
+          tickFormatter={(value) => formatDateForDisplay(value)}
           type="category"
           interval={0}
           angle={-45}
@@ -61,7 +68,9 @@ export function SleepChart({ data }) {
           height={60}
         />
         <YAxis domain={[minSleep, maxSleep]} />
-        <Tooltip />
+        <Tooltip 
+          labelFormatter={(value) => formatDateForDisplay(value)}
+        />
         <Legend />
         <Line type="monotone" dataKey="sleep" stroke="#8884d8" strokeWidth={2} name="Sleep (hours)" connectNulls={false} />
       </LineChart>
@@ -81,10 +90,11 @@ export function EnergyChart({ data }) {
     })
   
   // Build chart data for all dates from start to today
+  // Keep full date (YYYY-MM-DD) for proper ordering
   const chartData = dateRange.map(date => {
     const energy = dataMap.get(date)
     return {
-      date: date.split('-').slice(1).join('/'),
+      date: date, // Keep full date for ordering
       energy: energy !== undefined ? energy : null
     }
   })
@@ -105,7 +115,8 @@ export function EnergyChart({ data }) {
       <LineChart data={chartData}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis 
-          dataKey="date" 
+          dataKey="date"
+          tickFormatter={(value) => formatDateForDisplay(value)}
           type="category"
           interval={0}
           angle={-45}
@@ -113,7 +124,9 @@ export function EnergyChart({ data }) {
           height={60}
         />
         <YAxis domain={[minEnergy, maxEnergy]} />
-        <Tooltip />
+        <Tooltip 
+          labelFormatter={(value) => formatDateForDisplay(value)}
+        />
         <Legend />
         <Line type="monotone" dataKey="energy" stroke="#82ca9d" strokeWidth={2} name="Energy (1-10)" connectNulls={false} />
       </LineChart>
@@ -133,10 +146,11 @@ export function WeightChart({ data }) {
     })
   
   // Build chart data for all dates from start to today
+  // Keep full date (YYYY-MM-DD) for proper ordering
   const chartData = dateRange.map(date => {
     const weight = dataMap.get(date)
     return {
-      date: date.split('-').slice(1).join('/'),
+      date: date, // Keep full date for ordering
       weight: weight !== undefined ? weight : null
     }
   })
@@ -157,7 +171,8 @@ export function WeightChart({ data }) {
       <LineChart data={chartData}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis 
-          dataKey="date" 
+          dataKey="date"
+          tickFormatter={(value) => formatDateForDisplay(value)}
           type="category"
           interval={0}
           angle={-45}
@@ -165,7 +180,9 @@ export function WeightChart({ data }) {
           height={60}
         />
         <YAxis domain={[minWeight, maxWeight]} />
-        <Tooltip />
+        <Tooltip 
+          labelFormatter={(value) => formatDateForDisplay(value)}
+        />
         <Legend />
         <Line type="monotone" dataKey="weight" stroke="#ffc658" strokeWidth={2} name="Weight (lbs)" connectNulls={false} />
       </LineChart>
@@ -176,10 +193,11 @@ export function WeightChart({ data }) {
 export function CompletionChart({ data }) {
   // data should be array of { date, score } objects
   // Already filtered to project start date range, so no need to slice
+  // Keep full date (YYYY-MM-DD) for proper ordering
   const chartData = data
     .filter(d => d.score !== null && d.score !== undefined)
     .map(d => ({
-      date: d.date.split('-').slice(1).join('/'),
+      date: d.date, // Keep full date for ordering
       score: d.score
     }))
 
@@ -192,7 +210,8 @@ export function CompletionChart({ data }) {
       <BarChart data={chartData}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis 
-          dataKey="date" 
+          dataKey="date"
+          tickFormatter={(value) => formatDateForDisplay(value)}
           type="category"
           interval={0}
           angle={-45}
@@ -200,7 +219,9 @@ export function CompletionChart({ data }) {
           height={60}
         />
         <YAxis domain={[0, 100]} />
-        <Tooltip />
+        <Tooltip 
+          labelFormatter={(value) => formatDateForDisplay(value)}
+        />
         <Legend />
         <Bar dataKey="score" fill="#8884d8" name="Completion %" />
       </BarChart>
