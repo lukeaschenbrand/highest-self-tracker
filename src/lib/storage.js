@@ -211,10 +211,19 @@ export async function saveTasks(tasks) {
 }
 
 export async function loadTasks() {
+  const { getDefaultTasks } = await import('./tasks')
+  
   // Try Supabase first if configured
   if (isSupabaseConfigured()) {
     const supabaseTasks = await loadTasksFromSupabase()
     if (supabaseTasks.length > 0) {
+      // Merge with defaults to add any new tasks
+      const mergedTasks = mergeTasksWithDefaults(supabaseTasks, getDefaultTasks())
+      if (mergedTasks.length !== supabaseTasks.length) {
+        // New tasks were added, save the merged list
+        await saveTasks(mergedTasks)
+        return mergedTasks
+      }
       // Sync to localStorage
       saveToLocalStorage(STORAGE_KEYS.TASKS, supabaseTasks)
       return supabaseTasks
@@ -229,7 +238,37 @@ export async function loadTasks() {
   }
   
   // Fall back to localStorage
-  return loadFromLocalStorage(STORAGE_KEYS.TASKS, [])
+  const localTasks = loadFromLocalStorage(STORAGE_KEYS.TASKS, [])
+  if (localTasks.length > 0) {
+    // Merge with defaults to add any new tasks
+    const mergedTasks = mergeTasksWithDefaults(localTasks, getDefaultTasks())
+    if (mergedTasks.length !== localTasks.length) {
+      // New tasks were added, save the merged list
+      await saveTasks(mergedTasks)
+      return mergedTasks
+    }
+    return localTasks
+  }
+  
+  // No tasks at all, return defaults
+  return getDefaultTasks()
+}
+
+// Helper function to merge existing tasks with default tasks
+// Adds any missing tasks from defaults without removing existing ones
+function mergeTasksWithDefaults(existingTasks, defaultTasks) {
+  const existingTaskIds = new Set(existingTasks.map(t => t.id))
+  const merged = [...existingTasks]
+  
+  // Add any default tasks that don't exist yet
+  defaultTasks.forEach(defaultTask => {
+    if (!existingTaskIds.has(defaultTask.id)) {
+      merged.push(defaultTask)
+      console.log('Adding new default task:', defaultTask.label)
+    }
+  })
+  
+  return merged
 }
 
 export async function saveLogEntry(entry) {
