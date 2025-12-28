@@ -510,7 +510,7 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
           {/* Metrics Table */}
           <Card className={isBatman ? 'bg-gray-800 border-gray-700' : ''}>
             <CardHeader>
-              <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Recent Body Metrics</CardTitle>
+              <CardTitle className={isBatman ? 'text-yellow-400' : ''}>Recent Metrics</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
@@ -519,15 +519,28 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
                   const entryDate = parseDate(entry.date)
                   const dayOfWeek = entryDate.getDay()
                   
-                  // Get Body pillar tasks for this date
-                  const bodyTasks = tasks.filter(task => {
-                    if (task.pillar !== PILLARS.BODY) return false
+                  // Get ALL tasks for this date (all pillars)
+                  const allTasks = tasks.filter(task => {
                     if (task.frequency === 'weekly') return true
                     return task.active_days.includes(dayOfWeek)
                   })
                   
-                  // Get entries for Body tasks on this date
-                  const bodyEntries = bodyTasks.map(task => {
+                  // Group tasks by pillar
+                  const tasksByPillar = {
+                    [PILLARS.MORNING]: [],
+                    [PILLARS.BODY]: [],
+                    [PILLARS.WORK]: [],
+                    [PILLARS.WEEKLY]: []
+                  }
+                  
+                  allTasks.forEach(task => {
+                    if (tasksByPillar[task.pillar]) {
+                      tasksByPillar[task.pillar].push(task)
+                    }
+                  })
+                  
+                  // Get entries for all tasks on this date
+                  const allEntries = allTasks.map(task => {
                     const logEntry = getLogEntry(entry.date, task.id)
                     return {
                       task,
@@ -553,25 +566,45 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
                         </div>
                       </div>
                       
-                      {/* Expanded details showing Body task entries */}
+                      {/* Expanded details showing ALL task entries grouped by pillar */}
                       {isExpanded && (
-                        <div className={`mt-2 ml-4 p-3 border rounded space-y-2 ${
+                        <div className={`mt-2 ml-4 p-3 border rounded space-y-4 ${
                           isBatman ? 'border-gray-600 bg-gray-800' : 'border-gray-200 bg-gray-50'
                         }`}>
-                          <p className={`text-xs font-semibold mb-2 ${isBatman ? 'text-yellow-400' : 'text-muted-foreground'}`}>
-                            Body tasks for {entry.date}:
+                          <p className={`text-xs font-semibold mb-3 ${isBatman ? 'text-yellow-400' : 'text-muted-foreground'}`}>
+                            All tasks for {entry.date}:
                           </p>
-                          {bodyEntries.map(({ task, entry: taskEntry }) => (
-                            <div key={task.id} className="flex items-center justify-between text-sm">
-                              <span className={isBatman ? 'text-yellow-400' : ''}>{task.label}</span>
-                              <Badge 
-                                variant={taskEntry === 'Y' ? 'default' : taskEntry === 'P' ? 'secondary' : taskEntry === 'N' ? 'destructive' : 'outline'}
-                                className={isBatman ? (taskEntry === 'Y' ? 'bg-yellow-600 text-black' : taskEntry === 'P' ? 'bg-gray-600 text-yellow-400' : taskEntry === 'N' ? 'bg-red-600 text-white' : 'bg-gray-700 text-yellow-400') : ''}
-                              >
-                                {taskEntry === 'Y' ? 'Yes' : taskEntry === 'P' ? 'Pass' : taskEntry === 'N' ? 'No' : taskEntry || '—'}
-                              </Badge>
-                            </div>
-                          ))}
+                          
+                          {Object.entries(tasksByPillar).map(([pillar, pillarTasks]) => {
+                            if (pillarTasks.length === 0) return null
+                            
+                            const pillarEntries = pillarTasks.map(task => {
+                              const logEntry = getLogEntry(entry.date, task.id)
+                              return {
+                                task,
+                                entry: logEntry ? logEntry.status : null
+                              }
+                            })
+                            
+                            return (
+                              <div key={pillar} className="space-y-2">
+                                <p className={`text-xs font-semibold ${isBatman ? 'text-yellow-400' : 'text-muted-foreground'}`}>
+                                  {pillar}:
+                                </p>
+                                {pillarEntries.map(({ task, entry: taskEntry }) => (
+                                  <div key={task.id} className="flex items-center justify-between text-sm ml-2">
+                                    <span className={isBatman ? 'text-yellow-400' : ''}>{task.label}</span>
+                                    <Badge 
+                                      variant={taskEntry === 'Y' ? 'default' : taskEntry === 'P' ? 'secondary' : taskEntry === 'N' ? 'destructive' : 'outline'}
+                                      className={isBatman ? (taskEntry === 'Y' ? 'bg-yellow-600 text-black' : taskEntry === 'P' ? 'bg-gray-600 text-yellow-400' : taskEntry === 'N' ? 'bg-red-600 text-white' : 'bg-gray-700 text-yellow-400') : ''}
+                                    >
+                                      {taskEntry === 'Y' ? 'Yes' : taskEntry === 'P' ? 'Pass' : taskEntry === 'N' ? 'No' : taskEntry || '—'}
+                                    </Badge>
+                                  </div>
+                                ))}
+                              </div>
+                            )
+                          })}
                         </div>
                       )}
                     </div>
