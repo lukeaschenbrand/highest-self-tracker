@@ -221,12 +221,36 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
 
   return (
     <div className={containerClass}>
-      <div className="flex items-center justify-between">
-        <h1 className={`text-3xl font-bold ${isBatman ? 'text-yellow-400' : ''}`}>
-          {isBatman ? "Batman's Actual Dashboard" : "Highest Self Dashboard"}
-        </h1>
-        {canEdit && (
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-between">
+          <h1 className={`text-3xl font-bold ${isBatman ? 'text-yellow-400' : ''}`}>
+            {isBatman ? "Batman's Actual Dashboard" : "Highest Self Dashboard"}
+          </h1>
+          {canEdit && (
           <div className="flex gap-2">
+            {isSupabaseConfigured() && (
+              <Button 
+                variant="outline" 
+                onClick={async () => {
+                  setMigrating(true)
+                  setMigrationStatus('Migrating...')
+                  const result = await migrateLocalStorageToSupabase()
+                  setMigrationStatus(result.message)
+                  setMigrating(false)
+                  if (result.success) {
+                    // Refresh data after migration
+                    setTasks(await loadTasks())
+                    setLogEntries(await loadLogEntries())
+                    setMetricEntries(await loadMetricEntries())
+                    setTimeout(() => setMigrationStatus(''), 5000)
+                  }
+                }}
+                disabled={migrating}
+                className={isBatman ? 'bg-gray-700 hover:bg-yellow-600 hover:text-black text-yellow-400 border border-gray-600' : ''}
+              >
+                {migrating ? 'Syncing...' : 'Sync to Cloud'}
+              </Button>
+            )}
             <Button 
               variant="outline" 
               onClick={() => setShowImport(true)}
@@ -255,6 +279,11 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
             >
               Export All
             </Button>
+          </div>
+        )}
+        {migrationStatus && (
+          <div className={`text-sm ${migrationStatus.includes('failed') || migrationStatus.includes('not configured') ? (isBatman ? 'text-red-400' : 'text-red-600') : (isBatman ? 'text-green-400' : 'text-green-600')}`}>
+            {migrationStatus}
           </div>
         )}
       </div>
