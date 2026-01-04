@@ -514,102 +514,124 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                {(Array.isArray(metricEntries) ? metricEntries : []).slice(-7).reverse().map(entry => {
-                  const isExpanded = expandedMetricDate === entry.date
-                  const entryDate = parseDate(entry.date)
-                  const dayOfWeek = entryDate.getDay()
-                  
-                  // Get ALL tasks for this date (all pillars)
-                  const allTasks = tasks.filter(task => {
-                    if (task.frequency === 'weekly') return true
-                    return task.active_days && Array.isArray(task.active_days) && task.active_days.includes(dayOfWeek)
-                  })
-                  
-                  // Group tasks by pillar
-                  const tasksByPillar = {
-                    [PILLARS.MORNING]: [],
-                    [PILLARS.BODY]: [],
-                    [PILLARS.WORK]: [],
-                    [PILLARS.WEEKLY]: []
+                {(() => {
+                  // Get the last 7 days (today and 6 days before)
+                  const today = new Date()
+                  const last7Days = []
+                  for (let i = 6; i >= 0; i--) {
+                    const date = new Date(today)
+                    date.setDate(date.getDate() - i)
+                    last7Days.push(formatDate(date))
                   }
                   
-                  allTasks.forEach(task => {
-                    if (tasksByPillar[task.pillar]) {
-                      tasksByPillar[task.pillar].push(task)
-                    }
+                  // Filter metricEntries to only include the last 7 days
+                  const recentEntries = (Array.isArray(metricEntries) ? metricEntries : [])
+                    .filter(entry => last7Days.includes(entry.date))
+                    .sort((a, b) => a.date.localeCompare(b.date))
+                  
+                  // Create entries for all 7 days, even if no data exists
+                  const entriesWithData = last7Days.map(date => {
+                    const existingEntry = recentEntries.find(e => e.date === date)
+                    return existingEntry || { date, sleep_hours: null, energy_1_10: null, weight_lbs: null }
                   })
                   
-                  // Get entries for all tasks on this date
-                  const allEntries = allTasks.map(task => {
-                    const logEntry = getLogEntry(entry.date, task.id)
-                    return {
-                      task,
-                      entry: logEntry ? logEntry.status : null
+                  return entriesWithData.reverse().map(entry => {
+                    const isExpanded = expandedMetricDate === entry.date
+                    const entryDate = parseDate(entry.date)
+                    const dayOfWeek = entryDate.getDay()
+                    
+                    // Get ALL tasks for this date (all pillars)
+                    const allTasks = tasks.filter(task => {
+                      if (task.frequency === 'weekly') return true
+                      return task.active_days && Array.isArray(task.active_days) && task.active_days.includes(dayOfWeek)
+                    })
+                    
+                    // Group tasks by pillar
+                    const tasksByPillar = {
+                      [PILLARS.MORNING]: [],
+                      [PILLARS.BODY]: [],
+                      [PILLARS.WORK]: [],
+                      [PILLARS.WEEKLY]: []
                     }
-                  })
-                  
-                  return (
-                    <div key={entry.date}>
-                      <div 
-                        onClick={() => setExpandedMetricDate(isExpanded ? null : entry.date)}
-                        className={`flex items-center justify-between p-2 border rounded cursor-pointer hover:opacity-80 transition-opacity ${
-                          isBatman ? 'border-gray-700 bg-gray-700' : ''
-                        }`}
-                      >
-                        <span className={`text-sm font-medium ${isBatman ? 'text-yellow-400' : ''}`}>
-                          {entry.date} {isExpanded ? '▼' : '▶'}
-                        </span>
-                        <div className={`flex gap-4 text-sm ${isBatman ? 'text-yellow-400' : ''}`}>
-                          <span>Sleep: {entry.sleep_hours || '—'}h</span>
-                          <span>Energy: {entry.energy_1_10 || '—'}/10</span>
-                          <span>Weight: {entry.weight_lbs === 'P' ? 'P' : (entry.weight_lbs || '—')}lbs</span>
+                    
+                    allTasks.forEach(task => {
+                      if (tasksByPillar[task.pillar]) {
+                        tasksByPillar[task.pillar].push(task)
+                      }
+                    })
+                    
+                    // Get entries for all tasks on this date
+                    const allEntries = allTasks.map(task => {
+                      const logEntry = getLogEntry(entry.date, task.id)
+                      return {
+                        task,
+                        entry: logEntry ? logEntry.status : null
+                      }
+                    })
+                    
+                    return (
+                      <div key={entry.date}>
+                        <div 
+                          onClick={() => setExpandedMetricDate(isExpanded ? null : entry.date)}
+                          className={`flex items-center justify-between p-2 border rounded cursor-pointer hover:opacity-80 transition-opacity ${
+                            isBatman ? 'border-gray-700 bg-gray-700' : ''
+                          }`}
+                        >
+                          <span className={`text-sm font-medium ${isBatman ? 'text-yellow-400' : ''}`}>
+                            {entry.date} {isExpanded ? '▼' : '▶'}
+                          </span>
+                          <div className={`flex gap-4 text-sm ${isBatman ? 'text-yellow-400' : ''}`}>
+                            <span>Sleep: {entry.sleep_hours || '—'}h</span>
+                            <span>Energy: {entry.energy_1_10 || '—'}/10</span>
+                            <span>Weight: {entry.weight_lbs === 'P' ? 'P' : (entry.weight_lbs || '—')}lbs</span>
+                          </div>
                         </div>
+                        
+                        {/* Expanded details showing ALL task entries grouped by pillar */}
+                        {isExpanded && (
+                          <div className={`mt-2 ml-4 p-3 border rounded space-y-4 ${
+                            isBatman ? 'border-gray-600 bg-gray-800' : 'border-gray-200 bg-gray-50'
+                          }`}>
+                            <p className={`text-xs font-semibold mb-3 ${isBatman ? 'text-yellow-400' : 'text-muted-foreground'}`}>
+                              All tasks for {entry.date}:
+                            </p>
+                            
+                            {Object.entries(tasksByPillar).map(([pillar, pillarTasks]) => {
+                              if (pillarTasks.length === 0) return null
+                              
+                              const pillarEntries = pillarTasks.map(task => {
+                                const logEntry = getLogEntry(entry.date, task.id)
+                                return {
+                                  task,
+                                  entry: logEntry ? logEntry.status : null
+                                }
+                              })
+                              
+                              return (
+                                <div key={pillar} className="space-y-2">
+                                  <p className={`text-xs font-semibold ${isBatman ? 'text-yellow-400' : 'text-muted-foreground'}`}>
+                                    {pillar}:
+                                  </p>
+                                  {pillarEntries.map(({ task, entry: taskEntry }) => (
+                                    <div key={task.id} className="flex items-center justify-between text-sm ml-2">
+                                      <span className={isBatman ? 'text-yellow-400' : ''}>{task.label}</span>
+                                      <Badge 
+                                        variant={taskEntry === 'Y' ? 'default' : taskEntry === 'P' ? 'secondary' : taskEntry === 'N' ? 'destructive' : 'outline'}
+                                        className={isBatman ? (taskEntry === 'Y' ? 'bg-yellow-600 text-black' : taskEntry === 'P' ? 'bg-gray-600 text-yellow-400' : taskEntry === 'N' ? 'bg-red-600 text-white' : 'bg-gray-700 text-yellow-400') : ''}
+                                      >
+                                        {taskEntry === 'Y' ? 'Yes' : taskEntry === 'P' ? 'Pass' : taskEntry === 'N' ? 'No' : taskEntry || '—'}
+                                      </Badge>
+                                    </div>
+                                  ))}
+                                </div>
+                              )
+                            })}
+                          </div>
+                        )}
                       </div>
-                      
-                      {/* Expanded details showing ALL task entries grouped by pillar */}
-                      {isExpanded && (
-                        <div className={`mt-2 ml-4 p-3 border rounded space-y-4 ${
-                          isBatman ? 'border-gray-600 bg-gray-800' : 'border-gray-200 bg-gray-50'
-                        }`}>
-                          <p className={`text-xs font-semibold mb-3 ${isBatman ? 'text-yellow-400' : 'text-muted-foreground'}`}>
-                            All tasks for {entry.date}:
-                          </p>
-                          
-                          {Object.entries(tasksByPillar).map(([pillar, pillarTasks]) => {
-                            if (pillarTasks.length === 0) return null
-                            
-                            const pillarEntries = pillarTasks.map(task => {
-                              const logEntry = getLogEntry(entry.date, task.id)
-                              return {
-                                task,
-                                entry: logEntry ? logEntry.status : null
-                              }
-                            })
-                            
-                            return (
-                              <div key={pillar} className="space-y-2">
-                                <p className={`text-xs font-semibold ${isBatman ? 'text-yellow-400' : 'text-muted-foreground'}`}>
-                                  {pillar}:
-                                </p>
-                                {pillarEntries.map(({ task, entry: taskEntry }) => (
-                                  <div key={task.id} className="flex items-center justify-between text-sm ml-2">
-                                    <span className={isBatman ? 'text-yellow-400' : ''}>{task.label}</span>
-                                    <Badge 
-                                      variant={taskEntry === 'Y' ? 'default' : taskEntry === 'P' ? 'secondary' : taskEntry === 'N' ? 'destructive' : 'outline'}
-                                      className={isBatman ? (taskEntry === 'Y' ? 'bg-yellow-600 text-black' : taskEntry === 'P' ? 'bg-gray-600 text-yellow-400' : taskEntry === 'N' ? 'bg-red-600 text-white' : 'bg-gray-700 text-yellow-400') : ''}
-                                    >
-                                      {taskEntry === 'Y' ? 'Yes' : taskEntry === 'P' ? 'Pass' : taskEntry === 'N' ? 'No' : taskEntry || '—'}
-                                    </Badge>
-                                  </div>
-                                ))}
-                              </div>
-                            )
-                          })}
-                        </div>
-                      )}
-                    </div>
-                  )
-                })}
+                    )
+                  })
+                })()}
               </div>
             </CardContent>
           </Card>
