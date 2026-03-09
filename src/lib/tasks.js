@@ -167,17 +167,6 @@ export function getDefaultTasks() {
       weight: 1,
     },
     {
-      id: 'work_5',
-      pillar: PILLARS.WORK,
-      category: CATEGORIES.WORK,
-      label: 'TikTok',
-      frequency: FREQUENCIES.DAILY,
-      active_days: [1, 2, 3, 4, 5, 6], // Mon-Sat
-      allow_pass: true,
-      weight: 1,
-      is_numeric: true, // Track as numeric (count of TikToks)
-    },
-    {
       id: 'work_6',
       pillar: PILLARS.WORK,
       category: CATEGORIES.WORK,

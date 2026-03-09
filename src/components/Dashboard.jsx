@@ -4,12 +4,16 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { SleepChart, EnergyChart, WeightChart, CompletionChart } from '@/components/Charts'
-import { 
+import {
   loadTasks,
   saveTasks,
-  loadLogEntries, 
+  loadLogEntries,
   loadMetricEntries,
-  getLogEntry
+  getLogEntry,
+  loadReminders,
+  saveReminder,
+  completeReminder,
+  deleteReminder,
 } from '@/lib/storage'
 import { getDefaultTasks, PILLARS } from '@/lib/tasks'
 import { 
@@ -41,6 +45,11 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
   const [migrationStatus, setMigrationStatus] = useState('')
   const [expandedPillar, setExpandedPillar] = useState(null)
   const [expandedMetricDate, setExpandedMetricDate] = useState(null)
+  const [reminders, setReminders] = useState([])
+  const [newReminderText, setNewReminderText] = useState('')
+  const [newReminderDate, setNewReminderDate] = useState('')
+  const [newReminderPriority, setNewReminderPriority] = useState('normal')
+  const [showAddReminder, setShowAddReminder] = useState(false)
 
   useEffect(() => {
     const loadData = async () => {
@@ -66,6 +75,50 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
     // Reset expanded pillar when date changes
     setExpandedPillar(null)
   }, [selectedDate])
+
+  // Load reminders
+  useEffect(() => {
+    const todayStr = formatDate(new Date())
+    const dateStr = formatDate(selectedDate)
+    // Show today's reminders + any for the selected date
+    const todayReminders = loadReminders(todayStr)
+    const selectedReminders = dateStr !== todayStr ? loadReminders(dateStr) : []
+    const combined = [...todayReminders, ...selectedReminders]
+    // Deduplicate by id
+    const unique = combined.filter((r, i, arr) => arr.findIndex(x => x.id === r.id) === i)
+    setReminders(unique)
+  }, [selectedDate])
+
+  const handleAddReminder = async () => {
+    if (!newReminderText.trim()) return
+    const date = newReminderDate || formatDate(new Date())
+    await saveReminder({
+      id: crypto.randomUUID(),
+      text: newReminderText.trim(),
+      date,
+      priority: newReminderPriority,
+      source: 'manual',
+    })
+    setNewReminderText('')
+    setNewReminderDate('')
+    setNewReminderPriority('normal')
+    setShowAddReminder(false)
+    // Refresh
+    const todayStr = formatDate(new Date())
+    setReminders(loadReminders(todayStr))
+  }
+
+  const handleCompleteReminder = async (id) => {
+    await completeReminder(id)
+    const todayStr = formatDate(new Date())
+    setReminders(loadReminders(todayStr))
+  }
+
+  const handleDeleteReminder = async (id) => {
+    await deleteReminder(id)
+    const todayStr = formatDate(new Date())
+    setReminders(loadReminders(todayStr))
+  }
 
   const getOverallScore = () => {
     if (period === 'day') {
@@ -357,6 +410,116 @@ export function Dashboard({ selectedDate, onDateChange, canEdit = true, isBatman
           </div>
         )}
       </div>
+
+      {/* Reminders — Batman only */}
+      {isBatman && (
+        <Card className="bg-gray-800 border-yellow-600/50">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-yellow-400 text-lg">Priority Reminders</CardTitle>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowAddReminder(!showAddReminder)}
+                className="bg-gray-700 hover:bg-yellow-600 hover:text-black text-yellow-400 border border-gray-600 text-xs"
+              >
+                {showAddReminder ? 'Cancel' : '+ Add'}
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-0">
+            {showAddReminder && (
+              <div className="mb-4 p-3 bg-gray-700 rounded-lg space-y-2">
+                <input
+                  type="text"
+                  placeholder="What needs to get done?"
+                  value={newReminderText}
+                  onChange={(e) => setNewReminderText(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleAddReminder()}
+                  className="w-full bg-gray-800 text-yellow-400 placeholder-gray-500 border border-gray-600 rounded px-3 py-2 text-sm focus:outline-none focus:border-yellow-600"
+                />
+                <div className="flex gap-2">
+                  <input
+                    type="date"
+                    value={newReminderDate}
+                    onChange={(e) => setNewReminderDate(e.target.value)}
+                    className="bg-gray-800 text-yellow-400 border border-gray-600 rounded px-3 py-1.5 text-xs focus:outline-none focus:border-yellow-600"
+                  />
+                  <select
+                    value={newReminderPriority}
+                    onChange={(e) => setNewReminderPriority(e.target.value)}
+                    className="bg-gray-800 text-yellow-400 border border-gray-600 rounded px-3 py-1.5 text-xs focus:outline-none focus:border-yellow-600"
+                  >
+                    <option value="high">High priority</option>
+                    <option value="normal">Normal</option>
+                  </select>
+                  <Button
+                    size="sm"
+                    onClick={handleAddReminder}
+                    className="bg-yellow-600 text-black hover:bg-yellow-500 text-xs"
+                  >
+                    Save
+                  </Button>
+                </div>
+              </div>
+            )}
+            {reminders.length === 0 && !showAddReminder && (
+              <p className="text-gray-500 text-sm">No reminders for today. Stay dangerous.</p>
+            )}
+            {reminders.length > 0 && (
+              <div className="space-y-2">
+                {reminders
+                  .sort((a, b) => (a.priority === 'high' ? -1 : 1))
+                  .map((reminder) => (
+                    <div
+                      key={reminder.id}
+                      className={`flex items-center justify-between p-2.5 rounded-lg border ${
+                        reminder.priority === 'high'
+                          ? 'border-yellow-600/70 bg-yellow-600/10'
+                          : 'border-gray-600 bg-gray-700'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                        {reminder.priority === 'high' && (
+                          <span className="text-yellow-400 text-xs font-bold shrink-0">!!</span>
+                        )}
+                        <span className="text-yellow-400 text-sm truncate">{reminder.text}</span>
+                        {reminder.date !== formatDate(new Date()) && (
+                          <Badge className="bg-gray-600 text-yellow-400 text-xs shrink-0">
+                            {reminder.date}
+                          </Badge>
+                        )}
+                        {reminder.source !== 'manual' && (
+                          <Badge className="bg-gray-600 text-gray-400 text-xs shrink-0">
+                            {reminder.source}
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="flex gap-1.5 shrink-0 ml-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleCompleteReminder(reminder.id)}
+                          className="text-green-400 hover:text-green-300 hover:bg-green-400/10 h-7 w-7 p-0"
+                        >
+                          ✓
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDeleteReminder(reminder.id)}
+                          className="text-red-400 hover:text-red-300 hover:bg-red-400/10 h-7 w-7 p-0"
+                        >
+                          ×
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       <Tabs value={period} onValueChange={setPeriod}>
         <TabsList className={isBatman ? 'bg-gray-800 border border-gray-700' : ''}>

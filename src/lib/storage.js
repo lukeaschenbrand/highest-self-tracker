@@ -6,6 +6,7 @@ const STORAGE_KEYS = {
   LOG_ENTRIES: 'hst_log_entries',
   METRIC_ENTRIES: 'hst_metric_entries',
   PROJECT_START_DATE: 'hst_project_start_date',
+  REMINDERS: 'hst_reminders',
 }
 
 // ========== LOCALSTORAGE FUNCTIONS (Fallback) ==========
@@ -510,4 +511,73 @@ export async function importData(data) {
     console.error('Failed to import data:', error)
     return false
   }
+}
+
+// ========== REMINDERS ==========
+// Reminders are Batman-only priority items that show on the Dashboard.
+// Each reminder: { id, text, date (YYYY-MM-DD to show on), priority ('high'|'normal'), completed: bool, source: string, created_at }
+
+export async function saveReminder(reminder) {
+  const reminders = loadFromLocalStorage(STORAGE_KEYS.REMINDERS, [])
+  const existingIndex = reminders.findIndex(r => r.id === reminder.id)
+
+  if (existingIndex >= 0) {
+    reminders[existingIndex] = { ...reminders[existingIndex], ...reminder }
+  } else {
+    reminders.push({
+      id: reminder.id || crypto.randomUUID(),
+      text: reminder.text,
+      date: reminder.date,
+      priority: reminder.priority || 'normal',
+      completed: false,
+      source: reminder.source || 'manual',
+      created_at: new Date().toISOString(),
+    })
+  }
+
+  saveToLocalStorage(STORAGE_KEYS.REMINDERS, reminders)
+
+  // Also save to Supabase if configured
+  if (isSupabaseConfigured()) {
+    try {
+      const { error } = await supabase
+        .from('reminders')
+        .upsert(reminders.find(r => r.id === reminder.id) || reminder, { onConflict: 'id' })
+      if (error) console.warn('Supabase reminders table may not exist yet:', error.message)
+    } catch (e) {
+      console.warn('Reminders Supabase sync skipped:', e.message)
+    }
+  }
+
+  return true
+}
+
+export function loadReminders(date = null) {
+  const reminders = loadFromLocalStorage(STORAGE_KEYS.REMINDERS, [])
+  if (date) {
+    return reminders.filter(r => r.date === date && !r.completed)
+  }
+  return reminders.filter(r => !r.completed)
+}
+
+export function loadAllReminders() {
+  return loadFromLocalStorage(STORAGE_KEYS.REMINDERS, [])
+}
+
+export async function completeReminder(id) {
+  const reminders = loadFromLocalStorage(STORAGE_KEYS.REMINDERS, [])
+  const reminder = reminders.find(r => r.id === id)
+  if (reminder) {
+    reminder.completed = true
+    reminder.completed_at = new Date().toISOString()
+    saveToLocalStorage(STORAGE_KEYS.REMINDERS, reminders)
+  }
+  return true
+}
+
+export async function deleteReminder(id) {
+  const reminders = loadFromLocalStorage(STORAGE_KEYS.REMINDERS, [])
+  const filtered = reminders.filter(r => r.id !== id)
+  saveToLocalStorage(STORAGE_KEYS.REMINDERS, filtered)
+  return true
 }
